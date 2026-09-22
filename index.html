@@ -160,8 +160,6 @@
         .estrelas-input span:hover, .estrelas-input span.ativo { color: var(--primary); }
 
         footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
-        .admin-link { color: var(--gray); text-decoration: none; font-weight: 600; cursor: pointer; margin-left: 8px; padding: 4px 8px; border-radius: 6px; background: var(--input-bg); }
-        .admin-link:hover { color: var(--dark); }
         
         /* Dashboard Admin e Lojista */
         #painelAdmin, #painelLojista { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
@@ -188,7 +186,7 @@
             <a href="#" class="logo"><i class="fas fa-book-open"></i> Folha Amarela</a>
             
             <div class="header-actions">
-                <button class="btn-lojista-nav" onclick="abrirPainelLojistaClick()"><i class="fas fa-store"></i> <span id="txtBtnLojista">Área do Lojista</span></button>
+                <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
                 <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
@@ -260,40 +258,28 @@
         </div>
     </main>
 
-    <!-- Modal Login / Cadastro Lojista -->
-    <div id="modalAuthLojista" class="modal">
+    <!-- Modal Área de Acesso (Unificado: Lojista e Admin) -->
+    <div id="modalAreaAcesso" class="modal">
         <div class="modal-content" style="max-width: 380px; text-align: center;">
-            <span class="close" onclick="document.getElementById('modalAuthLojista').style.display='none'">&times;</span>
-            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-store-alt"></i></div>
-            <h2 id="tituloAuthLojista" style="margin-bottom: 4px; font-size: 20px;">Acesso do Lojista</h2>
-            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Gerencie seu estabelecimento e destaques</p>
+            <span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span>
+            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-user-shield"></i></div>
+            <h2 id="tituloAreaAcesso" style="margin-bottom: 4px; font-size: 20px;">Área de Acesso</h2>
+            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Lojistas e Administrador</p>
             
             <div class="form-group" style="text-align: left;">
                 <label>E-mail</label>
-                <input type="email" id="authEmail" class="form-control" placeholder="seu@email.com">
+                <input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com">
             </div>
             <div class="form-group" style="text-align: left;">
                 <label>Senha</label>
-                <input type="password" id="authSenha" class="form-control" placeholder="Sua senha...">
+                <input type="password" id="acessoSenha" class="form-control" placeholder="Sua senha...">
             </div>
             
-            <button class="btn-submit" id="btnSubmitAuth" onclick="executarAuthLojista()">Entrar no Painel</button>
+            <button class="btn-submit" id="btnSubmitAcesso" onclick="executarLoginUnificado()">Entrar</button>
             
-            <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAuth()">
-                <span id="txtAlternarAuth">Não tem conta? <b>Cadastre-se grátis</b></span>
+            <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAcesso()">
+                <span id="txtAlternarAcesso">Não tem conta de lojista? <b>Cadastre-se grátis</b></span>
             </p>
-        </div>
-    </div>
-
-    <!-- Modal Login Admin -->
-    <div id="modalLoginAdmin" class="modal">
-        <div class="modal-content" style="max-width: 320px; text-align: center;">
-            <span class="close" onclick="document.getElementById('modalLoginAdmin').style.display='none'">&times;</span>
-            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-shield-alt"></i></div>
-            <h2 style="margin-bottom: 4px; font-size: 20px;">Acesso Restrito</h2>
-            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Painel de Gestão Folha Amarela</p>
-            <input type="password" id="senhaAdmin" class="form-control" placeholder="Senha..." style="text-align: center; margin-bottom: 16px;">
-            <button class="btn-submit" onclick="validarLoginAdmin()">Entrar no Painel</button>
         </div>
     </div>
 
@@ -470,7 +456,7 @@
         <div class="admin-header">
             <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-store"></i> Meu Estabelecimento</h2>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <button onclick="logoutLojista()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair / Logout</button>
+                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair / Logout</button>
             </div>
         </div>
 
@@ -482,11 +468,11 @@
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial</h2>
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial (Admin)</h2>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                 <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
-                <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
+                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
             </div>
         </div>
         
@@ -527,7 +513,6 @@
 
     <footer>
         Folha Amarela Digital &copy; 2026 
-        <a class="admin-link" onclick="abrirModalAdmin()"><i class="fas fa-lock" style="font-size: 10px;"></i> Admin</a>
     </footer>
 
     <script>
@@ -593,79 +578,103 @@
         let usuarioLogado = null;
         let isModoCadastroAuth = false;
 
+        // Contas de Controle Pré-definidas
+        const ADMIN_EMAIL = "admin@folhaamarela.com";
+        const ADMIN_SENHA_DEFAULT = "admin123";
+
         auth.onAuthStateChanged((user) => {
             usuarioLogado = user;
             if(user) {
-                document.getElementById('txtBtnLojista').textContent = "Meu Painel";
+                document.getElementById('txtBtnAcesso').textContent = user.email === ADMIN_EMAIL ? "Painel Admin" : "Meu Painel";
             } else {
-                document.getElementById('txtBtnLojista').textContent = "Área do Lojista";
+                document.getElementById('txtBtnAcesso').textContent = "Área de acesso";
             }
         });
 
-        function abrirPainelLojistaClick() {
+        function abrirAreaAcessoClick() {
             if(!usuarioLogado) {
-                abrirModalAuthLojista();
+                abrirModalAreaAcesso();
             } else {
-                abrirPainelLojista();
+                if(isAdminLogado || usuarioLogado.email === ADMIN_EMAIL) {
+                    document.getElementById('painelAdmin').style.display = 'block';
+                    renderizarKanban();
+                } else {
+                    abrirPainelLojista();
+                }
             }
         }
 
-        function abrirModalAuthLojista() {
-            document.getElementById('authEmail').value = '';
-            document.getElementById('authSenha').value = '';
+        function abrirModalAreaAcesso() {
+            document.getElementById('acessoEmail').value = '';
+            document.getElementById('acessoSenha').value = '';
             isModoCadastroAuth = false;
             atualizarTextoAuthModal();
-            document.getElementById('modalAuthLojista').style.display = 'block';
+            document.getElementById('modalAreaAcesso').style.display = 'block';
         }
 
-        function alternarModoAuth() {
+        function alternarModoAcesso() {
             isModoCadastroAuth = !isModoCadastroAuth;
             atualizarTextoAuthModal();
         }
 
         function atualizarTextoAuthModal() {
             if(isModoCadastroAuth) {
-                document.getElementById('tituloAuthLojista').textContent = "Criar Conta de Lojista";
-                document.getElementById('btnSubmitAuth').textContent = "Cadastrar Conta";
-                document.getElementById('txtAlternarAuth').innerHTML = "Já tem uma conta? <b>Faça login</b>";
+                document.getElementById('tituloAreaAcesso').textContent = "Cadastro de Lojista";
+                document.getElementById('btnSubmitAcesso').textContent = "Cadastrar Conta";
+                document.getElementById('txtAlternarAcesso').innerHTML = "Já tem uma conta? <b>Faça login</b>";
             } else {
-                document.getElementById('tituloAuthLojista').textContent = "Acesso do Lojista";
-                document.getElementById('btnSubmitAuth').textContent = "Entrar no Painel";
-                document.getElementById('txtAlternarAuth').innerHTML = "Não tem conta? <b>Cadastre-se grátis</b>";
+                document.getElementById('tituloAreaAcesso').textContent = "Área de Acesso";
+                document.getElementById('btnSubmitAcesso').textContent = "Entrar";
+                document.getElementById('txtAlternarAcesso').innerHTML = "Não tem conta de lojista? <b>Cadastre-se grátis</b>";
             }
         }
 
-        async function executarAuthLojista() {
-            let email = document.getElementById('authEmail').value;
-            let senha = document.getElementById('authSenha').value;
+        async function executarLoginUnificado() {
+            let email = document.getElementById('acessoEmail').value.trim();
+            let senha = document.getElementById('acessoSenha').value;
             if(!email || !senha) return alert("Preencha e-mail e senha.");
 
+            // Verifica se é a conta de Administrador
+            if(email === ADMIN_EMAIL) {
+                if(senha === ADMIN_SENHA_DEFAULT || senha === "1234") {
+                    isAdminLogado = true;
+                    document.getElementById('modalAreaAcesso').style.display = 'none';
+                    document.getElementById('painelAdmin').style.display = 'block';
+                    renderizarKanban();
+                    return;
+                } else {
+                    return alert("Senha do Administrador incorreta!");
+                }
+            }
+
+            // Caso contrário, loga como Lojista via Firebase Auth
             try {
                 if(isModoCadastroAuth) {
                     await auth.createUserWithEmailAndPassword(email, senha);
-                    alert("Conta criada com sucesso!");
+                    alert("Conta de lojista criada com sucesso!");
                 } else {
                     await auth.signInWithEmailAndPassword(email, senha);
                 }
-                document.getElementById('modalAuthLojista').style.display = 'none';
+                document.getElementById('modalAreaAcesso').style.display = 'none';
                 abrirPainelLojista();
             } catch (error) {
                 alert("Erro na autenticação: " + error.message);
             }
         }
 
-        function logoutLojista() {
+        function logoutSessao() {
             auth.signOut().then(() => {
+                isAdminLogado = false;
                 document.getElementById('painelLojista').style.display = 'none';
-                alert("Você saiu da sua conta.");
+                document.getElementById('painelAdmin').style.display = 'none';
+                alert("Você saiu da sessão.");
             });
         }
 
         function abrirPainelLojista() {
-            if(!usuarioLogado) return abrirModalAuthLojista();
+            if(!usuarioLogado) return abrirModalAreaAcesso();
             document.getElementById('painelLojista').style.display = 'block';
             
-            // Busca a loja vinculada a este usuário logado
             let minhaLoja = listaLocaisCache.find(l => l.userId === usuarioLogado.uid);
             let container = document.getElementById('conteudoPainelLojista');
 
@@ -1148,29 +1157,6 @@
             document.getElementById('modalIA').style.display = 'block';
         }
 
-        function abrirModalAdmin() {
-            document.getElementById('modalLoginAdmin').style.display = 'block';
-            document.getElementById('senhaAdmin').value = '';
-            document.getElementById('senhaAdmin').focus();
-        }
-
-        function validarLoginAdmin() {
-            let senha = document.getElementById('senhaAdmin').value;
-            if (senha === "1234") {
-                document.getElementById('modalLoginAdmin').style.display = 'none';
-                document.getElementById('painelAdmin').style.display = 'block';
-                isAdminLogado = true;
-                renderizarKanban();
-            } else {
-                alert("Senha incorreta!");
-            }
-        }
-
-        function fecharAdmin() { 
-            document.getElementById('painelAdmin').style.display = 'none'; 
-            isAdminLogado = false;
-        }
-        
         function renderizarKanban() {
             let buscaKanban = document.getElementById('buscaKanban').value.toLowerCase();
             let listaFiltrada = listaLocaisCache;
