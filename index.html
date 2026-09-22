@@ -125,7 +125,7 @@
 
         /* Modais */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
-        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 480px; margin: 60px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
         .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .close:hover { color: var(--dark); }
         
@@ -269,7 +269,7 @@
 
     <!-- Modal de Cadastro / Edição -->
     <div id="modalCadastro" class="modal">
-        <div class="modal-content" style="max-width: 520px;">
+        <div class="modal-content" style="max-width: 560px;">
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
             <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px;">Anunciar Negócio</h2>
             <input type="hidden" id="cadId">
@@ -308,16 +308,42 @@
                     <span>Trabalha apenas com Delivery (Sem loja física)</span>
                 </label>
             </div>
-            <div style="display: flex; gap: 12px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Abre às</label>
-                    <input type="time" id="cadAbre" class="form-control">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Fecha às</label>
-                    <input type="time" id="cadFecha" class="form-control">
+
+            <!-- Grade de Horários por Dia da Semana -->
+            <div class="form-group">
+                <label style="margin-bottom: 8px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento (Dia a Dia)</label>
+                <div style="display: flex; flex-direction: column; gap: 8px; background: var(--input-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--border);">
+                    
+                    <!-- Linha por Dia -->
+                    <script>
+                        const diasSemanaConfig = [
+                            {k:'seg', n:'Segunda-feira'},
+                            {k:'ter', n:'Terça-feira'},
+                            {k:'qua', n:'Quarta-feira'},
+                            {k:'qui', n:'Quinta-feira'},
+                            {k:'sex', n:'Sexta-feira'},
+                            {k:'sab', n:'Sábado'},
+                            {k:'dom', n:'Domingo'}
+                        ];
+                        diasSemanaConfig.forEach(d => {
+                            document.write(`
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding-bottom: 6px; border-bottom: 1px solid var(--border);">
+                                    <span style="font-size: 13px; font-weight: 700; min-width: 105px;">${d.n}</span>
+                                    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: flex-end;">
+                                        <label style="font-size: 11px; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--gray); font-weight: 600; margin-right: 4px;">
+                                            <input type="checkbox" id="hor_${d.k}_fechado" onchange="toggleDiaFechado('${d.k}')" style="accent-color: var(--danger);"> Fechado
+                                        </label>
+                                        <input type="time" id="hor_${d.k}_abre" class="form-control" style="width: 110px; padding: 6px 8px; font-size: 13px;" value="08:00">
+                                        <span style="font-size: 12px; color: var(--gray);">até</span>
+                                        <input type="time" id="hor_${d.k}_fecha" class="form-control" style="width: 110px; padding: 6px 8px; font-size: 13px;" value="18:00">
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    </script>
                 </div>
             </div>
+
             <div class="form-group">
                 <label>WhatsApp (com DDD)</label>
                 <input type="number" id="cadWpp" class="form-control" placeholder="35999999999">
@@ -472,6 +498,21 @@
 
         carregarTemaSalvo();
 
+        function toggleDiaFechado(dia) {
+            let fechado = document.getElementById(`hor_${dia}_fechado`).checked;
+            let inpAbre = document.getElementById(`hor_${dia}_abre`);
+            let inpFecha = document.getElementById(`hor_${dia}_fecha`);
+            inpAbre.disabled = fechado;
+            inpFecha.disabled = fechado;
+            if(fechado) {
+                inpAbre.style.opacity = '0.4';
+                inpFecha.style.opacity = '0.4';
+            } else {
+                inpAbre.style.opacity = '1';
+                inpFecha.style.opacity = '1';
+            }
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -572,12 +613,31 @@
 
         function gerarHTMLCard(local) {
             let statusBadge = '';
-            if(local.abreAs && local.fechaAs) {
-                let horaAtual = new Date().getHours();
-                let horaAbre = parseInt(local.abreAs.split(':')[0]);
-                let horaFecha = parseInt(local.fechaAs.split(':')[0]);
-                let isAberto = horaAtual >= horaAbre && horaAtual < horaFecha;
-                statusBadge = isAberto ? '<span class="status-badge status-aberto"><i class="fas fa-circle" style="font-size: 7px;"></i> Aberto</span>' : '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado</span>';
+            
+            // Verifica o dia de hoje (0=dom, 1=seg, 2=ter, 3=qua, 4=qui, 5=sex, 6=sab)
+            const mapDias = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+            let hojeKey = mapDias[new Date().getDay()];
+            
+            let horarios = local.horariosSemana || {};
+            let horarioHoje = horarios[hojeKey] || (local.abreAs ? `${local.abreAs} - ${local.fechaAs}` : 'Fechado');
+
+            if(horarioHoje && horarioHoje.toLowerCase() !== 'fechado') {
+                let partes = horarioHoje.split(' - ');
+                if(partes.length === 2) {
+                    let horaAtual = new Date().getHours();
+                    let minAtual = new Date().getMinutes();
+                    let tempoAtualMin = horaAtual * 60 + minAtual;
+
+                    let [hAbre, mAbre] = partes[0].split(':').map(Number);
+                    let [hFecha, mFecha] = partes[1].split(':').map(Number);
+                    let tempoAbreMin = hAbre * 60 + (mAbre || 0);
+                    let tempoFechaMin = hFecha * 60 + (mFecha || 0);
+
+                    let isAberto = tempoAtualMin >= tempoAbreMin && tempoAtualMin < tempoFechaMin;
+                    statusBadge = isAberto ? '<span class="status-badge status-aberto"><i class="fas fa-circle" style="font-size: 7px;"></i> Aberto</span>' : '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado hoje</span>';
+                }
+            } else {
+                statusBadge = '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado hoje</span>';
             }
 
             let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> Delivery</span>' : '';
@@ -693,12 +753,18 @@
             document.getElementById('cadApenasDelivery').checked = false;
             document.getElementById('cadWpp').value = '';
             document.getElementById('cadDesc').value = '';
-            document.getElementById('cadAbre').value = '';
-            document.getElementById('cadFecha').value = '';
             document.getElementById('cadFotos').value = '';
             document.getElementById('previewImagens').innerHTML = '';
             imagensUploadTemp = [];
             document.getElementById('tituloModalCadastro').textContent = 'Anunciar Negócio';
+
+            // Reseta grade para padrão
+            diasSemanaConfig.forEach(d => {
+                document.getElementById(`hor_${d.k}_fechado`).checked = false;
+                document.getElementById(`hor_${d.k}_abre`).value = "08:00";
+                document.getElementById(`hor_${d.k}_fecha`).value = "18:00";
+                toggleDiaFechado(d.k);
+            });
 
             if(docId) {
                 let local = listaLocaisCache.find(l => l.idDoc === docId);
@@ -711,9 +777,24 @@
                     document.getElementById('cadApenasDelivery').checked = local.apenasDelivery || false;
                     document.getElementById('cadWpp').value = local.whatsapp;
                     document.getElementById('cadDesc').value = local.descricao || '';
-                    document.getElementById('cadAbre').value = local.abreAs || '';
-                    document.getElementById('cadFecha').value = local.fechaAs || '';
                     imagensUploadTemp = local.imagens || [];
+
+                    // Carrega horários específicos se existirem
+                    if(local.horariosSemana) {
+                        diasSemanaConfig.forEach(d => {
+                            let val = local.horariosSemana[d.k];
+                            if(val === 'Fechado' || !val) {
+                                document.getElementById(`hor_${d.k}_fechado`).checked = true;
+                            } else {
+                                let partes = val.split(' - ');
+                                if(partes.length === 2) {
+                                    document.getElementById(`hor_${d.k}_abre`).value = partes[0];
+                                    document.getElementById(`hor_${d.k}_fecha`).value = partes[1];
+                                }
+                            }
+                            toggleDiaFechado(d.k);
+                        });
+                    }
                     
                     let preview = document.getElementById('previewImagens');
                     imagensUploadTemp.forEach((url, i) => {
@@ -754,6 +835,19 @@
                 }
             }
 
+            // Coleta os horários da semana
+            let horariosSemana = {};
+            diasSemanaConfig.forEach(d => {
+                let fechado = document.getElementById(`hor_${d.k}_fechado`).checked;
+                if(fechado) {
+                    horariosSemana[d.k] = 'Fechado';
+                } else {
+                    let abre = document.getElementById(`hor_${d.k}_abre`).value;
+                    let fecha = document.getElementById(`hor_${d.k}_fecha`).value;
+                    horariosSemana[d.k] = `${abre} - ${fecha}`;
+                }
+            });
+
             let statusFinal = docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente');
 
             let dadosLocal = {
@@ -764,8 +858,7 @@
                 apenasDelivery: document.getElementById('cadApenasDelivery').checked,
                 whatsapp: document.getElementById('cadWpp').value,
                 descricao: document.getElementById('cadDesc').value,
-                abreAs: document.getElementById('cadAbre').value,
-                fechaAs: document.getElementById('cadFecha').value,
+                horariosSemana: horariosSemana,
                 imagens: imagensLinks,
                 status: statusFinal,
                 is_featured: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.is_featured || false) : false,
@@ -832,13 +925,13 @@
 
             const listaHorarios = document.getElementById('detDetalhesHorarios');
             listaHorarios.innerHTML = '';
-            const dias = [{k:'seg',n:'Segunda'},{k:'ter',n:'Terça'},{k:'qua',n:'Quarta'},{k:'qui',n:'Quinta'},{k:'sex',n:'Sexta'},{k:'sab',n:'Sábado'},{k:'dom',n:'Domingo'}];
+            const diasNomes = {seg:'Segunda', ter:'Terça', qua:'Quarta', qui:'Quinta', sex:'Sexta', sab:'Sábado', dom:'Domingo'};
             let hor = local.horariosSemana || {};
             
-            dias.forEach(d => {
-                let v = hor[d.k] || (local.abreAs ? `${local.abreAs} - ${local.fechaAs}` : 'Não informado');
+            Object.keys(diasNomes).forEach(k => {
+                let v = hor[k] || 'Não informado';
                 let css = v.toLowerCase() === 'fechado' ? 'class="dia-fechado"' : '';
-                listaHorarios.innerHTML += `<li><span>${d.n}</span><span ${css}>${v}</span></li>`;
+                listaHorarios.innerHTML += `<li><span>${diasNomes[k]}</span><span ${css}>${v}</span></li>`;
             });
 
             document.getElementById('modalDetalhes').style.display = 'block';
