@@ -1,0 +1,15 @@
+{
+  "name": "Folha Amarela Digital",
+  "short_name": "Folha Amarela",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F5",
+  "theme_color": "#FFD700",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
