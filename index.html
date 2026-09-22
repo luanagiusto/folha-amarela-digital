@@ -14,110 +14,149 @@
 
     <style>
         :root {
-            --primary: #FFD700;
-            --dark: #1A1A1A;
-            --light: #F5F5F5;
-            --gray: #666666;
-            --success: #28a745;
-            --danger: #dc3545;
-            --purple: #6a1b9a;
-            --warning: #ffc107;
+            --primary: #F59E0B;       /* Amarelo Ouro / Mel moderno */
+            --primary-hover: #D97706; 
+            --dark: #1E293B;          /* Cinza Chumbo */
+            --light: #F8FAFC;         /* Fundo Gelo Suave */
+            --surface: #FFFFFF;       /* Cartões Brancos */
+            --gray: #64748B;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --danger: #EF4444;
+            --purple: #8B5CF6;
+            --warning: #F59E0B;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
 
-        header { background-color: var(--primary); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo { font-size: 24px; font-weight: 900; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        /* Header com Glassmorphism */
+        header { 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            padding: 16px 20px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            zIndex: 100; 
+            border-bottom: 1px solid var(--border);
+        }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
+        .logo i { color: var(--primary); }
         
-        .seletor-cidade { background: rgba(0,0,0,0.1); padding: 5px 10px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .btn-anunciar { background-color: var(--dark); color: var(--primary); border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .seletor-cidade { background: #FEF3C7; color: #92400E; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .seletor-cidade:hover { background: #FDE68A; }
 
-        .search-container { position: relative; display: flex; gap: 10px; }
-        .search-bar { flex: 1; padding: 12px 15px 12px 40px; border: none; border-radius: 8px; font-size: 16px; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); }
-        .btn-ia { background-color: var(--purple); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-anunciar { background-color: var(--dark); color: var(--primary); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.2s; }
+        .btn-anunciar:hover { transform: scale(1.02); }
 
-        .container { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .search-container { position: relative; display: flex; gap: 8px; }
+        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: #F1F5F9; border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); transition: all 0.2s; }
+        .search-bar:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
+        .btn-ia { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2); }
 
-        .categorias { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; }
+        .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+
+        /* Categorias Modernas */
+        .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
         .categorias::-webkit-scrollbar { display: none; }
-        .cat-item { min-width: 80px; text-align: center; scroll-snap-align: start; cursor: pointer; }
-        .cat-icon { width: 50px; height: 50px; background-color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 5px; font-size: 20px; color: var(--dark); box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 2px solid transparent; }
-        .cat-item.active .cat-icon { border-color: var(--primary); background-color: var(--primary); }
+        .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
+        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 20px; color: var(--gray); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; }
+        .cat-item.active .cat-icon { border-color: var(--primary); background-color: #FEF3C7; color: #92400E; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
         .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
+        .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
 
-        .secao-header { font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; font-weight: 800; }
-        .patrocinados-scroll { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; scroll-snap-type: x mandatory; }
-        .patrocinados-scroll::-webkit-scrollbar { height: 4px; }
-        .patrocinados-scroll::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 4px; }
-        .patrocinados-scroll .card-local { min-width: 280px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: linear-gradient(to bottom right, #fff, #fffde7); }
-
-        .lista-locais { display: flex; flex-direction: column; gap: 15px; }
-
-        .card-local { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
-        .badges-container { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; align-items: center; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; }
-        .status-aberto { background-color: var(--success); }
-        .status-fechado { background-color: var(--danger); }
-        .status-delivery { background-color: var(--purple); }
+        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
         
-        .card-title { font-size: 18px; margin-bottom: 5px; color: var(--dark); padding-right: 120px; }
-        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; }
-        .card-estrelas { font-size: 13px; color: #f39c12; margin-bottom: 15px; display: flex; align-items: center; gap: 4px; }
+        .patrocinados-scroll { display: flex; overflow-x: auto; gap: 16px; padding-bottom: 12px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; scroll-snap-type: x mandatory; }
+        .patrocinados-scroll::-webkit-scrollbar { display: none; }
+        .patrocinados-scroll .card-local { min-width: 290px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: linear-gradient(to bottom right, #ffffff, #fffbeb); }
+
+        .lista-locais { display: flex; flex-direction: column; gap: 16px; }
+
+        /* Cartões de Estabelecimento Sofisticados */
+        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; transition: all 0.25s ease; }
+        .card-local:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.05); }
+        
+        .card-img-container { position: relative; width: 100%; height: 160px; background: #E2E8F0; }
+        .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .badges-container { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; align-items: center; z-index: 2; }
+        .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px; }
+        .status-aberto { background-color: rgba(16, 185, 129, 0.95); }
+        .status-fechado { background-color: rgba(239, 68, 68, 0.95); }
+        .status-delivery { background-color: rgba(139, 92, 246, 0.95); }
+
+        .card-body { padding: 18px; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
+        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
+        .card-estrelas { font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; color: var(--dark); font-weight: 600; }
         
         .card-actions { display: flex; gap: 10px; }
-        .btn-card { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; font-size: 14px; }
-        .btn-outline { background-color: transparent; border: 1px solid #ddd; color: var(--dark); }
-        .btn-wpp { background-color: #25D366; color: white !important; border: none; }
+        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; transition: all 0.2s; }
+        .btn-outline { background-color: #F1F5F9; border: 1px solid var(--border); color: var(--dark); }
+        .btn-outline:hover { background-color: #E2E8F0; }
+        .btn-wpp { background-color: #10B981; color: white !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); }
+        .btn-wpp:hover { background-color: #059669; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
-        .modal-content { background: white; padding: 20px; width: 90%; max-width: 500px; margin: 50px auto; border-radius: 12px; position: relative; }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: var(--gray); }
+        /* Modais com Animações Suaves */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: var(--surface); padding: 24px; width: 90%; max-width: 480px; margin: 60px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: #F1F5F9; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .close:hover { background: #E2E8F0; }
         
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
-        .btn-submit { width: 100%; background-color: var(--primary); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
+        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: #F8FAFC; transition: all 0.2s; }
+        .form-control:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+        
+        .btn-submit { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); transition: background 0.2s; }
+        .btn-submit:hover { background-color: var(--primary-hover); }
 
-        .galeria-scroll { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory; margin-top: 15px; }
-        .galeria-scroll::-webkit-scrollbar { height: 6px; }
-        .galeria-scroll::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 4px; }
-        .galeria-imagem { min-width: 80%; height: 200px; object-fit: cover; border-radius: 8px; scroll-snap-align: center; background-color: #f5f5f5; }
+        .galeria-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; scroll-snap-type: x mandatory; margin-top: 15px; }
+        .galeria-scroll::-webkit-scrollbar { height: 4px; }
+        .galeria-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .galeria-imagem { min-width: 85%; height: 220px; object-fit: cover; border-radius: 16px; scroll-snap-align: center; background-color: #F1F5F9; }
         
-        .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .botoes-acao-detalhes button { flex: 1; min-width: 90px; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; }
+        .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .botoes-acao-detalhes button { flex: 1; min-width: 85px; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; }
         .btn-ligar { background-color: var(--dark); color: white; }
-        .btn-mapa { background-color: var(--primary); color: var(--dark); }
-        .btn-share { border: 1px solid var(--purple); color: var(--purple); background: transparent; }
+        .btn-mapa { background-color: #FEF3C7; color: #92400E; }
+        .btn-share { border: 1px solid var(--border); color: var(--purple); background: #F3E8FF; }
 
-        .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-        .dia-fechado { color: var(--danger); font-weight: bold; }
+        .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
+        .dia-fechado { color: var(--danger); font-weight: 700; }
 
-        .avaliacao-box { background: #fdfdfd; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center; }
-        .estrelas-input { font-size: 24px; color: #ddd; cursor: pointer; margin: 5px 0; }
-        .estrelas-input span:hover, .estrelas-input span.ativo { color: #f39c12; }
+        .avaliacao-box { background: #F8FAFC; border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-top: 16px; text-align: center; }
+        .estrelas-input { font-size: 26px; color: #CBD5E1; cursor: pointer; margin: 4px 0; }
+        .estrelas-input span:hover, .estrelas-input span.ativo { color: #F59E0B; }
 
-        footer { text-align: center; padding: 20px; color: var(--gray); font-size: 12px; margin-top: 20px; }
-        .admin-link { color: var(--gray); text-decoration: underline; cursor: pointer; margin-left: 10px; }
+        footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
+        .admin-link { color: var(--gray); text-decoration: none; font-weight: 600; cursor: pointer; margin-left: 8px; padding: 4px 8px; border-radius: 6px; background: #F1F5F9; }
+        .admin-link:hover { color: var(--dark); background: #E2E8F0; }
         
-        /* Dashboard Admin */
-        #painelAdmin { display: none; padding: 20px; background: #f8f9fa; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .admin-kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .kpi-card { flex: 1; min-width: 150px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; border-left: 4px solid var(--primary); }
-        .kpi-card h3 { font-size: 12px; color: var(--gray); text-transform: uppercase; margin-bottom: 5px; }
-        .kpi-card p { font-size: 28px; font-weight: 900; color: var(--dark); }
+        /* Dashboard Admin Moderno */
+        #painelAdmin { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .admin-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .kpi-card { flex: 1; min-width: 140px; background: var(--surface); padding: 18px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .kpi-card h3 { font-size: 11px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
+        .kpi-card p { font-size: 26px; font-weight: 800; color: var(--dark); }
         
         .kanban-board { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
-        .kanban-col { flex: 1; min-width: 300px; background: #e9ecef; border-radius: 8px; padding: 15px; }
-        .kanban-col h3 { font-size: 16px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ddd; }
-        .kanban-card { background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border-left: 4px solid #ccc; }
-        .btn-admin-action { background: var(--dark); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 10px; font-weight: bold; }
-        .btn-admin-edit { background: #17a2b8; color: white; }
+        .kanban-col { flex: 1; min-width: 300px; background: #E2E8F0; border-radius: 16px; padding: 16px; border: 1px solid #CBD5E1; }
+        .kanban-col h3 { font-size: 15px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #CBD5E1; color: var(--dark); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .kanban-card { background: var(--surface); padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid var(--border); border-left: 4px solid var(--gray); }
+        .btn-admin-action { background: var(--dark); color: white; border: none; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-top: 8px; font-weight: 700; transition: background 0.2s; }
+        .btn-admin-action:hover { opacity: 0.9; }
+        .btn-admin-edit { background: #0EA5E9; color: white; }
         .btn-admin-del { background: var(--danger); color: white; }
-        .btn-admin-approve { background: var(--success); color: white; width: 100%; margin-bottom: 5px; }
+        .btn-admin-approve { background: var(--success); color: white; width: 100%; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -128,14 +167,14 @@
             <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
         </div>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div class="seletor-cidade" onclick="abrirModalCidade()">
                 <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
             </div>
             
-            <div style="display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px;">
+            <div style="display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px;">
                 <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
-                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: bold; color: var(--dark); outline: none; cursor: pointer; max-width: 130px;">
+                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 130px;">
                     <option value="">Todos os Bairros</option>
                 </select>
             </div>
@@ -143,13 +182,13 @@
 
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar padaria, farmácia..." onkeyup="filtrarBusca()">
-            <button class="btn-ia" onclick="perguntarIA()" title="Pesquisa Inteligente"><i class="fas fa-magic"></i></button>
+            <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar padaria, farmácia, serviço..." onkeyup="filtrarBusca()">
+            <button class="btn-ia" onclick="perguntarIA()" title="Pesquisa Inteligente"><i class="fas fa-sparkles"></i></button>
         </div>
     </header>
 
     <main class="container">
-        <!-- Categorias -->
+        <!-- Categorias Modernas -->
         <div class="categorias">
             <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)">
                 <div class="cat-icon"><i class="fas fa-hamburger"></i></div>
@@ -165,7 +204,7 @@
             </div>
             <div class="cat-item" onclick="filtrarCategoria('Automotivo', this)">
                 <div class="cat-icon"><i class="fas fa-car"></i></div>
-                <div class="cat-name">Automotivo</div>
+                <div class="cat-name">Auto</div>
             </div>
             <div class="cat-item" onclick="filtrarCategoria('Artigos Esportivos', this)">
                 <div class="cat-icon"><i class="fas fa-running"></i></div>
@@ -178,16 +217,16 @@
         </div>
 
         <!-- Seção Patrocinados -->
-        <div id="secaoPatrocinados" style="display: none; margin-bottom: 25px;">
-            <h3 class="secao-header" style="color: #d4af37;"><i class="fas fa-crown"></i> Em Destaque</h3>
+        <div id="secaoPatrocinados" style="display: none; margin-bottom: 28px;">
+            <h3 class="secao-header" style="color: #B45309;"><i class="fas fa-crown" style="color: #F59E0B;"></i> Em Destaque VIP</h3>
             <div id="listaPatrocinados" class="patrocinados-scroll"></div>
         </div>
 
         <!-- Seção Todos os Locais -->
         <div id="secaoRegulares">
-            <h3 class="secao-header"><i class="fas fa-store"></i> Todos os locais</h3>
+            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos</h3>
             <div id="listaLocais" class="lista-locais">
-                <p style="text-align:center; color:#666; padding:20px;">Carregando locais da nuvem...</p>
+                <p style="text-align:center; color:var(--gray); padding:30px;">Carregando locais da nuvem...</p>
             </div>
         </div>
     </main>
@@ -196,18 +235,19 @@
     <div id="modalLoginAdmin" class="modal">
         <div class="modal-content" style="max-width: 320px; text-align: center;">
             <span class="close" onclick="document.getElementById('modalLoginAdmin').style.display='none'">&times;</span>
-            <h2 style="margin-bottom: 5px;"><i class="fas fa-lock"></i> Acesso Restrito</h2>
+            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-shield-alt"></i></div>
+            <h2 style="margin-bottom: 4px; font-size: 20px;">Acesso Restrito</h2>
             <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Painel de Gestão Folha Amarela</p>
-            <input type="password" id="senhaAdmin" class="form-control" placeholder="Digite a senha..." style="text-align: center; margin-bottom: 15px;">
+            <input type="password" id="senhaAdmin" class="form-control" placeholder="Senha..." style="text-align: center; margin-bottom: 16px;">
             <button class="btn-submit" onclick="validarLoginAdmin()">Entrar no Painel</button>
         </div>
     </div>
 
     <!-- Modal de Cadastro / Edição -->
     <div id="modalCadastro" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 520px;">
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
-            <h2 id="tituloModalCadastro" style="margin-bottom: 20px;">Anunciar Negócio</h2>
+            <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px; letter-spacing: -0.3px;">Anunciar Negócio</h2>
             <input type="hidden" id="cadId">
             <div class="form-group">
                 <label>Nome do Estabelecimento</label>
@@ -225,29 +265,31 @@
                     <option>Serviços</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>Cidade</label>
-                <select id="cadCidade" class="form-control">
-                    <option>Paraisópolis</option>
-                    <option>Alfenas</option>
-                </select>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cidade</label>
+                    <select id="cadCidade" class="form-control">
+                        <option>Paraisópolis</option>
+                        <option>Alfenas</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Bairro / Região</label>
+                    <input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro">
+                </div>
             </div>
             <div class="form-group">
-                <label>Bairro / Região</label>
-                <input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro">
-            </div>
-            <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="checkbox" id="cadApenasDelivery" style="width: 18px; height: 18px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500;">
+                    <input type="checkbox" id="cadApenasDelivery" style="width: 18px; height: 18px; accent-color: var(--primary);">
                     <span>Trabalha apenas com Delivery (Sem loja física)</span>
                 </label>
             </div>
-            <div class="form-group" style="display: flex; gap: 10px;">
-                <div style="flex: 1;">
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;">
                     <label>Abre às</label>
                     <input type="time" id="cadAbre" class="form-control">
                 </div>
-                <div style="flex: 1;">
+                <div class="form-group" style="flex: 1;">
                     <label>Fecha às</label>
                     <input type="time" id="cadFecha" class="form-control">
                 </div>
@@ -262,9 +304,9 @@
                 <div id="previewImagens" style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;"></div>
             </div>
             <div class="form-group">
-                <label style="display: flex; justify-content: space-between;">
-                    Descrição Curta
-                    <button type="button" onclick="gerarDescricaoIA()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: bold;"><i class="fas fa-magic"></i> Gerar IA</button>
+                <label style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Descrição Curta</span>
+                    <button type="button" onclick="gerarDescricaoIA()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: 700; font-size: 12px;"><i class="fas fa-sparkles"></i> Gerar IA</button>
                 </label>
                 <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea>
             </div>
@@ -274,41 +316,41 @@
 
     <!-- Modal de Detalhes Completo -->
     <div id="modalDetalhes" class="modal">
-        <div class="modal-content" style="padding: 0; overflow: hidden;">
+        <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
             <div style="position: relative;">
-                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.5); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; top: 10px; right: 10px; z-index: 10; position: absolute;">&times;</span>
-                <div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 10px;"></div>
+                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.6); top: 16px; right: 16px; z-index: 10; position: absolute;">&times;</span>
+                <div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 12px;"></div>
             </div>
             
-            <div style="padding: 20px;">
-                <h2 id="detDetalhesNome" style="margin-bottom: 5px;">Nome do Local</h2>
-                <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                    <span id="detDetalhesCategoria">Categoria</span> • <span id="detDetalhesLocal">Bairro</span>
+            <div style="padding: 24px;">
+                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px; letter-spacing: -0.5px;">Nome do Local</h2>
+                <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px; font-weight: 500;">
+                    <span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span>
                 </p>
                 
                 <div class="botoes-acao-detalhes">
-                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp" style="font-size: 15px;"></i> WhatsApp</button>
                     <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
                     <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
                     <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Compartilhar</button>
                 </div>
 
-                <div style="margin: 15px 0;">
-                    <p id="detDetalhesDescricao" style="line-height: 1.5; color: #444; font-size: 15px;"></p>
+                <div style="margin: 20px 0; background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
+                    <p id="detDetalhesDescricao" style="line-height: 1.6; color: #334155; font-size: 14px;"></p>
                 </div>
 
                 <div class="avaliacao-box">
-                    <p style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">O que você achou deste local?</p>
+                    <p style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">O que você achou deste local?</p>
                     <div class="estrelas-input" id="containerEstrelasInput">
                         <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
                     </div>
-                    <p style="font-size: 12px; color: var(--gray);" id="textoMediaAvaliacao">Média atual: --</p>
+                    <p style="font-size: 12px; color: var(--gray); font-weight: 500;" id="textoMediaAvaliacao">Média atual: --</p>
                 </div>
 
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
 
                 <div class="horarios-semana">
-                    <h3 style="font-size: 16px; margin-bottom: 15px;"><i class="far fa-clock"></i> Horários da Semana</h3>
+                    <h3 style="font-size: 14px; margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento</h3>
                     <ul id="detDetalhesHorarios" style="list-style: none; padding: 0; margin: 0;"></ul>
                 </div>
             </div>
@@ -317,32 +359,33 @@
 
     <!-- Modal Trocar Cidade -->
     <div id="modalCidade" class="modal">
-        <div class="modal-content" style="text-align: center;">
+        <div class="modal-content" style="text-align: center; max-width: 360px;">
             <span class="close" onclick="fecharModalCidade()">&times;</span>
-            <h2 style="margin-bottom: 20px;">Onde você está?</h2>
+            <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
+            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde você está?</h2>
             <button class="btn-submit" onclick="mudarCidade('Paraisópolis')" style="margin-bottom: 10px;">Paraisópolis, MG</button>
-            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: #eee; margin-bottom: 20px;">Alfenas, MG</button>
-            <button class="btn-outline btn-card" style="width: 100%;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar minha localização atual</button>
+            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: #F1F5F9; color: var(--dark); margin-bottom: 16px; border: 1px solid var(--border); box-shadow: none;">Alfenas, MG</button>
+            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar minha localização atual</button>
         </div>
     </div>
 
     <!-- Modal IA Resposta -->
     <div id="modalIA" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 400px;">
             <span class="close" onclick="document.getElementById('modalIA').style.display='none'">&times;</span>
-            <h3 style="color: var(--purple); margin-bottom: 15px;"><i class="fas fa-magic"></i> Assistente Folha Amarela</h3>
-            <p id="textoIA" style="line-height: 1.5;"></p>
+            <h3 style="color: var(--purple); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-sparkles"></i> Assistente Virtual</h3>
+            <p id="textoIA" style="line-height: 1.6; color: #334155; font-size: 14px;"></p>
         </div>
     </div>
 
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div class="admin-header">
-            <h2 style="margin: 0;"><i class="fas fa-chart-line"></i> Dashboard Gerencial</h2>
-            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 250px; margin: 0;">
-                <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 20px;"><i class="fas fa-dollar-sign"></i> Financeiro (/financeiro)</button>
-                <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 20px;">Sair</button>
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial</h2>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+                <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
+                <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;">Sair</button>
             </div>
         </div>
         
@@ -360,35 +403,34 @@
                 <h3>Só Delivery</h3>
                 <p id="kpiDelivery">0</p>
             </div>
-            <div class="kpi-card" style="border-color: var(--warning); background-color: #fffdf5;">
-                <h3 style="color: #856404;">Pendentes (Aprovar)</h3>
-                <p id="kpiPendentes" style="color: #856404;">0</p>
+            <div class="kpi-card" style="border-color: var(--warning); background-color: #fffbeb;">
+                <h3 style="color: #92400E;">Pendentes</h3>
+                <p id="kpiPendentes" style="color: #92400E;">0</p>
             </div>
         </div>
         
         <div class="kanban-board">
-            <div class="kanban-col" style="background: #fff3cd; border: 1px solid #ffeeba;">
-                <h3 style="color: #856404;"><i class="fas fa-hourglass-half"></i> Pipeline: Pendentes</h3>
+            <div class="kanban-col" style="background: #FEF3C7; border: 1px solid #FDE68A;">
+                <h3 style="color: #92400E;"><i class="fas fa-hourglass-half"></i> Pendentes (Aprovação)</h3>
                 <div id="colunaPendentes"></div>
             </div>
             <div class="kanban-col">
-                <h3><i class="fas fa-store"></i> Plano Grátis (Ativos)</h3>
+                <h3><i class="fas fa-store"></i> Plano Grátis</h3>
                 <div id="colunaGratis"></div>
             </div>
-            <div class="kanban-col" style="background: #fffde7; border: 1px solid #ffd700;">
-                <h3 style="color: #d4af37;"><i class="fas fa-star"></i> VIP Destaque (Ativos)</h3>
+            <div class="kanban-col" style="background: #FEF3C7; border: 1px solid #FDE68A;">
+                <h3 style="color: #B45309;"><i class="fas fa-star" style="color: #F59E0B;"></i> VIP Destaque</h3>
                 <div id="colunaVIP"></div>
             </div>
         </div>
     </div>
 
     <footer>
-        Folha Amarela Digital @ 2026 
-        <a class="admin-link" onclick="abrirModalAdmin()">Admin</a>
+        Folha Amarela Digital &copy; 2026 
+        <a class="admin-link" onclick="abrirModalAdmin()"><i class="fas fa-lock" style="font-size: 10px;"></i> Admin</a>
     </footer>
 
     <script>
-        // Configuração Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -483,7 +525,7 @@
             if(regulares.length > 0) {
                 regulares.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local));
             } else if (patrocinados.length === 0) {
-                containerRegulares.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Nenhum local encontrado com os filtros atuais.</p>';
+                containerRegulares.innerHTML = '<p style="text-align:center; color:var(--gray); padding:30px; font-weight: 500;">Nenhum estabelecimento encontrado.</p>';
             }
         }
 
@@ -494,30 +536,33 @@
                 let horaAbre = parseInt(local.abreAs.split(':')[0]);
                 let horaFecha = parseInt(local.fechaAs.split(':')[0]);
                 let isAberto = horaAtual >= horaAbre && horaAtual < horaFecha;
-                statusBadge = isAberto ? '<span class="status-badge status-aberto">ABERTO</span>' : '<span class="status-badge status-fechado">FECHADO</span>';
+                statusBadge = isAberto ? '<span class="status-badge status-aberto"><i class="fas fa-circle" style="font-size: 7px;"></i> Aberto</span>' : '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado</span>';
             }
 
-            let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> DELIVERY</span>' : '';
+            let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> Delivery</span>' : '';
             
             let mediaEstrelas = 0;
             if(local.avaliacoes && local.avaliacoes.length > 0) {
                 let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
                 mediaEstrelas = (soma / local.avaliacoes.length).toFixed(1);
             }
-            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star"></i> <b>${mediaEstrelas}</b> (${local.avaliacoes.length})</div>` : `<div class="card-estrelas" style="color:#aaa;">Sem avaliações</div>`;
+            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star" style="color: #F59E0B;"></i> <span><b>${mediaEstrelas}</b> (${local.avaliacoes.length})</span></div>` : `<div class="card-estrelas" style="color:var(--gray); font-size:12px;">Sem avaliações</div>`;
+
+            let imagemCapa = local.imagens && local.imagens.length > 0 ? local.imagens[0] : '';
+            let imagemHtml = imagemCapa ? `<div class="card-img-container"><img src="${imagemCapa}" alt="${local.nome}"><div class="badges-container">${deliveryBadge} ${statusBadge}</div></div>` : '';
 
             return `
                 <div class="card-local">
-                    <div class="badges-container">
-                        ${deliveryBadge}
-                        ${statusBadge}
-                    </div>
-                    <div class="card-title">${local.nome}</div>
-                    <div class="card-subtitle">${local.categoria} • ${local.bairro || 'Centro'}</div>
-                    ${estrelasHtml}
-                    <div class="card-actions">
-                        <button class="btn-card btn-outline" onclick="abrirDetalhes('${local.idDoc}')">Ver Detalhes</button>
-                        <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${local.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Chamar</button>
+                    ${imagemHtml}
+                    <div class="card-body">
+                        ${!imagemCapa ? `<div class="badges-container-inline">${deliveryBadge}${statusBadge}</div>` : ''}
+                        <div class="card-title">${local.nome}</div>
+                        <div class="card-subtitle"><i class="fas fa-tag" style="font-size: 11px; margin-right: 4px;"></i>${local.categoria} &bull; <i class="fas fa-map-marker-alt" style="font-size: 11px; margin-left: 4px; margin-right: 2px;"></i>${local.bairro || 'Centro'}</div>
+                        ${estrelasHtml}
+                        <div class="card-actions">
+                            <button class="btn-card btn-outline" onclick="abrirDetalhes('${local.idDoc}')">Ver Detalhes</button>
+                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${local.whatsapp}', '_blank')"><i class="fab fa-whatsapp" style="font-size: 15px;"></i> Chamar</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -579,8 +624,8 @@
             imagensUploadTemp.forEach((url, index) => {
                 preview.innerHTML += `
                     <div style="position:relative; flex-shrink:0;">
-                        <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-                        <span onclick="removerFotoTemp(${index})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                        <img src="${url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                        <span onclick="removerFotoTemp(${index})" style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
                     </div>
                 `;
             });
@@ -593,8 +638,8 @@
             imagensUploadTemp.forEach((url, i) => {
                 preview.innerHTML += `
                     <div style="position:relative; flex-shrink:0;">
-                        <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-                        <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                        <img src="${url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                        <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
                     </div>
                 `;
             });
@@ -633,8 +678,8 @@
                     imagensUploadTemp.forEach((url, i) => {
                         preview.innerHTML += `
                             <div style="position:relative; flex-shrink:0;">
-                                <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-                                <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                                <img src="${url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                                <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
                             </div>
                         `;
                     });
@@ -730,7 +775,7 @@
 
             const galeria = document.getElementById('detDetalhesImagens');
             galeria.innerHTML = '';
-            let imagens = local.imagens && local.imagens.length > 0 ? local.imagens : ['https://via.placeholder.com/400x200?text=Sem+Foto'];
+            let imagens = local.imagens && local.imagens.length > 0 ? local.imagens : ['https://via.placeholder.com/400x220?text=Sem+Foto'];
             imagens.forEach(imgUrl => {
                 galeria.innerHTML += `<img src="${imgUrl}" class="galeria-imagem">`;
             });
@@ -831,18 +876,18 @@
                     btnStatus = `<button class="btn-admin-action btn-admin-approve" onclick="aprovarLocal('${local.idDoc}')"><i class="fas fa-check"></i> Aprovar Cadastro</button>`;
                 } else {
                     btnStatus = local.is_featured 
-                        ? `<button class="btn-admin-action" style="width: 100%; margin-bottom: 5px;" onclick="toggleVIP('${local.idDoc}', false)">⬇️ Remover VIP (Voltar Grátis)</button>`
-                        : `<button class="btn-admin-action" style="background:#FFD700; color:black; width: 100%; margin-bottom: 5px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Virar VIP (Destaque)</button>`;
+                        ? `<button class="btn-admin-action" style="width: 100%; margin-bottom: 6px; background: #92400E;" onclick="toggleVIP('${local.idDoc}', false)">⬇️ Remover VIP</button>`
+                        : `<button class="btn-admin-action" style="background: var(--primary); color: white; width: 100%; margin-bottom: 6px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Virar VIP (Destaque)</button>`;
                 }
 
-                let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: #ccc;");
+                let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: #CBD5E1;");
 
                 let card = `
                     <div class="kanban-card" style="${cardCSS}">
-                        <h4>${local.nome} <span style="font-size:10px; color:#999;">(${local.cidade})</span></h4>
+                        <h4 style="font-size: 15px; margin-bottom: 4px; color: var(--dark);">${local.nome} <span style="font-size:11px; color:var(--gray); font-weight: normal;">(${local.cidade})</span></h4>
                         <p style="font-size: 12px; margin-bottom: 10px; color: var(--gray);"><i class="fab fa-whatsapp"></i> ${local.whatsapp}</p>
                         ${btnStatus}
-                        <div style="display: flex; gap: 5px;">
+                        <div style="display: flex; gap: 6px;">
                             <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')"><i class="fas fa-edit"></i></button>
                             <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i></button>
                         </div>
