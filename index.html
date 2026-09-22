@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Folha Amarela Digital</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
     <style>
         :root {
-            --primary: #FFD700;
-            --dark: #1A1A1A;
-            --light: #F5F5F5;
+            --primary: #FFD700; /* Amarelo */
+            --dark: #1A1A1A; /* Preto */
+            --light: #F5F5F5; /* Branco quebrado */
             --gray: #666666;
             --success: #28a745;
             --danger: #dc3545;
-            --delivery: #6a1b9a;
+            --purple: #6a1b9a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -29,7 +35,7 @@
         .search-container { position: relative; display: flex; gap: 10px; }
         .search-bar { flex: 1; padding: 12px 15px 12px 40px; border: none; border-radius: 8px; font-size: 16px; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); }
-        .btn-ia { background-color: #6a1b9a; color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-ia { background-color: var(--purple); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
         .container { padding: 20px; max-width: 800px; margin: 0 auto; }
 
@@ -44,53 +50,51 @@
         .patrocinados-scroll { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; scroll-snap-type: x mandatory; }
         .patrocinados-scroll::-webkit-scrollbar { height: 4px; }
         .patrocinados-scroll::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 4px; }
-        
         .patrocinados-scroll .card-local { min-width: 280px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: linear-gradient(to bottom right, #fff, #fffde7); }
 
         .lista-locais { display: flex; flex-direction: column; gap: 15px; }
 
         .card-local { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
-        
-        .card-badges { position: absolute; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 4px; }
+        .badges-container { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; align-items: center; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; }
         .status-aberto { background-color: var(--success); }
         .status-fechado { background-color: var(--danger); }
-        .status-delivery { background-color: var(--delivery); }
+        .status-delivery { background-color: var(--purple); }
         
-        .card-title { font-size: 18px; margin-bottom: 5px; color: var(--dark); padding-right: 70px; }
-        .card-rating { font-size: 13px; color: var(--primary); margin-bottom: 2px; font-weight: bold; }
-        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 15px; }
+        .card-title { font-size: 18px; margin-bottom: 5px; color: var(--dark); padding-right: 120px; }
+        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; }
+        .card-estrelas { font-size: 13px; color: #f39c12; margin-bottom: 15px; display: flex; align-items: center; gap: 4px; }
         
         .card-actions { display: flex; gap: 10px; }
         .btn-card { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; font-size: 14px; }
         .btn-outline { background-color: transparent; border: 1px solid #ddd; color: var(--dark); }
         .btn-wpp { background-color: #25D366; color: white !important; border: none; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; overflow-y: auto; }
-        .modal-content { background: white; padding: 20px; width: 90%; max-width: 500px; margin: 30px auto; border-radius: 12px; position: relative; }
-        .close { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: var(--gray); z-index: 10; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: white; padding: 20px; width: 90%; max-width: 500px; margin: 50px auto; border-radius: 12px; position: relative; }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: var(--gray); }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
         .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
         .btn-submit { width: 100%; background-color: var(--primary); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-        /* Custom File Upload */
-        .file-upload-btn { display: inline-block; background: #eee; border: 1px solid #ccc; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-        .file-upload-btn input[type="file"] { display: none; }
-        
         .galeria-scroll { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory; margin-top: 15px; }
         .galeria-scroll::-webkit-scrollbar { height: 6px; }
         .galeria-scroll::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 4px; }
         .galeria-imagem { min-width: 80%; height: 200px; object-fit: cover; border-radius: 8px; scroll-snap-align: center; background-color: #f5f5f5; }
         
         .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .botoes-acao-detalhes button { flex: 1; min-width: 100px; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .botoes-acao-detalhes button { flex: 1; min-width: 90px; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; }
         .btn-ligar { background-color: var(--dark); color: white; }
         .btn-mapa { background-color: var(--primary); color: var(--dark); }
 
         .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
         .dia-fechado { color: var(--danger); font-weight: bold; }
+
+        .avaliacao-box { background: #fdfdfd; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center; }
+        .estrelas-input { font-size: 24px; color: #ddd; cursor: pointer; margin: 5px 0; }
+        .estrelas-input span:hover, .estrelas-input span.ativo { color: #f39c12; }
 
         footer { text-align: center; padding: 20px; color: var(--gray); font-size: 12px; margin-top: 20px; }
         .admin-link { color: var(--gray); text-decoration: underline; cursor: pointer; margin-left: 10px; }
@@ -99,8 +103,7 @@
         .kanban-board { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
         .kanban-col { flex: 1; min-width: 300px; background: #f4f5f7; border-radius: 8px; padding: 15px; }
         .kanban-col h3 { font-size: 16px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #ddd; }
-        .kanban-card { background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); position: relative; }
-        .kanban-card h4 { margin-bottom: 5px; }
+        .kanban-card { background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
         .btn-admin-action { background: var(--dark); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 10px; }
         .btn-admin-edit { background: #17a2b8; color: white; }
         .btn-admin-del { background: var(--danger); color: white; }
@@ -120,78 +123,65 @@
         </div>
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar local ou serviço..." onkeyup="filtrarBusca()">
+            <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar padaria, farmácia..." onkeyup="filtrarBusca()">
             <button class="btn-ia" onclick="perguntarIA()" title="Pesquisa Inteligente"><i class="fas fa-magic"></i></button>
         </div>
     </header>
 
     <main class="container">
+        <!-- Categorias -->
         <div class="categorias">
-            <div class="cat-item" onclick="filtrarCategoria('Alimentação')">
+            <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)">
                 <div class="cat-icon"><i class="fas fa-hamburger"></i></div>
                 <div class="cat-name">Alimentação</div>
             </div>
-            <div class="cat-item" onclick="filtrarCategoria('Pet Shop')">
+            <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)">
                 <div class="cat-icon"><i class="fas fa-paw"></i></div>
                 <div class="cat-name">Pets</div>
             </div>
-            <div class="cat-item" onclick="filtrarCategoria('Saúde')">
+            <div class="cat-item" onclick="filtrarCategoria('Saúde', this)">
                 <div class="cat-icon"><i class="fas fa-pills"></i></div>
                 <div class="cat-name">Saúde</div>
             </div>
-            <div class="cat-item" onclick="filtrarCategoria('Automotivo')">
+            <div class="cat-item" onclick="filtrarCategoria('Automotivo', this)">
                 <div class="cat-icon"><i class="fas fa-car"></i></div>
                 <div class="cat-name">Automotivo</div>
             </div>
-            <div class="cat-item" onclick="filtrarCategoria('Artigos Esportivos')">
+            <div class="cat-item" onclick="filtrarCategoria('Artigos Esportivos', this)">
                 <div class="cat-icon"><i class="fas fa-running"></i></div>
                 <div class="cat-name">Esportes</div>
             </div>
-            <div class="cat-item" onclick="filtrarCategoria('')">
+            <div class="cat-item active" onclick="filtrarCategoria('', this)">
                 <div class="cat-icon"><i class="fas fa-border-all"></i></div>
                 <div class="cat-name">Todos</div>
             </div>
         </div>
 
+        <!-- Seção Patrocinados -->
         <div id="secaoPatrocinados" style="display: none; margin-bottom: 25px;">
             <h3 class="secao-header" style="color: #d4af37;"><i class="fas fa-crown"></i> Em Destaque</h3>
             <div id="listaPatrocinados" class="patrocinados-scroll"></div>
         </div>
 
+        <!-- Seção Todos os Locais -->
         <div id="secaoRegulares">
             <h3 class="secao-header"><i class="fas fa-store"></i> Todos os locais</h3>
-            <div id="listaLocais" class="lista-locais"></div>
+            <div id="listaLocais" class="lista-locais">
+                <p style="text-align:center; color:#666; padding:20px;">Carregando locais da nuvem...</p>
+            </div>
         </div>
     </main>
 
-    <!-- Modal Cadastro -->
+    <!-- Modal de Cadastro / Edição -->
     <div id="modalCadastro" class="modal">
         <div class="modal-content">
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
             <h2 id="tituloModalCadastro" style="margin-bottom: 20px;">Anunciar Negócio</h2>
             <input type="hidden" id="cadId">
-            
-            <div class="form-group">
-                <label>Fotos (Compactação Automática)</label>
-                <label class="file-upload-btn">
-                    <i class="fas fa-camera"></i> Escolher Fotos
-                    <input type="file" id="cadImagensInput" accept="image/*" multiple onchange="processarImagens(event)">
-                </label>
-                <div id="previewImagens" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
-            </div>
-
             <div class="form-group">
                 <label>Nome do Estabelecimento</label>
                 <input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central">
             </div>
-            
-            <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f4f5f7; padding: 10px; border-radius: 8px;">
-                <input type="checkbox" id="cadDeliveryOnly" style="width: 18px; height: 18px; cursor: pointer;">
-                <label for="cadDeliveryOnly" style="margin: 0; cursor: pointer; font-size: 14px; color: var(--delivery);">
-                    <i class="fas fa-motorcycle"></i> Apenas Delivery (Sem loja física)
-                </label>
-            </div>
-
             <div class="form-group">
                 <label>Categoria</label>
                 <select id="cadCategoria" class="form-control">
@@ -215,6 +205,12 @@
                 <label>Bairro / Região</label>
                 <input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro">
             </div>
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="cadApenasDelivery" style="width: 18px; height: 18px;">
+                    <span>Trabalha apenas com Delivery (Sem loja física para visitas)</span>
+                </label>
+            </div>
             <div class="form-group" style="display: flex; gap: 10px;">
                 <div style="flex: 1;">
                     <label>Abre às</label>
@@ -230,28 +226,33 @@
                 <input type="number" id="cadWpp" class="form-control" placeholder="35999999999">
             </div>
             <div class="form-group">
+                <label>Fotos do Estabelecimento</label>
+                <input type="file" id="cadFotos" class="form-control" accept="image/*" multiple onchange="processarImagensUpload(this)">
+                <div id="previewImagens" style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;"></div>
+            </div>
+            <div class="form-group">
                 <label style="display: flex; justify-content: space-between;">
                     Descrição Curta
-                    <button type="button" onclick="gerarDescricaoIA()" style="background: none; border: none; color: #6a1b9a; cursor: pointer; font-weight: bold;"><i class="fas fa-magic"></i> IA</button>
+                    <button type="button" onclick="gerarDescricaoIA()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: bold;"><i class="fas fa-magic"></i> Gerar com IA</button>
                 </label>
-                <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os serviços..."></textarea>
+                <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea>
             </div>
             <button class="btn-submit" id="btnSalvarCadastro" onclick="salvarLocal()">Salvar no Guia</button>
         </div>
     </div>
 
-    <!-- Modal Detalhes -->
+    <!-- Modal de Detalhes Completo -->
     <div id="modalDetalhes" class="modal">
         <div class="modal-content" style="padding: 0; overflow: hidden;">
             <div style="position: relative;">
-                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.6); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; top: 10px;">&times;</span>
+                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.5); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; top: 10px; right: 10px; z-index: 10; position: absolute;">&times;</span>
                 <div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 10px;"></div>
             </div>
             
             <div style="padding: 20px;">
-                <h2 id="detDetalhesNome" style="margin-bottom: 5px;">Nome</h2>
-                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-                    <span id="detDetalhesCategoria">Cat</span> • <span id="detDetalhesLocal">Bairro</span>
+                <h2 id="detDetalhesNome" style="margin-bottom: 5px;">Nome do Local</h2>
+                <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                    <span id="detDetalhesCategoria">Categoria</span> • <span id="detDetalhesLocal">Bairro</span>
                 </p>
                 
                 <div class="botoes-acao-detalhes">
@@ -260,22 +261,16 @@
                     <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Chegar</button>
                 </div>
 
-                <div style="margin: 20px 0;">
+                <div style="margin: 15px 0;">
                     <p id="detDetalhesDescricao" style="line-height: 1.5; color: #444; font-size: 15px;"></p>
                 </div>
 
-                <!-- Seção de Avaliação -->
-                <div style="margin: 20px 0; text-align: center; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                    <h4 style="margin-bottom: 10px; font-size: 15px;">Avalie este estabelecimento</h4>
-                    <div id="estrelasAvaliacao" style="font-size: 24px; color: #ccc; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; gap: 5px;">
-                        <i class="fas fa-star" onclick="marcarEstrelas(1)"></i>
-                        <i class="fas fa-star" onclick="marcarEstrelas(2)"></i>
-                        <i class="fas fa-star" onclick="marcarEstrelas(3)"></i>
-                        <i class="fas fa-star" onclick="marcarEstrelas(4)"></i>
-                        <i class="fas fa-star" onclick="marcarEstrelas(5)"></i>
+                <div class="avaliacao-box">
+                    <p style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">O que você achou deste local?</p>
+                    <div class="estrelas-input" id="containerEstrelasInput">
+                        <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
                     </div>
-                    <input type="hidden" id="notaAtual" value="0">
-                    <button onclick="salvarAvaliacao()" class="btn-outline" style="padding: 8px 15px; font-size: 13px; font-weight: bold; border-radius: 4px; cursor: pointer;">Enviar Nota</button>
+                    <p style="font-size: 12px; color: var(--gray);" id="textoMediaAvaliacao">Média atual: --</p>
                 </div>
 
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -288,48 +283,33 @@
         </div>
     </div>
 
-    <!-- Modal Custom Alerts -->
-    <div id="modalAlert" class="modal" style="z-index: 3000;">
-        <div class="modal-content" style="text-align: center; max-width: 300px;">
-            <p id="alertMsg" style="margin-bottom: 20px; font-size: 16px; font-weight: bold;"></p>
-            <button class="btn-submit" onclick="document.getElementById('modalAlert').style.display='none'">OK</button>
-        </div>
-    </div>
-
-    <!-- Modal Admin Auth -->
-    <div id="modalAdminAuth" class="modal" style="z-index: 2500;">
-        <div class="modal-content" style="text-align: center; max-width: 300px;">
-            <h3 style="margin-bottom: 15px;"><i class="fas fa-lock"></i> Acesso Gestor</h3>
-            <input type="password" id="adminSenha" class="form-control" placeholder="Digite a senha" style="text-align:center; margin-bottom: 15px;">
-            <button class="btn-submit" onclick="verificarSenhaAdmin()">Entrar</button>
-            <button class="btn-outline btn-card" style="width:100%; margin-top:10px;" onclick="document.getElementById('modalAdminAuth').style.display='none'">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- Outros Modais -->
+    <!-- Modal Trocar Cidade -->
     <div id="modalCidade" class="modal">
         <div class="modal-content" style="text-align: center;">
             <span class="close" onclick="fecharModalCidade()">&times;</span>
             <h2 style="margin-bottom: 20px;">Onde você está?</h2>
             <button class="btn-submit" onclick="mudarCidade('Paraisópolis')" style="margin-bottom: 10px;">Paraisópolis, MG</button>
             <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: #eee; margin-bottom: 20px;">Alfenas, MG</button>
+            <button class="btn-outline btn-card" style="width: 100%;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar minha localização atual</button>
         </div>
     </div>
 
+    <!-- Modal IA Resposta -->
     <div id="modalIA" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('modalIA').style.display='none'">&times;</span>
-            <h3 style="color: #6a1b9a; margin-bottom: 15px;"><i class="fas fa-magic"></i> Assistente Folha Amarela</h3>
+            <h3 style="color: var(--purple); margin-bottom: 15px;"><i class="fas fa-magic"></i> Assistente Folha Amarela</h3>
             <p id="textoIA" style="line-height: 1.5;"></p>
         </div>
     </div>
 
-    <!-- Painel Kanban -->
+    <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div style="display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 15px; border-radius: 8px;">
-            <h2>Área do Gestor</h2>
-            <button onclick="fecharAdmin()" style="background: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">Sair</button>
+            <h2>Área do Gestor (Nuvem Firebase)</h2>
+            <button onclick="fecharAdmin()" style="background: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">Voltar ao Site</button>
         </div>
+        
         <div class="kanban-board">
             <div class="kanban-col">
                 <h3>Plano Grátis</h3>
@@ -348,35 +328,47 @@
     </footer>
 
     <script>
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
+            authDomain: "folha-amarela-digital.firebaseapp.com",
+            projectId: "folha-amarela-digital",
+            storageBucket: "folha-amarela-digital.firebasestorage.app",
+            messagingSenderId: "377984429498",
+            appId: "1:377984429498:web:0ec71abadab20a93420183"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
         let cidadeAtual = 'Paraisópolis';
-        let imagensTemp = [];
-        let localAtualAvaliacao = null;
-        
-        function alertCustom(msg) {
-            document.getElementById('alertMsg').textContent = msg;
-            document.getElementById('modalAlert').style.display = 'block';
+        let categoriaAtual = '';
+        let listaLocaisCache = [];
+        let imagensUploadTemp = [];
+        let idLocalDetalheAberto = null;
+
+        // Leitura em tempo real do Firestore
+        function iniciarListenerLocais() {
+            db.collection("locais").onSnapshot((snapshot) => {
+                listaLocaisCache = [];
+                snapshot.forEach((doc) => {
+                    listaLocaisCache.push({ idDoc: doc.id, ...doc.data() });
+                });
+                renderizarLocais();
+            }, (error) => {
+                console.error("Erro ao ler do Firebase:", error);
+            });
         }
 
-        const injetarMocks = () => {
-            let locais = JSON.parse(localStorage.getItem('folha_amarela_locais')) || [];
-            if (locais.length === 0) {
-                const mocks = [
-                    { id: 1, nome: 'Pet Shop Babi', categoria: 'Pet Shop', bairro: 'Centro', cidade: 'Paraisópolis', descricao: 'Especialistas em felinos! Areia Pipicat Classic 12kg.', whatsapp: '35999990001', is_featured: true, abreAs: '08:00', fechaAs: '18:00', avaliacoes: [{nota: 5}, {nota: 5}] },
-                    { id: 2, nome: 'Pace & Postura Esportes', categoria: 'Artigos Esportivos', bairro: 'Jardim Primavera', cidade: 'Paraisópolis', descricao: 'Tudo para quem quer correr uma maratona.', whatsapp: '35999990002', is_featured: false, abreAs: '09:00', fechaAs: '19:00', avaliacoes: [{nota: 4}] },
-                    { id: 6, nome: 'Burger Home Ghost Kitchen', categoria: 'Alimentação', bairro: 'Vila Nova', cidade: 'Paraisópolis', descricao: 'Hambúrguer artesanal direto pra sua casa. Não possuímos salão!', whatsapp: '35999990006', is_featured: true, is_delivery_only: true, abreAs: '18:00', fechaAs: '23:59', avaliacoes: [{nota: 5}, {nota: 5}] }
-                ];
-                localStorage.setItem('folha_amarela_locais', JSON.stringify(mocks));
+        async function renderizarLocais() {
+            let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual);
+            if (categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
+            
+            let buscaTxt = document.getElementById('inputBusca').value.toLowerCase();
+            if (buscaTxt) {
+                filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt) || l.categoria.toLowerCase().includes(buscaTxt));
             }
-        };
-        injetarMocks();
-
-        function getLocais() { return JSON.parse(localStorage.getItem('folha_amarela_locais')) || []; }
-
-        function renderizarLocais(filtroCategoria = '', cidadeFiltro = cidadeAtual, buscaTxt = '') {
-            let locais = getLocais();
-            let filtrados = locais.filter(l => l.cidade === cidadeFiltro);
-            if (filtroCategoria) filtrados = filtrados.filter(l => l.categoria === filtroCategoria);
-            if (buscaTxt) filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt.toLowerCase()) || l.categoria.toLowerCase().includes(buscaTxt.toLowerCase()));
 
             let patrocinados = filtrados.filter(l => l.is_featured);
             let regulares = filtrados.filter(l => !l.is_featured);
@@ -385,189 +377,279 @@
             const containerRegulares = document.getElementById('listaLocais');
             const secaoPatrocinados = document.getElementById('secaoPatrocinados');
             
-            containerPatrocinados.innerHTML = ''; containerRegulares.innerHTML = '';
+            containerPatrocinados.innerHTML = '';
+            containerRegulares.innerHTML = '';
 
             if(patrocinados.length > 0) {
                 secaoPatrocinados.style.display = 'block';
                 patrocinados.forEach(local => containerPatrocinados.innerHTML += gerarHTMLCard(local));
-            } else { secaoPatrocinados.style.display = 'none'; }
+            } else {
+                secaoPatrocinados.style.display = 'none';
+            }
 
             if(regulares.length > 0) {
                 regulares.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local));
             } else if (patrocinados.length === 0) {
-                containerRegulares.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Nenhum local encontrado.</p>';
+                containerRegulares.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Nenhum local encontrado nesta cidade/categoria.</p>';
             }
         }
 
         function gerarHTMLCard(local) {
-            let badgesHTML = '<div class="card-badges">';
-            if(local.is_delivery_only) {
-                badgesHTML += '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> DELIVERY</span>';
-            }
+            let statusBadge = '';
             if(local.abreAs && local.fechaAs) {
                 let horaAtual = new Date().getHours();
                 let horaAbre = parseInt(local.abreAs.split(':')[0]);
                 let horaFecha = parseInt(local.fechaAs.split(':')[0]);
                 let isAberto = horaAtual >= horaAbre && horaAtual < horaFecha;
-                badgesHTML += isAberto ? '<span class="status-badge status-aberto">ABERTO</span>' : '<span class="status-badge status-fechado">FECHADO</span>';
+                statusBadge = isAberto ? '<span class="status-badge status-aberto">ABERTO</span>' : '<span class="status-badge status-fechado">FECHADO</span>';
             }
-            badgesHTML += '</div>';
 
-            let estrelas = '';
+            let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> DELIVERY</span>' : '';
+            
+            // Cálculo de Estrelas
+            let mediaEstrelas = 0;
             if(local.avaliacoes && local.avaliacoes.length > 0) {
-                let media = (local.avaliacoes.reduce((a,b) => a + b.nota, 0) / local.avaliacoes.length).toFixed(1);
-                estrelas = `<div class="card-rating"><i class="fas fa-star"></i> ${media} <span style="color:#999; font-size:11px; font-weight:normal;">(${local.avaliacoes.length})</span></div>`;
-            } else {
-                estrelas = `<div style="color: #ccc; font-size: 12px; margin-bottom: 5px;">Sem avaliações</div>`;
+                let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
+                mediaEstrelas = (soma / local.avaliacoes.length).toFixed(1);
             }
+            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star"></i> <b>${mediaEstrelas}</b> (${local.avaliacoes.length})</div>` : `<div class="card-estrelas" style="color:#aaa;">Sem avaliações</div>`;
 
             return `
                 <div class="card-local">
-                    ${badgesHTML}
+                    <div class="badges-container">
+                        ${deliveryBadge}
+                        ${statusBadge}
+                    </div>
                     <div class="card-title">${local.nome}</div>
-                    ${estrelas}
                     <div class="card-subtitle">${local.categoria} • ${local.bairro || 'Centro'}</div>
+                    ${estrelasHtml}
                     <div class="card-actions">
-                        <button class="btn-card btn-outline" onclick="abrirDetalhes(${local.id})">Detalhes</button>
+                        <button class="btn-card btn-outline" onclick="abrirDetalhes('${local.idDoc}')">Ver Detalhes</button>
                         <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${local.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Chamar</button>
                     </div>
                 </div>
             `;
         }
 
-        function processarImagens(event) {
-            let files = event.target.files;
-            for(let i=0; i<files.length; i++) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let img = new Image();
-                    img.onload = function() {
-                        let canvas = document.createElement('canvas');
-                        let ctx = canvas.getContext('2d');
-                        let maxWidth = 600;
-                        let scale = maxWidth / img.width;
-                        canvas.width = maxWidth;
-                        canvas.height = img.height * scale;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        imagensTemp.push(canvas.toDataURL('image/jpeg', 0.6));
-                        atualizarPreview();
-                    }
-                    img.src = e.target.result;
-                }
-                reader.readAsDataURL(files[i]);
-            }
+        function filtrarCategoria(cat, elemento) {
+            document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+            elemento.classList.add('active');
+            categoriaAtual = cat;
+            renderizarLocais();
         }
 
-        function atualizarPreview() {
-            let preview = document.getElementById('previewImagens');
+        function filtrarBusca() {
+            renderizarLocais();
+        }
+
+        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
+        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
+        function mudarCidade(cidade) {
+            cidadeAtual = cidade;
+            document.getElementById('cidadeAtivaHeader').textContent = cidade;
+            document.getElementById('cadCidade').value = cidade;
+            fecharModalCidade();
+            renderizarLocais();
+        }
+        function usarGPS() {
+            alert("Localização detectada: Paraisópolis, MG");
+            mudarCidade('Paraisópolis');
+        }
+
+        // Upload e Compressão de Imagens para Firebase Storage
+        async function processarImagensUpload(input) {
+            const preview = document.getElementById('previewImagens');
+            preview.innerHTML = 'Processando imagens...';
+            imagensUploadTemp = [];
+
+            for (let file of input.files) {
+                let reader = new FileReader();
+                reader.readAsDataURL(file);
+                await new Promise(resolve => {
+                    reader.onload = (e) => {
+                        let img = new Image();
+                        img.src = e.target.result;
+                        img.onload = () => {
+                            let canvas = document.createElement('canvas');
+                            let ctx = canvas.getContext('2d');
+                            let maxW = 600;
+                            let scale = maxW / img.width;
+                            canvas.width = maxW;
+                            canvas.height = img.height * scale;
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            let dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                            imagensUploadTemp.push(dataUrl);
+                            resolve();
+                        }
+                    }
+                });
+            }
+
             preview.innerHTML = '';
-            imagensTemp.forEach((src, idx) => {
-                let div = document.createElement('div');
-                div.style.position = 'relative';
-                div.innerHTML = `<img src="${src}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-                                 <span onclick="removerImg(${idx})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:bold;">X</span>`;
-                preview.appendChild(div);
+            imagensUploadTemp.forEach((url, index) => {
+                preview.innerHTML += `
+                    <div style="position:relative; flex-shrink:0;">
+                        <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
+                        <span onclick="removerFotoTemp(${index})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                    </div>
+                `;
             });
         }
-        function removerImg(idx) { imagensTemp.splice(idx, 1); atualizarPreview(); }
 
-        function abrirModalCadastro(id = null) {
+        function removerFotoTemp(index) {
+            imagensUploadTemp.splice(index, 1);
+            let preview = document.getElementById('previewImagens');
+            preview.innerHTML = '';
+            imagensUploadTemp.forEach((url, i) => {
+                preview.innerHTML += `
+                    <div style="position:relative; flex-shrink:0;">
+                        <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
+                        <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirModalCadastro(docId = null) {
             document.getElementById('cadId').value = '';
             document.getElementById('cadNome').value = '';
             document.getElementById('cadBairro').value = '';
+            document.getElementById('cadApenasDelivery').checked = false;
             document.getElementById('cadWpp').value = '';
             document.getElementById('cadDesc').value = '';
             document.getElementById('cadAbre').value = '';
             document.getElementById('cadFecha').value = '';
-            document.getElementById('cadDeliveryOnly').checked = false;
-            imagensTemp = []; atualizarPreview();
-            
-            if(id) {
-                let local = getLocais().find(l => l.id === id);
+            document.getElementById('cadFotos').value = '';
+            document.getElementById('previewImagens').innerHTML = '';
+            imagensUploadTemp = [];
+            document.getElementById('tituloModalCadastro').textContent = 'Anunciar Negócio';
+
+            if(docId) {
+                let local = listaLocaisCache.find(l => l.idDoc === docId);
                 if(local) {
-                    document.getElementById('cadId').value = local.id;
+                    document.getElementById('cadId').value = local.idDoc;
                     document.getElementById('cadNome').value = local.nome;
                     document.getElementById('cadCategoria').value = local.categoria;
                     document.getElementById('cadCidade').value = local.cidade;
                     document.getElementById('cadBairro').value = local.bairro || '';
+                    document.getElementById('cadApenasDelivery').checked = local.apenasDelivery || false;
                     document.getElementById('cadWpp').value = local.whatsapp;
                     document.getElementById('cadDesc').value = local.descricao || '';
                     document.getElementById('cadAbre').value = local.abreAs || '';
                     document.getElementById('cadFecha').value = local.fechaAs || '';
-                    document.getElementById('cadDeliveryOnly').checked = local.is_delivery_only || false;
-                    if(local.imagens) { imagensTemp = [...local.imagens]; atualizarPreview(); }
+                    imagensUploadTemp = local.imagens || [];
+                    
+                    let preview = document.getElementById('previewImagens');
+                    imagensUploadTemp.forEach((url, i) => {
+                        preview.innerHTML += `
+                            <div style="position:relative; flex-shrink:0;">
+                                <img src="${url}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
+                                <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById('tituloModalCadastro').textContent = 'Editar Negócio';
                 }
             }
             document.getElementById('modalCadastro').style.display = 'block';
         }
+        
         function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
         
-        function salvarLocal() {
-            let locais = getLocais();
-            let id = document.getElementById('cadId').value;
-            let nId = id ? parseInt(id) : Date.now();
-            let antigo = locais.find(l=>l.id == id) || {};
-            
-            let novoLocal = {
-                id: nId,
-                nome: document.getElementById('cadNome').value,
+        async function salvarLocal() {
+            let docId = document.getElementById('cadId').value;
+            let nome = document.getElementById('cadNome').value;
+            if(!nome) return alert("Por favor, preencha o nome do estabelecimento.");
+
+            let btn = document.getElementById('btnSalvarCadastro');
+            btn.textContent = "Salvando na nuvem...";
+            btn.disabled = true;
+
+            let imagensLinks = [];
+            for (let [index, imgBase64] of imagensUploadTemp.entries()) {
+                if (imgBase64.startsWith('http')) {
+                    imagensLinks.push(imgBase64); // Já é link do storage
+                } else {
+                    // Upload para Firebase Storage
+                    let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
+                    let res = await storageRef.putString(imgBase64, 'data_url');
+                    let downloadUrl = await res.ref.getDownloadURL();
+                    imagensLinks.push(downloadUrl);
+                }
+            }
+
+            let dadosLocal = {
+                nome: nome,
                 categoria: document.getElementById('cadCategoria').value,
                 cidade: document.getElementById('cadCidade').value,
                 bairro: document.getElementById('cadBairro').value,
+                apenasDelivery: document.getElementById('cadApenasDelivery').checked,
                 whatsapp: document.getElementById('cadWpp').value,
                 descricao: document.getElementById('cadDesc').value,
                 abreAs: document.getElementById('cadAbre').value,
                 fechaAs: document.getElementById('cadFecha').value,
-                is_delivery_only: document.getElementById('cadDeliveryOnly').checked,
-                imagens: imagensTemp,
-                is_featured: antigo.is_featured || false,
-                avaliacoes: antigo.avaliacoes || []
+                imagens: imagensLinks,
+                is_featured: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.is_featured || false) : false,
+                avaliacoes: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.avaliacoes || []) : []
             };
 
-            if(id) {
-                let index = locais.findIndex(l => l.id == id);
-                locais[index] = novoLocal;
+            if(docId) {
+                await db.collection("locais").doc(docId).update(dadosLocal);
             } else {
-                locais.push(novoLocal);
+                await db.collection("locais").add(dadosLocal);
             }
-            localStorage.setItem('folha_amarela_locais', JSON.stringify(locais));
-            fecharModalCadastro(); renderizarLocais(); renderizarKanban();
-            alertCustom("Salvo com sucesso!");
+
+            btn.textContent = "Salvar no Guia";
+            btn.disabled = false;
+            fecharModalCadastro();
+            renderizarKanban();
         }
 
-        function abrirDetalhes(id) {
-            let local = getLocais().find(l => l.id === id);
+        function abrirDetalhes(docId) {
+            let local = listaLocaisCache.find(l => l.idDoc === docId);
             if(!local) return;
-            localAtualAvaliacao = id;
-            marcarEstrelas(0); // Reseta as estrelinhas de avaliação
+
+            idLocalDetalheAberto = docId;
 
             document.getElementById('detDetalhesNome').textContent = local.nome;
             document.getElementById('detDetalhesCategoria').textContent = local.categoria;
+            document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
             document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição cadastrada.';
 
-            const btnMapa = document.getElementById('btnDetMapa');
-            const locText = document.getElementById('detDetalhesLocal');
-            if(local.is_delivery_only) {
+            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
+            document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
+            
+            let btnMapa = document.getElementById('btnDetMapa');
+            if (local.apenasDelivery) {
                 btnMapa.style.display = 'none';
-                locText.innerHTML = `${local.bairro || 'Centro'} <span style="color:var(--delivery); font-weight:bold; margin-left:5px;"><i class="fas fa-motorcycle"></i> Somente Delivery</span>`;
             } else {
                 btnMapa.style.display = 'flex';
-                locText.textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
                 btnMapa.onclick = () => window.open(`https://maps.google.com/?q=${encodeURIComponent(local.nome + ', ' + local.cidade)}`, '_blank');
             }
 
-            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
-            document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.telefone || local.whatsapp}`;
-
             const galeria = document.getElementById('detDetalhesImagens');
             galeria.innerHTML = '';
-            let imgs = local.imagens && local.imagens.length > 0 ? local.imagens : ['https://via.placeholder.com/400x200?text=Sem+Foto'];
-            imgs.forEach(imgUrl => { galeria.innerHTML += `<img src="${imgUrl}" class="galeria-imagem">`; });
+            let imagens = local.imagens && local.imagens.length > 0 ? local.imagens : ['https://via.placeholder.com/400x200?text=Sem+Foto'];
+            imagens.forEach(imgUrl => {
+                galeria.innerHTML += `<img src="${imgUrl}" class="galeria-imagem">`;
+            });
+
+            // Média de Avaliações
+            let media = 0;
+            if(local.avaliacoes && local.avaliacoes.length > 0) {
+                let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
+                media = (soma / local.avaliacoes.length).toFixed(1);
+                document.getElementById('textoMediaAvaliacao').textContent = `Média: ${media} estrelas (${local.avaliacoes.length} avaliações)`;
+            } else {
+                document.getElementById('textoMediaAvaliacao').textContent = `Ainda sem avaliações. Seja o primeiro!`;
+            }
 
             const listaHorarios = document.getElementById('detDetalhesHorarios');
             listaHorarios.innerHTML = '';
             const dias = [{k:'seg',n:'Segunda'},{k:'ter',n:'Terça'},{k:'qua',n:'Quarta'},{k:'qui',n:'Quinta'},{k:'sex',n:'Sexta'},{k:'sab',n:'Sábado'},{k:'dom',n:'Domingo'}];
             let hor = local.horariosSemana || {};
+            
             dias.forEach(d => {
                 let v = hor[d.k] || (local.abreAs ? `${local.abreAs} - ${local.fechaAs}` : 'Não informado');
                 let css = v.toLowerCase() === 'fechado' ? 'class="dia-fechado"' : '';
@@ -578,103 +660,78 @@
         }
         function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
 
-        // Sistema de Avaliação
-        function marcarEstrelas(nota) {
-            document.getElementById('notaAtual').value = nota;
-            let stars = document.getElementById('estrelasAvaliacao').children;
-            for(let i=0; i<5; i++) {
-                stars[i].style.color = i < nota ? '#FFD700' : '#ccc';
-            }
-        }
-        function salvarAvaliacao() {
-            let nota = parseInt(document.getElementById('notaAtual').value);
-            if(nota === 0) return alertCustom("Por favor, selecione de 1 a 5 estrelas antes de enviar!");
-            
-            let locais = getLocais();
-            let idx = locais.findIndex(l => l.id === localAtualAvaliacao);
-            if(!locais[idx].avaliacoes) locais[idx].avaliacoes = [];
-            locais[idx].avaliacoes.push({ nota: nota, data: new Date().toISOString() });
-            localStorage.setItem('folha_amarela_locais', JSON.stringify(locais));
-            
-            alertCustom("Obrigado pela sua avaliação!");
-            abrirDetalhes(localAtualAvaliacao); // Atualiza modal
-            renderizarLocais(); // Atualiza card
+        async function enviarAvaliacao(nota) {
+            if(!idLocalDetalheAberto) return;
+            let local = listaLocaisCache.find(l => l.idDoc === idLocalDetalheAberto);
+            if(!local) return;
+
+            let avaliacoes = local.avaliacoes || [];
+            avaliacoes.push(nota);
+
+            await db.collection("locais").doc(idLocalDetalheAberto).update({ avaliacoes: avaliacoes });
+            alert("Obrigado pela sua avaliação!");
+            abrirDetalhes(idLocalDetalheAberto);
         }
 
-        // Filtros e Navegação
-        function filtrarCategoria(cat) {
-            document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
-            if(cat) event.currentTarget.classList.add('active');
-            renderizarLocais(cat, cidadeAtual, document.getElementById('inputBusca').value);
-        }
-        function filtrarBusca() { renderizarLocais('', cidadeAtual, document.getElementById('inputBusca').value); }
-        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
-        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
-        function mudarCidade(cidade) { cidadeAtual = cidade; document.getElementById('cidadeAtivaHeader').textContent = cidade; fecharModalCidade(); renderizarLocais(); }
-
-        // IA Simulador
         function gerarDescricaoIA() {
             let nome = document.getElementById('cadNome').value;
-            if(!nome) return alertCustom("Digite o nome primeiro!");
-            document.getElementById('cadDesc').value = `✨ Conheça ${nome}! Qualidade e excelência que você merece na nossa cidade.`;
+            let cat = document.getElementById('cadCategoria').value;
+            if(!nome) return alert("Digite o nome primeiro!");
+            document.getElementById('cadDesc').value = `✨ Venha conhecer ${nome}, a melhor opção de ${cat} da cidade! Atendimento de qualidade e excelência que você merece.`;
         }
         function perguntarIA() {
-            document.getElementById('textoIA').innerHTML = `Aqui estão as melhores opções de <b>${cidadeAtual}</b> na nossa vitrine!`;
+            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria!`;
             document.getElementById('modalIA').style.display = 'block';
         }
 
-        // Admin Auth & Kanban
+        // Painel Admin Kanban (Nuvem)
         function abrirAdmin() {
-            document.getElementById('adminSenha').value = '';
-            document.getElementById('modalAdminAuth').style.display = 'block';
-        }
-        function verificarSenhaAdmin() {
-            if(document.getElementById('adminSenha').value === '1234') {
-                document.getElementById('modalAdminAuth').style.display = 'none';
+            let s = prompt("Senha do Admin:");
+            if (s === "1234") {
                 document.getElementById('painelAdmin').style.display = 'block';
                 renderizarKanban();
-            } else {
-                alertCustom("Senha Incorreta!");
-            }
+            } else if (s != null) alert("Senha Incorreta!");
         }
         function fecharAdmin() { document.getElementById('painelAdmin').style.display = 'none'; }
         
         function renderizarKanban() {
-            let locais = getLocais();
             let colGratis = document.getElementById('colunaGratis');
             let colVIP = document.getElementById('colunaVIP');
             colGratis.innerHTML = ''; colVIP.innerHTML = '';
 
-            locais.forEach(local => {
+            listaLocaisCache.forEach(local => {
                 let btnStatus = local.is_featured 
-                    ? `<button class="btn-admin-action" onclick="toggleVIP(${local.id})">⬇️ Rebaixar Grátis</button>`
-                    : `<button class="btn-admin-action" style="background:#FFD700; color:black;" onclick="toggleVIP(${local.id})">⭐ Registrar Pix (VIP)</button>`;
+                    ? `<button class="btn-admin-action" onclick="toggleVIP('${local.idDoc}', false)">⬇️ Rebaixar Grátis</button>`
+                    : `<button class="btn-admin-action" style="background:#FFD700; color:black;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Registrar Pix (Virar VIP)</button>`;
 
                 let card = `
                     <div class="kanban-card">
                         <h4>${local.nome} <span style="font-size:10px; color:#999;">(${local.cidade})</span></h4>
                         <p style="font-size: 12px; margin-bottom: 5px;">${local.whatsapp}</p>
                         ${btnStatus}
-                        <button class="btn-admin-action btn-admin-edit" onclick="abrirModalCadastro(${local.id})"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn-admin-action btn-admin-del" onclick="excluirLocal(${local.id})"><i class="fas fa-trash"></i></button>
+                        <button class="btn-admin-action btn-admin-edit" onclick="abrirModalCadastro('${local.idDoc}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn-admin-action btn-admin-del" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i> Excluir</button>
                     </div>`;
                 
-                if(local.is_featured) colVIP.innerHTML += card; else colGratis.innerHTML += card;
+                if(local.is_featured) colVIP.innerHTML += card;
+                else colGratis.innerHTML += card;
             });
         }
-        function toggleVIP(id) {
-            let locais = getLocais(); let idx = locais.findIndex(l => l.id === id);
-            locais[idx].is_featured = !locais[idx].is_featured;
-            localStorage.setItem('folha_amarela_locais', JSON.stringify(locais));
-            renderizarKanban(); renderizarLocais();
-        }
-        function excluirLocal(id) {
-            let locais = getLocais(); locais = locais.filter(l => l.id !== id);
-            localStorage.setItem('folha_amarela_locais', JSON.stringify(locais));
-            renderizarKanban(); renderizarLocais();
+
+        async function toggleVIP(docId, status) {
+            await db.collection("locais").doc(docId).update({ is_featured: status });
+            renderizarKanban();
         }
 
-        renderizarLocais();
+        async function excluirLocal(docId) {
+            if(confirm("Tem certeza que deseja excluir permanentemente da nuvem?")) {
+                await db.collection("locais").doc(docId).delete();
+                renderizarKanban();
+            }
+        }
+
+        // Inicialização
+        iniciarListenerLocais();
     </script>
 </body>
 </html>
