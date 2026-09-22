@@ -73,8 +73,8 @@
         .seletor-cidade { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .seletor-cidade:hover { border-color: var(--primary); }
 
-        .btn-theme-toggle { background: var(--input-bg); border: 1px solid var(--border); color: var(--dark); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: transform 0.2s; }
-        .btn-theme-toggle:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
+        .btn-theme-toggle { background: var(--input-bg); border: 1px solid var(--border); color: var(--dark); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .btn-theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
         .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2); }
         .btn-anunciar:hover { opacity: 0.9; }
@@ -129,10 +129,9 @@
         .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
         .btn-outline:hover { border-color: var(--primary); }
         .btn-wpp { background-color: var(--success); color: white !important; }
-        .btn-wpp:hover { opacity: 0.9; }
 
-        /* Modais */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
+        /* Modais com Z-Index superior ao Painel Admin */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
         .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 480px; margin: 60px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
         .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .close:hover { color: var(--dark); }
@@ -463,7 +462,6 @@
     </footer>
 
     <script>
-        // Inicialização do Tema (Dark/Light)
         function carregarTemaSalvo() {
             const temaSalvo = localStorage.getItem('folha_theme');
             if (temaSalvo === 'dark') {
@@ -481,7 +479,6 @@
 
         carregarTemaSalvo();
 
-        // Configuração Firebase e Restante do App
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -933,14 +930,30 @@
 
                 let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: var(--gray);");
 
+                // Prévia rica de detalhes para o painel gerencial
+                let thumbHtml = (local.imagens && local.imagens.length > 0) ? `<img src="${local.imagens[0]}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0;">` : '';
+                let descSnippet = local.descricao ? `<p style="font-size: 11px; color: var(--gray); margin-top: 6px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${local.descricao}</p>` : '';
+                let detailsPreview = `
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 8px; margin-bottom: 6px;">
+                        ${thumbHtml}
+                        <div style="font-size: 12px; color: var(--gray); line-height: 1.4;">
+                            <div><strong style="color: var(--dark);">${local.categoria}</strong> &bull; ${local.bairro || 'Centro'} (${local.cidade})</div>
+                            <div><i class="fab fa-whatsapp"></i> ${local.whatsapp} ${local.apenasDelivery ? '&bull; 🏍️ Delivery' : ''}</div>
+                        </div>
+                    </div>
+                    ${descSnippet}
+                `;
+
                 let card = `
                     <div class="kanban-card" style="${cardCSS}">
-                        <h4 style="font-size: 15px; margin-bottom: 4px; color: var(--dark);">${local.nome} <span style="font-size:11px; color:var(--gray); font-weight: normal;">(${local.cidade})</span></h4>
-                        <p style="font-size: 12px; margin-bottom: 10px; color: var(--gray);"><i class="fab fa-whatsapp"></i> ${local.whatsapp}</p>
-                        ${btnStatus}
-                        <div style="display: flex; gap: 6px;">
-                            <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i></button>
+                        <h4 style="font-size: 15px; margin-bottom: 2px; color: var(--dark);">${local.nome}</h4>
+                        ${detailsPreview}
+                        <div style="margin-top: 8px;">
+                            ${btnStatus}
+                        </div>
+                        <div style="display: flex; gap: 6px; margin-top: 6px;">
+                            <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')"><i class="fas fa-edit"></i> Editar</button>
+                            <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i> Excluir</button>
                         </div>
                     </div>`;
                 
