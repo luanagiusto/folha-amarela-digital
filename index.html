@@ -9,6 +9,7 @@
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
@@ -57,11 +58,11 @@
             top: 0; 
             z-index: 100; 
         }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .logo { font-size: 22px; font-weight: 800; color: #1E293B; text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
         .logo i { color: #1E293B; }
         
-        .header-actions { display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
         .seletor-cidade { background: rgba(255, 255, 255, 0.3); color: #1E293B; border: 1px solid rgba(255, 255, 255, 0.5); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .seletor-cidade:hover { background: rgba(255, 255, 255, 0.45); }
@@ -71,6 +72,9 @@
 
         .btn-anunciar { background-color: #1E293B; color: #FBBF24; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
         .btn-anunciar:hover { opacity: 0.9; }
+
+        .btn-lojista-nav { background: rgba(255, 255, 255, 0.3); color: #1E293B; border: 1px solid rgba(255, 255, 255, 0.5); padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-lojista-nav:hover { background: rgba(255, 255, 255, 0.5); }
 
         .search-container { position: relative; display: flex; gap: 8px; }
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: none; background: #FFFFFF; border-radius: 12px; font-size: 15px; outline: none; color: #1E293B; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
@@ -159,8 +163,8 @@
         .admin-link { color: var(--gray); text-decoration: none; font-weight: 600; cursor: pointer; margin-left: 8px; padding: 4px 8px; border-radius: 6px; background: var(--input-bg); }
         .admin-link:hover { color: var(--dark); }
         
-        /* Dashboard Admin */
-        #painelAdmin { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
+        /* Dashboard Admin e Lojista */
+        #painelAdmin, #painelLojista { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: var(--surface); padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; box-shadow: var(--shadow); }
         .admin-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
         .kpi-card { flex: 1; min-width: 140px; background: var(--surface); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
@@ -184,6 +188,7 @@
             <a href="#" class="logo"><i class="fas fa-book-open"></i> Folha Amarela</a>
             
             <div class="header-actions">
+                <button class="btn-lojista-nav" onclick="abrirPainelLojistaClick()"><i class="fas fa-store"></i> <span id="txtBtnLojista">Área do Lojista</span></button>
                 <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
@@ -255,6 +260,31 @@
         </div>
     </main>
 
+    <!-- Modal Login / Cadastro Lojista -->
+    <div id="modalAuthLojista" class="modal">
+        <div class="modal-content" style="max-width: 380px; text-align: center;">
+            <span class="close" onclick="document.getElementById('modalAuthLojista').style.display='none'">&times;</span>
+            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-store-alt"></i></div>
+            <h2 id="tituloAuthLojista" style="margin-bottom: 4px; font-size: 20px;">Acesso do Lojista</h2>
+            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Gerencie seu estabelecimento e destaques</p>
+            
+            <div class="form-group" style="text-align: left;">
+                <label>E-mail</label>
+                <input type="email" id="authEmail" class="form-control" placeholder="seu@email.com">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Senha</label>
+                <input type="password" id="authSenha" class="form-control" placeholder="Sua senha...">
+            </div>
+            
+            <button class="btn-submit" id="btnSubmitAuth" onclick="executarAuthLojista()">Entrar no Painel</button>
+            
+            <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAuth()">
+                <span id="txtAlternarAuth">Não tem conta? <b>Cadastre-se grátis</b></span>
+            </p>
+        </div>
+    </div>
+
     <!-- Modal Login Admin -->
     <div id="modalLoginAdmin" class="modal">
         <div class="modal-content" style="max-width: 320px; text-align: center;">
@@ -310,7 +340,6 @@
                 </label>
             </div>
 
-            <!-- Campo de Endereço Físico (oculto se apenas delivery) -->
             <div class="form-group" id="grupoEndereco">
                 <label>Endereço Físico (Rua e Número)</label>
                 <input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Major Luiz Pinto, 123">
@@ -436,6 +465,20 @@
         </div>
     </div>
 
+    <!-- Painel do Lojista -->
+    <div id="painelLojista">
+        <div class="admin-header">
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-store"></i> Meu Estabelecimento</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button onclick="logoutLojista()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair / Logout</button>
+            </div>
+        </div>
+
+        <div id="conteudoPainelLojista" style="max-width: 700px; margin: 0 auto; background: var(--surface); padding: 24px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border);">
+            <!-- Preenchido via JS -->
+        </div>
+    </div>
+
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div class="admin-header">
@@ -447,7 +490,6 @@
             </div>
         </div>
         
-        <!-- KPIs -->
         <div class="admin-kpis">
             <div class="kpi-card" style="border-color: var(--success);">
                 <h3>Total Ativos</h3>
@@ -537,6 +579,7 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
 
@@ -547,6 +590,117 @@
         let imagensUploadTemp = [];
         let idLocalDetalheAberto = null;
         let isAdminLogado = false;
+        let usuarioLogado = null;
+        let isModoCadastroAuth = false;
+
+        auth.onAuthStateChanged((user) => {
+            usuarioLogado = user;
+            if(user) {
+                document.getElementById('txtBtnLojista').textContent = "Meu Painel";
+            } else {
+                document.getElementById('txtBtnLojista').textContent = "Área do Lojista";
+            }
+        });
+
+        function abrirPainelLojistaClick() {
+            if(!usuarioLogado) {
+                abrirModalAuthLojista();
+            } else {
+                abrirPainelLojista();
+            }
+        }
+
+        function abrirModalAuthLojista() {
+            document.getElementById('authEmail').value = '';
+            document.getElementById('authSenha').value = '';
+            isModoCadastroAuth = false;
+            atualizarTextoAuthModal();
+            document.getElementById('modalAuthLojista').style.display = 'block';
+        }
+
+        function alternarModoAuth() {
+            isModoCadastroAuth = !isModoCadastroAuth;
+            atualizarTextoAuthModal();
+        }
+
+        function atualizarTextoAuthModal() {
+            if(isModoCadastroAuth) {
+                document.getElementById('tituloAuthLojista').textContent = "Criar Conta de Lojista";
+                document.getElementById('btnSubmitAuth').textContent = "Cadastrar Conta";
+                document.getElementById('txtAlternarAuth').innerHTML = "Já tem uma conta? <b>Faça login</b>";
+            } else {
+                document.getElementById('tituloAuthLojista').textContent = "Acesso do Lojista";
+                document.getElementById('btnSubmitAuth').textContent = "Entrar no Painel";
+                document.getElementById('txtAlternarAuth').innerHTML = "Não tem conta? <b>Cadastre-se grátis</b>";
+            }
+        }
+
+        async function executarAuthLojista() {
+            let email = document.getElementById('authEmail').value;
+            let senha = document.getElementById('authSenha').value;
+            if(!email || !senha) return alert("Preencha e-mail e senha.");
+
+            try {
+                if(isModoCadastroAuth) {
+                    await auth.createUserWithEmailAndPassword(email, senha);
+                    alert("Conta criada com sucesso!");
+                } else {
+                    await auth.signInWithEmailAndPassword(email, senha);
+                }
+                document.getElementById('modalAuthLojista').style.display = 'none';
+                abrirPainelLojista();
+            } catch (error) {
+                alert("Erro na autenticação: " + error.message);
+            }
+        }
+
+        function logoutLojista() {
+            auth.signOut().then(() => {
+                document.getElementById('painelLojista').style.display = 'none';
+                alert("Você saiu da sua conta.");
+            });
+        }
+
+        function abrirPainelLojista() {
+            if(!usuarioLogado) return abrirModalAuthLojista();
+            document.getElementById('painelLojista').style.display = 'block';
+            
+            // Busca a loja vinculada a este usuário logado
+            let minhaLoja = listaLocaisCache.find(l => l.userId === usuarioLogado.uid);
+            let container = document.getElementById('conteudoPainelLojista');
+
+            if(!minhaLoja) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 20px;">
+                        <div style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-store-alt-slash"></i></div>
+                        <h3 style="margin-bottom: 8px;">Você ainda não cadastrou sua loja</h3>
+                        <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">Cadastre seu negócio agora para aparecer na Folha Amarela Digital.</p>
+                        <button class="btn-submit" style="max-width: 250px; margin: 0 auto;" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Cadastrar Meu Negócio</button>
+                    </div>
+                `;
+            } else {
+                let statusVipHtml = minhaLoja.is_featured 
+                    ? `<div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--primary); padding: 16px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                            <div><strong style="color: var(--primary); font-size: 15px;"><i class="fas fa-crown"></i> VIP Destaque Ativo</strong><div style="font-size: 12px; color: var(--gray);">Sua loja está no topo das recomendações!</div></div>
+                       </div>`
+                    : `<div style="background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                            <div><strong style="font-size: 15px;">Plano Grátis</strong><div style="font-size: 12px; color: var(--gray);">Sua loja aparece nas buscas normais.</div></div>
+                            <button class="btn-card" style="background: var(--primary); color: #1E293B; border: none; padding: 10px 16px; border-radius: 10px;" onclick="queroSerVip('${minhaLoja.nome}')"><i class="fas fa-star"></i> Quero Ser VIP por R$ 10/mês</button>
+                       </div>`;
+
+                container.innerHTML = `
+                    ${statusVipHtml}
+                    <h3 style="font-size: 18px; margin-bottom: 6px;">${minhaLoja.nome}</h3>
+                    <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">Categoria: ${minhaLoja.categoria} &bull; Bairro: ${minhaLoja.bairro || 'Centro'}</p>
+                    <button class="btn-submit" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro('${minhaLoja.idDoc}')"><i class="fas fa-edit"></i> Editar Dados, Fotos e Horários da Loja</button>
+                `;
+            }
+        }
+
+        function queroSerVip(nomeLoja) {
+            let msg = `Olá! Sou o responsável pela loja *${nomeLoja}* (${usuarioLogado.email}) e quero colocar minha loja nos destaques VIP da Folha Amarela Digital por R$ 10. Como faço o Pix?`;
+            window.open(`https://wa.me/5535999999999?text=${encodeURIComponent(msg)}`, '_blank');
+        }
 
         function iniciarListenerLocais() {
             db.collection("locais").onSnapshot((snapshot) => {
@@ -877,6 +1031,7 @@
                     horariosSemana: horariosSemana,
                     imagens: imagensLinks,
                     status: statusFinal,
+                    userId: usuarioLogado ? usuarioLogado.uid : (docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.userId || '') : ''),
                     is_featured: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.is_featured || false) : false,
                     avaliacoes: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.avaliacoes || []) : []
                 };
@@ -892,6 +1047,7 @@
 
                 fecharModalCadastro();
                 if(isAdminLogado) renderizarKanban();
+                if(usuarioLogado && !isAdminLogado) abrirPainelLojista();
             } catch (error) {
                 console.error("Erro ao salvar:", error);
                 alert("Erro ao salvar na nuvem: " + error.message);
