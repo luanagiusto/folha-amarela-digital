@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Folha Amarela Digital</title>
+    
+    <!-- Configurações para PWA (Aplicativo Instalável) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFD700">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -88,6 +94,7 @@
         .botoes-acao-detalhes button { flex: 1; min-width: 90px; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; }
         .btn-ligar { background-color: var(--dark); color: white; }
         .btn-mapa { background-color: var(--primary); color: var(--dark); }
+        .btn-share { border: 1px solid var(--purple); color: var(--purple); background: transparent; }
 
         .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
         .dia-fechado { color: var(--danger); font-weight: bold; }
@@ -117,7 +124,6 @@
             <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
         </div>
         
-        <!-- Bloco de Seleção (Cidade e Bairro) -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <div class="seletor-cidade" onclick="abrirModalCidade()">
                 <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
@@ -268,7 +274,8 @@
                 <div class="botoes-acao-detalhes">
                     <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                     <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
-                    <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Chegar</button>
+                    <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
+                    <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Compartilhar</button>
                 </div>
 
                 <div style="margin: 15px 0;">
@@ -338,6 +345,15 @@
     </footer>
 
     <script>
+        // Registro do Service Worker (Para Instalação PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('Folha Amarela PWA ativado!', reg);
+                }).catch(err => console.log('Falha no PWA:', err));
+            });
+        }
+
         // Configuração Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
@@ -367,25 +383,20 @@
                 snapshot.forEach((doc) => {
                     listaLocaisCache.push({ idDoc: doc.id, ...doc.data() });
                 });
-                atualizarListaBairros(); // Preenche a lista de bairros
+                atualizarListaBairros(); 
                 renderizarLocais();
             }, (error) => {
                 console.error("Erro ao ler do Firebase:", error);
             });
         }
 
-        // Função nova: Monta o select de Bairros dinamicamente
         function atualizarListaBairros() {
             const selectBairro = document.getElementById('filtroBairro');
-            
-            // Pega apenas os bairros da cidade atual
             let bairros = listaLocaisCache
                 .filter(l => l.cidade === cidadeAtual && l.bairro)
                 .map(l => l.bairro.trim());
             
-            // Remove duplicatas e organiza em ordem alfabética
             bairros = [...new Set(bairros)].sort();
-            
             let valorAnterior = selectBairro.value;
             
             selectBairro.innerHTML = '<option value="">Todos os Bairros</option>';
@@ -393,7 +404,6 @@
                 selectBairro.innerHTML += `<option value="${b}">${b}</option>`;
             });
             
-            // Mantém a seleção caso a pessoa tenha mudado algo, mas o bairro continue válido
             if (bairros.includes(valorAnterior)) {
                 selectBairro.value = valorAnterior;
                 bairroAtual = valorAnterior;
@@ -403,23 +413,16 @@
             }
         }
 
-        // Atualiza variável e renderiza ao trocar o bairro
         function filtrarBairro() {
             bairroAtual = document.getElementById('filtroBairro').value;
             renderizarLocais();
         }
 
         async function renderizarLocais() {
-            // Filtro 1: Cidade
             let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual);
-            
-            // Filtro 2: Categoria
             if (categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-            
-            // Filtro 3: Bairro
             if (bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
             
-            // Filtro 4: Texto livre
             let buscaTxt = document.getElementById('inputBusca').value.toLowerCase();
             if (buscaTxt) {
                 filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt) || l.categoria.toLowerCase().includes(buscaTxt));
@@ -492,9 +495,7 @@
             renderizarLocais();
         }
 
-        function filtrarBusca() {
-            renderizarLocais();
-        }
+        function filtrarBusca() { renderizarLocais(); }
 
         function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
         function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
@@ -503,7 +504,7 @@
             document.getElementById('cidadeAtivaHeader').textContent = cidade;
             document.getElementById('cadCidade').value = cidade;
             fecharModalCidade();
-            atualizarListaBairros(); // Recarrega os bairros pra nova cidade
+            atualizarListaBairros();
             renderizarLocais();
         }
         function usarGPS() {
@@ -511,7 +512,6 @@
             mudarCidade('Paraisópolis');
         }
 
-        // Upload e Compressão de Imagens para Firebase Storage
         async function processarImagensUpload(input) {
             const preview = document.getElementById('previewImagens');
             preview.innerHTML = 'Processando imagens...';
@@ -624,7 +624,7 @@
             let imagensLinks = [];
             for (let [index, imgBase64] of imagensUploadTemp.entries()) {
                 if (imgBase64.startsWith('http')) {
-                    imagensLinks.push(imgBase64); // Já é link do storage
+                    imagensLinks.push(imgBase64); 
                 } else {
                     let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
                     let res = await storageRef.putString(imgBase64, 'data_url');
@@ -674,6 +674,12 @@
             document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
             document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
             
+            // Botão de Compartilhar no WhatsApp
+            document.getElementById('btnDetCompartilhar').onclick = () => {
+                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade}\n📱 Contato: ${local.whatsapp}\n\nVeja horários, fotos e avaliações no app:\n👉 https://www.folhaamareladigital.com.br/`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoZap)}`, '_blank');
+            };
+            
             let btnMapa = document.getElementById('btnDetMapa');
             if (local.apenasDelivery) {
                 btnMapa.style.display = 'none';
@@ -717,10 +723,8 @@
             if(!idLocalDetalheAberto) return;
             let local = listaLocaisCache.find(l => l.idDoc === idLocalDetalheAberto);
             if(!local) return;
-
             let avaliacoes = local.avaliacoes || [];
             avaliacoes.push(nota);
-
             await db.collection("locais").doc(idLocalDetalheAberto).update({ avaliacoes: avaliacoes });
             alert("Obrigado pela sua avaliação!");
             abrirDetalhes(idLocalDetalheAberto);
