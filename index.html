@@ -313,8 +313,6 @@
             <div class="form-group">
                 <label style="margin-bottom: 8px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento (Dia a Dia)</label>
                 <div style="display: flex; flex-direction: column; gap: 8px; background: var(--input-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--border);">
-                    
-                    <!-- Linha por Dia -->
                     <script>
                         const diasSemanaConfig = [
                             {k:'seg', n:'Segunda-feira'},
@@ -614,12 +612,11 @@
         function gerarHTMLCard(local) {
             let statusBadge = '';
             
-            // Verifica o dia de hoje (0=dom, 1=seg, 2=ter, 3=qua, 4=qui, 5=sex, 6=sab)
             const mapDias = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             let hojeKey = mapDias[new Date().getDay()];
             
             let horarios = local.horariosSemana || {};
-            let horarioHoje = horarios[hojeKey] || (local.abreAs ? `${local.abreAs} - ${local.fechaAs}` : 'Fechado');
+            let horarioHoje = horarios[hojeKey] || 'Fechado';
 
             if(horarioHoje && horarioHoje.toLowerCase() !== 'fechado') {
                 let partes = horarioHoje.split(' - ');
@@ -758,7 +755,6 @@
             imagensUploadTemp = [];
             document.getElementById('tituloModalCadastro').textContent = 'Anunciar Negócio';
 
-            // Reseta grade para padrão
             diasSemanaConfig.forEach(d => {
                 document.getElementById(`hor_${d.k}_fechado`).checked = false;
                 document.getElementById(`hor_${d.k}_abre`).value = "08:00";
@@ -779,7 +775,6 @@
                     document.getElementById('cadDesc').value = local.descricao || '';
                     imagensUploadTemp = local.imagens || [];
 
-                    // Carrega horários específicos se existirem
                     if(local.horariosSemana) {
                         diasSemanaConfig.forEach(d => {
                             let val = local.horariosSemana[d.k];
@@ -823,61 +818,66 @@
             btn.textContent = "Salvando na nuvem...";
             btn.disabled = true;
 
-            let imagensLinks = [];
-            for (let [index, imgBase64] of imagensUploadTemp.entries()) {
-                if (imgBase64.startsWith('http')) {
-                    imagensLinks.push(imgBase64); 
+            try {
+                let imagensLinks = [];
+                for (let [index, imgBase64] of imagensUploadTemp.entries()) {
+                    if (imgBase64.startsWith('http')) {
+                        imagensLinks.push(imgBase64); 
+                    } else {
+                        let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
+                        let res = await storageRef.putString(imgBase64, 'data_url');
+                        let downloadUrl = await res.ref.getDownloadURL();
+                        imagensLinks.push(downloadUrl);
+                    }
+                }
+
+                let horariosSemana = {};
+                diasSemanaConfig.forEach(d => {
+                    let fechado = document.getElementById(`hor_${d.k}_fechado`).checked;
+                    if(fechado) {
+                        horariosSemana[d.k] = 'Fechado';
+                    } else {
+                        let abre = document.getElementById(`hor_${d.k}_abre`).value;
+                        let fecha = document.getElementById(`hor_${d.k}_fecha`).value;
+                        horariosSemana[d.k] = `${abre} - ${fecha}`;
+                    }
+                });
+
+                let statusFinal = docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente');
+
+                let dadosLocal = {
+                    nome: nome,
+                    categoria: document.getElementById('cadCategoria').value,
+                    cidade: document.getElementById('cadCidade').value,
+                    bairro: document.getElementById('cadBairro').value,
+                    apenasDelivery: document.getElementById('cadApenasDelivery').checked,
+                    whatsapp: document.getElementById('cadWpp').value,
+                    descricao: document.getElementById('cadDesc').value,
+                    horariosSemana: horariosSemana,
+                    imagens: imagensLinks,
+                    status: statusFinal,
+                    is_featured: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.is_featured || false) : false,
+                    avaliacoes: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.avaliacoes || []) : []
+                };
+
+                if(docId) {
+                    await db.collection("locais").doc(docId).update(dadosLocal);
                 } else {
-                    let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
-                    let res = await storageRef.putString(imgBase64, 'data_url');
-                    let downloadUrl = await res.ref.getDownloadURL();
-                    imagensLinks.push(downloadUrl);
+                    await db.collection("locais").add(dadosLocal);
+                    if(!isAdminLogado) {
+                        alert("Cadastro enviado com sucesso! Ele passará por aprovação e logo estará no ar.");
+                    }
                 }
+
+                fecharModalCadastro();
+                if(isAdminLogado) renderizarKanban();
+            } catch (error) {
+                console.error("Erro ao salvar:", error);
+                alert("Erro ao salvar na nuvem: " + error.message);
+            } finally {
+                btn.textContent = "Salvar no Guia";
+                btn.disabled = false;
             }
-
-            // Coleta os horários da semana
-            let horariosSemana = {};
-            diasSemanaConfig.forEach(d => {
-                let fechado = document.getElementById(`hor_${d.k}_fechado`).checked;
-                if(fechado) {
-                    horariosSemana[d.k] = 'Fechado';
-                } else {
-                    let abre = document.getElementById(`hor_${d.k}_abre`).value;
-                    let fecha = document.getElementById(`hor_${d.k}_fecha`).value;
-                    horariosSemana[d.k] = `${abre} - ${fecha}`;
-                }
-            });
-
-            let statusFinal = docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente');
-
-            let dadosLocal = {
-                nome: nome,
-                categoria: document.getElementById('cadCategoria').value,
-                cidade: document.getElementById('cadCidade').value,
-                bairro: document.getElementById('cadBairro').value,
-                apenasDelivery: document.getElementById('cadApenasDelivery').checked,
-                whatsapp: document.getElementById('cadWpp').value,
-                descricao: document.getElementById('cadDesc').value,
-                horariosSemana: horariosSemana,
-                imagens: imagensLinks,
-                status: statusFinal,
-                is_featured: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.is_featured || false) : false,
-                avaliacoes: docId ? (listaLocaisCache.find(l => l.idDoc === docId)?.avaliacoes || []) : []
-            };
-
-            if(docId) {
-                await db.collection("locais").doc(docId).update(dadosLocal);
-            } else {
-                await db.collection("locais").add(dadosLocal);
-                if(!isAdminLogado) {
-                    alert("Cadastro enviado com sucesso! Ele passará por aprovação e logo estará no ar.");
-                }
-            }
-
-            btn.textContent = "Salvar no Guia";
-            btn.disabled = false;
-            fecharModalCadastro();
-            if(isAdminLogado) renderizarKanban();
         }
 
         function abrirDetalhes(docId) {
@@ -956,7 +956,7 @@
             document.getElementById('cadDesc').value = `✨ Venha conhecer ${nome}, a melhor opção de ${cat} da cidade! Atendimento de qualidade e excelência que você merece.`;
         }
         function perguntarIA() {
-            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
+            document.getElementById('textoIA').innerHTML = `Analisei os registros en nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
             document.getElementById('modalIA').style.display = 'block';
         }
 
