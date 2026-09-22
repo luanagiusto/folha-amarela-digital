@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Folha Amarela Digital</title>
     
-    <!-- Configurações para PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FFD700">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -123,12 +118,6 @@
         .btn-admin-edit { background: #17a2b8; color: white; }
         .btn-admin-del { background: var(--danger); color: white; }
         .btn-admin-approve { background: var(--success); color: white; width: 100%; margin-bottom: 5px; }
-
-        /* Tabela Financeira */
-        .tabela-financeira { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .tabela-financeira th { background: var(--dark); color: white; padding: 12px 10px; position: sticky; top: 0; }
-        .tabela-financeira td { padding: 10px; border-bottom: 1px solid #eee; }
-        .tabela-financeira tr:hover { background-color: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -326,49 +315,6 @@
         </div>
     </div>
 
-    <!-- Modal Financeiro (NOVO) -->
-    <div id="modalFinanceiro" class="modal">
-        <div class="modal-content" style="max-width: 700px;">
-            <span class="close" onclick="document.getElementById('modalFinanceiro').style.display='none'">&times;</span>
-            <h2 style="color: var(--success);"><i class="fas fa-hand-holding-usd"></i> Central de Pagamentos</h2>
-            
-            <div style="background: #fdfdfd; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 20px; margin-top: 15px;">
-                <h3 style="font-size: 16px; margin-bottom: 10px;">Lançar Novo Pagamento</h3>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <select id="pagLocal" class="form-control" style="flex: 2; min-width: 200px;"></select>
-                    <input type="number" id="pagValor" class="form-control" placeholder="R$ Valor (ex: 50.00)" style="flex: 1; min-width: 120px;">
-                    <input type="date" id="pagData" class="form-control" style="flex: 1; min-width: 140px;">
-                </div>
-                <label style="margin-top: 15px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px;">
-                    <input type="checkbox" id="pagAutoVip" checked style="width: 16px; height: 16px;"> 
-                    <b>Ativar destaque VIP automaticamente ao lançar</b>
-                </label>
-                <button class="btn-submit" onclick="registrarPagamento()" style="background-color: var(--success); color: white; margin-top: 15px;">Registrar Pagamento</button>
-            </div>
-
-            <h3 style="font-size: 18px; margin-bottom: 10px; display: flex; justify-content: space-between;">
-                Histórico
-                <span style="color: var(--success);">Total: R$ <span id="totalReceita">0,00</span></span>
-            </h3>
-            
-            <div style="max-height: 350px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px;">
-                <table class="tabela-financeira">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Estabelecimento</th>
-                            <th>Valor (R$)</th>
-                            <th style="text-align: center;">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaPagamentos">
-                        <tr><td colspan="4" style="text-align:center;">Carregando histórico...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Trocar Cidade -->
     <div id="modalCidade" class="modal">
         <div class="modal-content" style="text-align: center;">
@@ -395,7 +341,7 @@
             <h2 style="margin: 0;"><i class="fas fa-chart-line"></i> Dashboard Gerencial</h2>
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 250px; margin: 0;">
-                <button onclick="abrirCentralPagamentos()" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 20px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
+                <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 20px;"><i class="fas fa-dollar-sign"></i> Financeiro (/financeiro)</button>
                 <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 20px;">Sair</button>
             </div>
         </div>
@@ -442,15 +388,6 @@
     </footer>
 
     <script>
-        // Registro PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => {
-                    console.log('Folha Amarela PWA ativado!');
-                }).catch(err => console.log('Falha no PWA:', err));
-            });
-        }
-
         // Configuração Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
@@ -465,7 +402,6 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // Estados Globais
         let cidadeAtual = 'Paraisópolis';
         let categoriaAtual = '';
         let bairroAtual = '';
@@ -473,11 +409,7 @@
         let imagensUploadTemp = [];
         let idLocalDetalheAberto = null;
         let isAdminLogado = false;
-        
-        // Estado Financeiro
-        let listaPagamentosCache = [];
 
-        // Listeners Principais (Lojas)
         function iniciarListenerLocais() {
             db.collection("locais").onSnapshot((snapshot) => {
                 listaLocaisCache = [];
@@ -486,25 +418,9 @@
                 });
                 atualizarListaBairros();
                 renderizarLocais();
-                
-                if(isAdminLogado) {
-                    renderizarKanban();
-                }
+                if(isAdminLogado) renderizarKanban();
             }, (error) => {
                 console.error("Erro ao ler do Firebase:", error);
-            });
-        }
-
-        // Listener Financeiro (Só ativa quando loga para economizar leitura no Firebase)
-        function iniciarListenerPagamentos() {
-            db.collection("pagamentos").orderBy("data", "desc").onSnapshot((snapshot) => {
-                listaPagamentosCache = [];
-                snapshot.forEach((doc) => {
-                    listaPagamentosCache.push({ idDoc: doc.id, ...doc.data() });
-                });
-                if(document.getElementById('modalFinanceiro').style.display === 'block') {
-                    renderizarTabelaPagamentos();
-                }
             });
         }
 
@@ -865,7 +781,6 @@
             document.getElementById('modalIA').style.display = 'block';
         }
 
-        // Funções Admin / Gerenciais
         function abrirModalAdmin() {
             document.getElementById('modalLoginAdmin').style.display = 'block';
             document.getElementById('senhaAdmin').value = '';
@@ -878,7 +793,6 @@
                 document.getElementById('modalLoginAdmin').style.display = 'none';
                 document.getElementById('painelAdmin').style.display = 'block';
                 isAdminLogado = true;
-                iniciarListenerPagamentos(); // Ativa banco de dados financeiro só ao logar
                 renderizarKanban();
             } else {
                 alert("Senha incorreta!");
@@ -954,91 +868,6 @@
             }
         }
 
-        // Funções da Central Financeira
-        function abrirCentralPagamentos() {
-            let select = document.getElementById('pagLocal');
-            select.innerHTML = '<option value="">Selecione o Estabelecimento...</option>';
-            
-            // Popula os locais ativos no dropdown
-            listaLocaisCache.filter(l => l.status !== 'pendente').sort((a,b) => a.nome.localeCompare(b.nome)).forEach(l => {
-                select.innerHTML += `<option value="${l.idDoc}">${l.nome} (${l.cidade})</option>`;
-            });
-            
-            // Data de hoje por padrão
-            document.getElementById('pagData').valueAsDate = new Date();
-            document.getElementById('pagValor').value = '';
-            
-            document.getElementById('modalFinanceiro').style.display = 'block';
-            renderizarTabelaPagamentos();
-        }
-
-        async function registrarPagamento() {
-            let localId = document.getElementById('pagLocal').value;
-            let valor = parseFloat(document.getElementById('pagValor').value);
-            let data = document.getElementById('pagData').value;
-            let autoVip = document.getElementById('pagAutoVip').checked;
-
-            if(!localId || isNaN(valor) || !data) {
-                return alert("Preencha todos os campos corretamente!");
-            }
-
-            let local = listaLocaisCache.find(l => l.idDoc === localId);
-
-            let btn = document.querySelector("#modalFinanceiro .btn-submit");
-            btn.textContent = "Lançando..."; btn.disabled = true;
-
-            await db.collection("pagamentos").add({
-                localId: localId,
-                nomeLocal: local.nome,
-                valor: valor,
-                data: data,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            if(autoVip && !local.is_featured) {
-                await db.collection("locais").doc(localId).update({ is_featured: true });
-            }
-
-            document.getElementById('pagValor').value = '';
-            btn.textContent = "Registrar Pagamento"; btn.disabled = false;
-        }
-
-        function renderizarTabelaPagamentos() {
-            let tbody = document.getElementById('tabelaPagamentos');
-            tbody.innerHTML = '';
-            let total = 0;
-
-            if(listaPagamentosCache.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum pagamento registrado ainda.</td></tr>';
-            }
-
-            listaPagamentosCache.forEach(p => {
-                total += p.valor;
-                // Formata Data YYYY-MM-DD para DD/MM/YYYY
-                let dataF = p.data.split('-').reverse().join('/');
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${dataF}</td>
-                        <td style="font-weight: bold; color: var(--dark);">${p.nomeLocal}</td>
-                        <td style="color: var(--success); font-weight: bold;">R$ ${p.valor.toFixed(2).replace('.',',')}</td>
-                        <td style="text-align: center;">
-                            <button onclick="excluirPagamento('${p.idDoc}')" style="background: var(--danger); color: white; border: none; padding: 6px; border-radius: 4px; cursor: pointer;"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            document.getElementById('totalReceita').textContent = total.toFixed(2).replace('.',',');
-        }
-
-        async function excluirPagamento(id) {
-            if(confirm("Tem certeza que deseja excluir este registro financeiro?")) {
-                await db.collection("pagamentos").doc(id).delete();
-            }
-        }
-
-        // Inicialização
         iniciarListenerLocais();
     </script>
 </body>
