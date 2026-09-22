@@ -80,7 +80,11 @@
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: none; background: #FFFFFF; border-radius: 12px; font-size: 15px; outline: none; color: #1E293B; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
         .search-bar:focus { box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.2); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
-        .btn-ia { background: #1E293B; color: #FBBF24; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(139,92,246,0.3); }
+
+        /* Botão Flutuante do Chatbot IA */
+        .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
+        .chat-float-btn:hover { transform: scale(1.05); }
 
         .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
 
@@ -181,6 +185,9 @@
 </head>
 <body>
 
+    <!-- Botão Flutuante IA Chatbot -->
+    <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
+
     <header>
         <div class="top-bar">
             <a href="#" class="logo"><i class="fas fa-book-open"></i> Folha Amarela</a>
@@ -210,7 +217,7 @@
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar padaria, farmácia, serviço..." onkeyup="filtrarBusca()">
-            <button class="btn-ia" onclick="perguntarIA()" title="Pesquisa Inteligente"><i class="fas fa-wand-magic-sparkles"></i></button>
+            <button class="btn-ia" onclick="abrirChatIA()" title="Assistente IA"><i class="fas fa-wand-magic-sparkles"></i></button>
         </div>
     </header>
 
@@ -280,6 +287,25 @@
             <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAcesso()">
                 <span id="txtAlternarAcesso">Não tem conta de lojista? <b>Cadastre-se grátis</b></span>
             </p>
+        </div>
+    </div>
+
+    <!-- Modal Chatbot IA Interativo (Para Cidadãos) -->
+    <div id="modalChatIA" class="modal">
+        <div class="modal-content" style="max-width: 450px; display: flex; flex-direction: column; height: 500px; padding: 0;">
+            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 24px; border-top-right-radius: 24px;">
+                <h3 style="font-size: 16px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA - Folha Amarela</h3>
+                <span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position: static; background: rgba(255,255,255,0.2); color: white;">&times;</span>
+            </div>
+            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
+                <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
+                    Olá! Sou o assistente virtual da <b>Folha Amarela Digital</b> em <b><span id="cidadeChatAtual">Paraisópolis</span></b>. O que você procura hoje? (Ex: <i>"Onde tem farmácia?", "Quero comer um lanche", "Tem pet shop aberto?"</i>)
+                </div>
+            </div>
+            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; border-top: 1px solid var(--border);">
+                <input type="text" id="inputChatUser" class="form-control" placeholder="Digite sua dúvida..." onkeypress="if(event.key==='K'||event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
+                <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
@@ -375,8 +401,8 @@
             </div>
             <div class="form-group">
                 <label style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Descrição Curta</span>
-                    <button type="button" onclick="gerarDescricaoIA()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: 700; font-size: 12px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar IA</button>
+                    <span>Descrição Comercial (Copywriting)</span>
+                    <button type="button" onclick="gerarDescricaoIAAvancada()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: 700; font-size: 12px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar IA Otimizada</button>
                 </label>
                 <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea>
             </div>
@@ -442,15 +468,6 @@
         </div>
     </div>
 
-    <!-- Modal IA Resposta -->
-    <div id="modalIA" class="modal">
-        <div class="modal-content" style="max-width: 400px;">
-            <span class="close" onclick="document.getElementById('modalIA').style.display='none'">&times;</span>
-            <h3 style="color: var(--purple); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente Virtual</h3>
-            <p id="textoIA" style="line-height: 1.6; font-size: 14px;"></p>
-        </div>
-    </div>
-
     <!-- Painel do Lojista -->
     <div id="painelLojista">
         <div class="admin-header">
@@ -468,7 +485,7 @@
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial (Admin)</h2>
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial (Admin + IA)</h2>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                 <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
@@ -476,6 +493,12 @@
             </div>
         </div>
         
+        <!-- IA Insights Box para o Administrador -->
+        <div style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.15)); border: 1px solid var(--purple); padding: 18px; border-radius: 16px; margin-bottom: 24px;">
+            <h3 style="font-size: 15px; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Relatório de Oportunidades & Marketing (IA)</h3>
+            <p id="textoAdminInsights" style="font-size: 13px; line-height: 1.6; color: var(--dark);">A analisar dados da cidade...</p>
+        </div>
+
         <div class="admin-kpis">
             <div class="kpi-card" style="border-color: var(--success);">
                 <h3>Total Ativos</h3>
@@ -578,7 +601,6 @@
         let usuarioLogado = null;
         let isModoCadastroAuth = false;
 
-        // Contas de Controle Pré-definidas
         const ADMIN_EMAIL = "admin@folhaamarela.com";
         const ADMIN_SENHA_DEFAULT = "admin123";
 
@@ -634,7 +656,10 @@
             let senha = document.getElementById('acessoSenha').value;
             if(!email || !senha) return alert("Preencha e-mail e senha.");
 
-            // Verifica se é a conta de Administrador
+            if(isModoCadastroAuth && senha.length < 6) {
+                return alert("A senha precisa ter pelo menos 6 caracteres.");
+            }
+
             if(email === ADMIN_EMAIL) {
                 if(senha === ADMIN_SENHA_DEFAULT || senha === "1234") {
                     isAdminLogado = true;
@@ -647,7 +672,6 @@
                 }
             }
 
-            // Caso contrário, loga como Lojista via Firebase Auth
             try {
                 if(isModoCadastroAuth) {
                     await auth.createUserWithEmailAndPassword(email, senha);
@@ -658,7 +682,11 @@
                 document.getElementById('modalAreaAcesso').style.display = 'none';
                 abrirPainelLojista();
             } catch (error) {
-                alert("Erro na autenticação: " + error.message);
+                let msgErro = error.message;
+                if (error.code === 'auth/operation-not-allowed') {
+                    msgErro = "O login por E-mail/Senha não está ativado no Console do Firebase (Authentication -> Sign-in method).";
+                }
+                alert("Erro na autenticação: " + msgErro);
             }
         }
 
@@ -669,6 +697,69 @@
                 document.getElementById('painelAdmin').style.display = 'none';
                 alert("Você saiu da sessão.");
             });
+        }
+
+        // ==========================================
+        // RECURSOS DE IA INTEGRADOS
+        // ==========================================
+
+        function abrirChatIA() {
+            document.getElementById('cidadeChatAtual').textContent = cidadeAtual;
+            document.getElementById('modalChatIA').style.display = 'block';
+            document.getElementById('inputChatUser').focus();
+        }
+
+        function enviarMensagemChat() {
+            let input = document.getElementById('inputChatUser');
+            let texto = input.value.trim();
+            if(!texto) return;
+
+            let container = document.getElementById('chatMensagens');
+            container.innerHTML += `
+                <div style="background: var(--purple); color: white; padding: 10px 14px; border-radius: 16px; max-width: 85%; align-self: flex-end; font-size: 13px;">
+                    ${texto}
+                </div>
+            `;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            // Processamento Inteligente Baseado nos Dados da Nuvem
+            setTimeout(() => {
+                let respostaIA = processarConsultaChatIA(texto);
+                container.innerHTML += `
+                    <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
+                        ${respostaIA}
+                    </div>
+                `;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        function processarConsultaChatIA(pergunta) {
+            let p = pergunta.toLowerCase();
+            let locaisCidade = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente');
+
+            if (p.includes('aberto') || p.includes('funcionando')) {
+                return `An alcancei os horários cadastrados em <b>${cidadeAtual}</b>. Recomendo verificar os selos de <b>"Abertos"</b> direto nos cartões da página principal ou chamar no WhatsApp do estabelecimento para confirmar!`;
+            }
+
+            let encontrados = locaisCidade.filter(l => l.nome.toLowerCase().includes(p) || l.categoria.toLowerCase().includes(p) || (l.bairro && l.bairro.toLowerCase().includes(p)));
+
+            if (encontrados.length > 0) {
+                let listaStr = encontrados.map(e => `&bull; <b>${e.nome}</b> (${e.categoria} - ${e.bairro || 'Centro'}) - <a href="https://wa.me/55${e.whatsapp}" target="_blank" style="color:var(--success); font-weight:700;">Chamar no WhatsApp</a>`).join('<br>');
+                return `Encontrei estas opções em ${cidadeAtual} para você:<br><br>${listaStr}`;
+            }
+
+            return `Não encontrei nenhum registro exato para "${pergunta}" em ${cidadeAtual}. Você pode tentar buscar por categorias como <i>Alimentação, Pets, Saúde</i> ou explorar os nossos destaques VIP no topo!`;
+        }
+
+        function gerarDescricaoIAAvancada() {
+            let nome = document.getElementById('cadNome').value;
+            let cat = document.getElementById('cadCategoria').value;
+            let bairro = document.getElementById('cadBairro').value || 'Centro';
+            if(!nome) return alert("Digite o nome do estabelecimento primeiro!");
+            
+            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Trabalhamos com total dedicação, qualidade e agilidade para superar as suas expectativas. Venha nos visitar ou faça o seu pedido agora mesmo com toque de um botão pelo WhatsApp! 🚀`;
         }
 
         function abrirPainelLojista() {
@@ -699,6 +790,9 @@
 
                 container.innerHTML = `
                     ${statusVipHtml}
+                    <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--purple); padding: 14px; border-radius: 12px; margin-bottom: 20px; font-size: 13px;">
+                        🤖 <b>Consultor VIP IA:</b> Lojas em destaque recebem até 4x mais cliques no WhatsApp. Por apenas R$ 10 mensais, garanta o topo do carrossel da sua cidade!
+                    </div>
                     <h3 style="font-size: 18px; margin-bottom: 6px;">${minhaLoja.nome}</h3>
                     <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">Categoria: ${minhaLoja.categoria} &bull; Bairro: ${minhaLoja.bairro || 'Centro'}</p>
                     <button class="btn-submit" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro('${minhaLoja.idDoc}')"><i class="fas fa-edit"></i> Editar Dados, Fotos e Horários da Loja</button>
@@ -1146,17 +1240,6 @@
             abrirDetalhes(idLocalDetalheAberto);
         }
 
-        function gerarDescricaoIA() {
-            let nome = document.getElementById('cadNome').value;
-            let cat = document.getElementById('cadCategoria').value;
-            if(!nome) return alert("Digite o nome primeiro!");
-            document.getElementById('cadDesc').value = `✨ Venha conhecer ${nome}, a melhor opção de ${cat} da cidade! Atendimento de qualidade e excelência que você merece.`;
-        }
-        function perguntarIA() {
-            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
-            document.getElementById('modalIA').style.display = 'block';
-        }
-
         function renderizarKanban() {
             let buscaKanban = document.getElementById('buscaKanban').value.toLowerCase();
             let listaFiltrada = listaLocaisCache;
@@ -1166,10 +1249,17 @@
             }
 
             let ativos = listaLocaisCache.filter(l => l.status !== 'pendente');
+            let vips = ativos.filter(l => l.is_featured);
+            let pendentes = listaLocaisCache.filter(l => l.status === 'pendente');
+
             document.getElementById('kpiTotal').textContent = ativos.length;
-            document.getElementById('kpiVip').textContent = ativos.filter(l => l.is_featured).length;
+            document.getElementById('kpiVip').textContent = vips.length;
             document.getElementById('kpiDelivery').textContent = ativos.filter(l => l.apenasDelivery).length;
-            document.getElementById('kpiPendentes').textContent = listaLocaisCache.filter(l => l.status === 'pendente').length;
+            document.getElementById('kpiPendentes').textContent = pendentes.length;
+
+            // IA Admin Insights Gerador
+            let relatorioIA = `📊 <b>Status da Cidade (${cidadeAtual}):</b> Atualmente existem ${ativos.length} estabelecimentos ativos e ${pendentes.length} aguardando aprovação. Há ${vips.length} lojas no plano VIP de destaque. <br>💡 <b>Sugestão de Marketing IA:</b> Que tal enviar uma mensagem no WhatsApp para os lojistas do plano grátis lembrando que o destaque por R$ 10 garante prioridade no topo?`;
+            document.getElementById('textoAdminInsights').innerHTML = relatorioIA;
 
             let colPendentes = document.getElementById('colunaPendentes');
             let colGratis = document.getElementById('colunaGratis');
