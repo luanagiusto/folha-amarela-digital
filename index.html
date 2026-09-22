@@ -116,11 +116,21 @@
             <a href="#" class="logo"><i class="fas fa-book-open"></i> Folha Amarela</a>
             <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
         </div>
+        
+        <!-- Bloco de Seleção (Cidade e Bairro) -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <div class="seletor-cidade" onclick="abrirModalCidade()">
                 <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
             </div>
+            
+            <div style="display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 20px;">
+                <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
+                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: bold; color: var(--dark); outline: none; cursor: pointer; max-width: 130px;">
+                    <option value="">Todos os Bairros</option>
+                </select>
+            </div>
         </div>
+
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" class="search-bar" id="inputBusca" placeholder="Buscar padaria, farmácia..." onkeyup="filtrarBusca()">
@@ -306,7 +316,7 @@
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div style="display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 15px; border-radius: 8px;">
-            <h2>Área do Gestor (Nuvem Firebase)</h2>
+            <h2>Área do Gestor (Nuvem)</h2>
             <button onclick="fecharAdmin()" style="background: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">Voltar ao Site</button>
         </div>
         
@@ -342,8 +352,10 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
+        // Estados Globais
         let cidadeAtual = 'Paraisópolis';
         let categoriaAtual = '';
+        let bairroAtual = '';
         let listaLocaisCache = [];
         let imagensUploadTemp = [];
         let idLocalDetalheAberto = null;
@@ -355,16 +367,59 @@
                 snapshot.forEach((doc) => {
                     listaLocaisCache.push({ idDoc: doc.id, ...doc.data() });
                 });
+                atualizarListaBairros(); // Preenche a lista de bairros
                 renderizarLocais();
             }, (error) => {
                 console.error("Erro ao ler do Firebase:", error);
             });
         }
 
+        // Função nova: Monta o select de Bairros dinamicamente
+        function atualizarListaBairros() {
+            const selectBairro = document.getElementById('filtroBairro');
+            
+            // Pega apenas os bairros da cidade atual
+            let bairros = listaLocaisCache
+                .filter(l => l.cidade === cidadeAtual && l.bairro)
+                .map(l => l.bairro.trim());
+            
+            // Remove duplicatas e organiza em ordem alfabética
+            bairros = [...new Set(bairros)].sort();
+            
+            let valorAnterior = selectBairro.value;
+            
+            selectBairro.innerHTML = '<option value="">Todos os Bairros</option>';
+            bairros.forEach(b => {
+                selectBairro.innerHTML += `<option value="${b}">${b}</option>`;
+            });
+            
+            // Mantém a seleção caso a pessoa tenha mudado algo, mas o bairro continue válido
+            if (bairros.includes(valorAnterior)) {
+                selectBairro.value = valorAnterior;
+                bairroAtual = valorAnterior;
+            } else {
+                selectBairro.value = "";
+                bairroAtual = "";
+            }
+        }
+
+        // Atualiza variável e renderiza ao trocar o bairro
+        function filtrarBairro() {
+            bairroAtual = document.getElementById('filtroBairro').value;
+            renderizarLocais();
+        }
+
         async function renderizarLocais() {
+            // Filtro 1: Cidade
             let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual);
+            
+            // Filtro 2: Categoria
             if (categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
             
+            // Filtro 3: Bairro
+            if (bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+            
+            // Filtro 4: Texto livre
             let buscaTxt = document.getElementById('inputBusca').value.toLowerCase();
             if (buscaTxt) {
                 filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt) || l.categoria.toLowerCase().includes(buscaTxt));
@@ -390,7 +445,7 @@
             if(regulares.length > 0) {
                 regulares.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local));
             } else if (patrocinados.length === 0) {
-                containerRegulares.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Nenhum local encontrado nesta cidade/categoria.</p>';
+                containerRegulares.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Nenhum local encontrado com os filtros atuais.</p>';
             }
         }
 
@@ -406,7 +461,6 @@
 
             let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> DELIVERY</span>' : '';
             
-            // Cálculo de Estrelas
             let mediaEstrelas = 0;
             if(local.avaliacoes && local.avaliacoes.length > 0) {
                 let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
@@ -449,6 +503,7 @@
             document.getElementById('cidadeAtivaHeader').textContent = cidade;
             document.getElementById('cadCidade').value = cidade;
             fecharModalCidade();
+            atualizarListaBairros(); // Recarrega os bairros pra nova cidade
             renderizarLocais();
         }
         function usarGPS() {
@@ -571,7 +626,6 @@
                 if (imgBase64.startsWith('http')) {
                     imagensLinks.push(imgBase64); // Já é link do storage
                 } else {
-                    // Upload para Firebase Storage
                     let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
                     let res = await storageRef.putString(imgBase64, 'data_url');
                     let downloadUrl = await res.ref.getDownloadURL();
@@ -635,7 +689,6 @@
                 galeria.innerHTML += `<img src="${imgUrl}" class="galeria-imagem">`;
             });
 
-            // Média de Avaliações
             let media = 0;
             if(local.avaliacoes && local.avaliacoes.length > 0) {
                 let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
@@ -680,11 +733,10 @@
             document.getElementById('cadDesc').value = `✨ Venha conhecer ${nome}, a melhor opção de ${cat} da cidade! Atendimento de qualidade e excelência que você merece.`;
         }
         function perguntarIA() {
-            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria!`;
+            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
             document.getElementById('modalIA').style.display = 'block';
         }
 
-        // Painel Admin Kanban (Nuvem)
         function abrirAdmin() {
             let s = prompt("Senha do Admin:");
             if (s === "1234") {
