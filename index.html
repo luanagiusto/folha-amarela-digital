@@ -13,59 +13,86 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
     <style>
+        /* Design Tokens - Modo Claro (Padrão) */
         :root {
-            --primary: #F59E0B;       /* Amarelo Ouro / Mel moderno */
-            --primary-hover: #D97706; 
-            --dark: #1E293B;          /* Cinza Chumbo */
-            --light: #F8FAFC;         /* Fundo Gelo Suave */
-            --surface: #FFFFFF;       /* Cartões Brancos */
+            --primary: #F59E0B;
+            --primary-hover: #D97706;
+            --dark: #1E293B;
+            --light: #F8FAFC;
+            --surface: #FFFFFF;
             --gray: #64748B;
             --border: #E2E8F0;
             --success: #10B981;
             --danger: #EF4444;
             --purple: #8B5CF6;
             --warning: #F59E0B;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: #F1F5F9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        /* Design Tokens - Modo Escuro */
+        body.dark-mode {
+            --primary: #FBBF24;
+            --primary-hover: #F59E0B;
+            --dark: #F1F5F9;
+            --light: #0B0F17;
+            --surface: #131C2E;
+            --gray: #94A3B8;
+            --border: #1E293B;
+            --success: #34D399;
+            --danger: #F87171;
+            --purple: #A78BFA;
+            --warning: #FBBF24;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            --header-bg: rgba(19, 28, 46, 0.85);
+            --input-bg: #1A263E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
 
-        /* Header com Glassmorphism */
+        /* Header */
         header { 
-            background: rgba(255, 255, 255, 0.9); 
+            background: var(--header-bg); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             padding: 16px 20px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
             position: sticky; 
             top: 0; 
-            zIndex: 100; 
+            z-index: 100; 
             border-bottom: 1px solid var(--border);
         }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .logo { font-size: 22px; font-weight: 800; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
         .logo i { color: var(--primary); }
         
-        .seletor-cidade { background: #FEF3C7; color: #92400E; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
-        .seletor-cidade:hover { background: #FDE68A; }
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .seletor-cidade { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .seletor-cidade:hover { border-color: var(--primary); }
 
-        .btn-anunciar { background-color: var(--dark); color: var(--primary); border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.2s; }
-        .btn-anunciar:hover { transform: scale(1.02); }
+        .btn-theme-toggle { background: var(--input-bg); border: 1px solid var(--border); color: var(--dark); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: transform 0.2s; }
+        .btn-theme-toggle:hover { transform: scale(1.05); border-color: var(--primary); color: var(--primary); }
+
+        .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2); }
+        .btn-anunciar:hover { opacity: 0.9; }
 
         .search-container { position: relative; display: flex; gap: 8px; }
-        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: #F1F5F9; border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); transition: all 0.2s; }
-        .search-bar:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
+        .search-bar:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
         .btn-ia { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2); }
 
         .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
 
-        /* Categorias Modernas */
+        /* Categorias */
         .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
         .categorias::-webkit-scrollbar { display: none; }
         .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
-        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 20px; color: var(--gray); box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; }
-        .cat-item.active .cat-icon { border-color: var(--primary); background-color: #FEF3C7; color: #92400E; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 20px; color: var(--gray); box-shadow: var(--shadow); }
+        .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
         .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
         .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
 
@@ -73,21 +100,21 @@
         
         .patrocinados-scroll { display: flex; overflow-x: auto; gap: 16px; padding-bottom: 12px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; scroll-snap-type: x mandatory; }
         .patrocinados-scroll::-webkit-scrollbar { display: none; }
-        .patrocinados-scroll .card-local { min-width: 290px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: linear-gradient(to bottom right, #ffffff, #fffbeb); }
+        .patrocinados-scroll .card-local { min-width: 290px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: var(--surface); }
 
         .lista-locais { display: flex; flex-direction: column; gap: 16px; }
 
-        /* Cartões de Estabelecimento Sofisticados */
-        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02); position: relative; overflow: hidden; transition: all 0.25s ease; }
-        .card-local:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.05); }
+        /* Cartões */
+        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
         
-        .card-img-container { position: relative; width: 100%; height: 160px; background: #E2E8F0; }
+        .card-img-container { position: relative; width: 100%; height: 160px; background: var(--border); }
         .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
         
         .badges-container { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; align-items: center; z-index: 2; }
         .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
         
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; }
         .status-aberto { background-color: rgba(16, 185, 129, 0.95); }
         .status-fechado { background-color: rgba(239, 68, 68, 0.95); }
         .status-delivery { background-color: rgba(139, 92, 246, 0.95); }
@@ -98,62 +125,61 @@
         .card-estrelas { font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; color: var(--dark); font-weight: 600; }
         
         .card-actions { display: flex; gap: 10px; }
-        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; transition: all 0.2s; }
-        .btn-outline { background-color: #F1F5F9; border: 1px solid var(--border); color: var(--dark); }
-        .btn-outline:hover { background-color: #E2E8F0; }
-        .btn-wpp { background-color: #10B981; color: white !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); }
-        .btn-wpp:hover { background-color: #059669; }
+        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
+        .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
+        .btn-outline:hover { border-color: var(--primary); }
+        .btn-wpp { background-color: var(--success); color: white !important; }
+        .btn-wpp:hover { opacity: 0.9; }
 
-        /* Modais com Animações Suaves */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
-        .modal-content { background: var(--surface); padding: 24px; width: 90%; max-width: 480px; margin: 60px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border: 1px solid var(--border); }
-        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: #F1F5F9; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .close:hover { background: #E2E8F0; }
+        /* Modais */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 480px; margin: 60px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .close:hover { color: var(--dark); }
         
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
-        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: #F8FAFC; transition: all 0.2s; }
-        .form-control:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
+        .form-control:focus { border-color: var(--primary); }
         
-        .btn-submit { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); transition: background 0.2s; }
-        .btn-submit:hover { background-color: var(--primary-hover); }
+        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+        .btn-submit:hover { opacity: 0.9; }
 
         .galeria-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; scroll-snap-type: x mandatory; margin-top: 15px; }
         .galeria-scroll::-webkit-scrollbar { height: 4px; }
-        .galeria-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
-        .galeria-imagem { min-width: 85%; height: 220px; object-fit: cover; border-radius: 16px; scroll-snap-align: center; background-color: #F1F5F9; }
+        .galeria-scroll::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 4px; }
+        .galeria-imagem { min-width: 85%; height: 220px; object-fit: cover; border-radius: 16px; scroll-snap-align: center; background-color: var(--input-bg); }
         
         .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .botoes-acao-detalhes button { flex: 1; min-width: 85px; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; }
-        .btn-ligar { background-color: var(--dark); color: white; }
-        .btn-mapa { background-color: #FEF3C7; color: #92400E; }
-        .btn-share { border: 1px solid var(--border); color: var(--purple); background: #F3E8FF; }
+        .btn-ligar { background-color: var(--dark); color: var(--surface); }
+        .btn-mapa { background-color: var(--input-bg); color: var(--dark); border: 1px solid var(--border); }
+        .btn-share { border: 1px solid var(--border); color: var(--purple); background: var(--input-bg); }
 
         .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
         .dia-fechado { color: var(--danger); font-weight: 700; }
 
-        .avaliacao-box { background: #F8FAFC; border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-top: 16px; text-align: center; }
-        .estrelas-input { font-size: 26px; color: #CBD5E1; cursor: pointer; margin: 4px 0; }
-        .estrelas-input span:hover, .estrelas-input span.ativo { color: #F59E0B; }
+        .avaliacao-box { background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-top: 16px; text-align: center; }
+        .estrelas-input { font-size: 26px; color: var(--gray); cursor: pointer; margin: 4px 0; }
+        .estrelas-input span:hover, .estrelas-input span.ativo { color: var(--primary); }
 
         footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
-        .admin-link { color: var(--gray); text-decoration: none; font-weight: 600; cursor: pointer; margin-left: 8px; padding: 4px 8px; border-radius: 6px; background: #F1F5F9; }
-        .admin-link:hover { color: var(--dark); background: #E2E8F0; }
+        .admin-link { color: var(--gray); text-decoration: none; font-weight: 600; cursor: pointer; margin-left: 8px; padding: 4px 8px; border-radius: 6px; background: var(--input-bg); }
+        .admin-link:hover { color: var(--dark); }
         
-        /* Dashboard Admin Moderno */
+        /* Dashboard Admin */
         #painelAdmin { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: white; padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: var(--surface); padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; box-shadow: var(--shadow); }
         .admin-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-        .kpi-card { flex: 1; min-width: 140px; background: var(--surface); padding: 18px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
-        .kpi-card h3 { font-size: 11px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; }
+        .kpi-card { flex: 1; min-width: 140px; background: var(--surface); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .kpi-card h3 { font-size: 11px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
         .kpi-card p { font-size: 26px; font-weight: 800; color: var(--dark); }
         
         .kanban-board { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
-        .kanban-col { flex: 1; min-width: 300px; background: #E2E8F0; border-radius: 16px; padding: 16px; border: 1px solid #CBD5E1; }
-        .kanban-col h3 { font-size: 15px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #CBD5E1; color: var(--dark); font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .kanban-card { background: var(--surface); padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid var(--border); border-left: 4px solid var(--gray); }
-        .btn-admin-action { background: var(--dark); color: white; border: none; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-top: 8px; font-weight: 700; transition: background 0.2s; }
-        .btn-admin-action:hover { opacity: 0.9; }
+        .kanban-col { flex: 1; min-width: 300px; background: var(--input-bg); border-radius: 16px; padding: 16px; border: 1px solid var(--border); }
+        .kanban-col h3 { font-size: 15px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); color: var(--dark); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .kanban-card { background: var(--surface); padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); border-left: 4px solid var(--gray); }
+        .btn-admin-action { background: var(--dark); color: var(--surface); border: none; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-top: 8px; font-weight: 700; }
         .btn-admin-edit { background: #0EA5E9; color: white; }
         .btn-admin-del { background: var(--danger); color: white; }
         .btn-admin-approve { background: var(--success); color: white; width: 100%; margin-bottom: 6px; }
@@ -164,7 +190,13 @@
     <header>
         <div class="top-bar">
             <a href="#" class="logo"><i class="fas fa-book-open"></i> Folha Amarela</a>
-            <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
+            
+            <div class="header-actions">
+                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
+            </div>
         </div>
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -172,7 +204,7 @@
                 <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
             </div>
             
-            <div style="display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px;">
+            <div style="display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px;">
                 <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
                 <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 130px;">
                     <option value="">Todos os Bairros</option>
@@ -188,7 +220,7 @@
     </header>
 
     <main class="container">
-        <!-- Categorias Modernas -->
+        <!-- Categorias -->
         <div class="categorias">
             <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)">
                 <div class="cat-icon"><i class="fas fa-hamburger"></i></div>
@@ -218,7 +250,7 @@
 
         <!-- Seção Patrocinados -->
         <div id="secaoPatrocinados" style="display: none; margin-bottom: 28px;">
-            <h3 class="secao-header" style="color: #B45309;"><i class="fas fa-crown" style="color: #F59E0B;"></i> Em Destaque VIP</h3>
+            <h3 class="secao-header"><i class="fas fa-crown" style="color: var(--primary);"></i> Em Destaque VIP</h3>
             <div id="listaPatrocinados" class="patrocinados-scroll"></div>
         </div>
 
@@ -231,7 +263,7 @@
         </div>
     </main>
 
-    <!-- Modal de Login Admin -->
+    <!-- Modal Login Admin -->
     <div id="modalLoginAdmin" class="modal">
         <div class="modal-content" style="max-width: 320px; text-align: center;">
             <span class="close" onclick="document.getElementById('modalLoginAdmin').style.display='none'">&times;</span>
@@ -247,7 +279,7 @@
     <div id="modalCadastro" class="modal">
         <div class="modal-content" style="max-width: 520px;">
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
-            <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px; letter-spacing: -0.3px;">Anunciar Negócio</h2>
+            <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px;">Anunciar Negócio</h2>
             <input type="hidden" id="cadId">
             <div class="form-group">
                 <label>Nome do Estabelecimento</label>
@@ -279,7 +311,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                     <input type="checkbox" id="cadApenasDelivery" style="width: 18px; height: 18px; accent-color: var(--primary);">
                     <span>Trabalha apenas com Delivery (Sem loja física)</span>
                 </label>
@@ -314,7 +346,7 @@
         </div>
     </div>
 
-    <!-- Modal de Detalhes Completo -->
+    <!-- Modal de Detalhes -->
     <div id="modalDetalhes" class="modal">
         <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
             <div style="position: relative;">
@@ -323,20 +355,20 @@
             </div>
             
             <div style="padding: 24px;">
-                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px; letter-spacing: -0.5px;">Nome do Local</h2>
-                <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px; font-weight: 500;">
+                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome do Local</h2>
+                <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">
                     <span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span>
                 </p>
                 
                 <div class="botoes-acao-detalhes">
-                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp" style="font-size: 15px;"></i> WhatsApp</button>
+                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                     <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
                     <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
                     <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Compartilhar</button>
                 </div>
 
-                <div style="margin: 20px 0; background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
-                    <p id="detDetalhesDescricao" style="line-height: 1.6; color: #334155; font-size: 14px;"></p>
+                <div style="margin: 20px 0; background: var(--input-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
+                    <p id="detDetalhesDescricao" style="line-height: 1.6; font-size: 14px;"></p>
                 </div>
 
                 <div class="avaliacao-box">
@@ -344,7 +376,7 @@
                     <div class="estrelas-input" id="containerEstrelasInput">
                         <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
                     </div>
-                    <p style="font-size: 12px; color: var(--gray); font-weight: 500;" id="textoMediaAvaliacao">Média atual: --</p>
+                    <p style="font-size: 12px; color: var(--gray);" id="textoMediaAvaliacao">Média atual: --</p>
                 </div>
 
                 <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
@@ -364,7 +396,7 @@
             <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
             <h2 style="margin-bottom: 16px; font-size: 20px;">Onde você está?</h2>
             <button class="btn-submit" onclick="mudarCidade('Paraisópolis')" style="margin-bottom: 10px;">Paraisópolis, MG</button>
-            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: #F1F5F9; color: var(--dark); margin-bottom: 16px; border: 1px solid var(--border); box-shadow: none;">Alfenas, MG</button>
+            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: var(--input-bg); color: var(--dark); margin-bottom: 16px; border: 1px solid var(--border); box-shadow: none;">Alfenas, MG</button>
             <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar minha localização atual</button>
         </div>
     </div>
@@ -374,7 +406,7 @@
         <div class="modal-content" style="max-width: 400px;">
             <span class="close" onclick="document.getElementById('modalIA').style.display='none'">&times;</span>
             <h3 style="color: var(--purple); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-sparkles"></i> Assistente Virtual</h3>
-            <p id="textoIA" style="line-height: 1.6; color: #334155; font-size: 14px;"></p>
+            <p id="textoIA" style="line-height: 1.6; font-size: 14px;"></p>
         </div>
     </div>
 
@@ -385,7 +417,7 @@
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                 <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
-                <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;">Sair</button>
+                <button onclick="fecharAdmin()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
             </div>
         </div>
         
@@ -403,23 +435,23 @@
                 <h3>Só Delivery</h3>
                 <p id="kpiDelivery">0</p>
             </div>
-            <div class="kpi-card" style="border-color: var(--warning); background-color: #fffbeb;">
-                <h3 style="color: #92400E;">Pendentes</h3>
-                <p id="kpiPendentes" style="color: #92400E;">0</p>
+            <div class="kpi-card" style="border-color: var(--warning);">
+                <h3>Pendentes</h3>
+                <p id="kpiPendentes">0</p>
             </div>
         </div>
         
         <div class="kanban-board">
-            <div class="kanban-col" style="background: #FEF3C7; border: 1px solid #FDE68A;">
-                <h3 style="color: #92400E;"><i class="fas fa-hourglass-half"></i> Pendentes (Aprovação)</h3>
+            <div class="kanban-col">
+                <h3><i class="fas fa-hourglass-half"></i> Pendentes (Aprovação)</h3>
                 <div id="colunaPendentes"></div>
             </div>
             <div class="kanban-col">
                 <h3><i class="fas fa-store"></i> Plano Grátis</h3>
                 <div id="colunaGratis"></div>
             </div>
-            <div class="kanban-col" style="background: #FEF3C7; border: 1px solid #FDE68A;">
-                <h3 style="color: #B45309;"><i class="fas fa-star" style="color: #F59E0B;"></i> VIP Destaque</h3>
+            <div class="kanban-col">
+                <h3><i class="fas fa-star" style="color: var(--primary);"></i> VIP Destaque</h3>
                 <div id="colunaVIP"></div>
             </div>
         </div>
@@ -431,6 +463,25 @@
     </footer>
 
     <script>
+        // Inicialização do Tema (Dark/Light)
+        function carregarTemaSalvo() {
+            const temaSalvo = localStorage.getItem('folha_theme');
+            if (temaSalvo === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        carregarTemaSalvo();
+
+        // Configuração Firebase e Restante do App
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -546,7 +597,7 @@
                 let soma = local.avaliacoes.reduce((a, b) => a + b, 0);
                 mediaEstrelas = (soma / local.avaliacoes.length).toFixed(1);
             }
-            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star" style="color: #F59E0B;"></i> <span><b>${mediaEstrelas}</b> (${local.avaliacoes.length})</span></div>` : `<div class="card-estrelas" style="color:var(--gray); font-size:12px;">Sem avaliações</div>`;
+            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star" style="color: var(--primary);"></i> <span><b>${mediaEstrelas}</b> (${local.avaliacoes.length})</span></div>` : `<div class="card-estrelas" style="color:var(--gray); font-size:12px;">Sem avaliações</div>`;
 
             let imagemCapa = local.imagens && local.imagens.length > 0 ? local.imagens[0] : '';
             let imagemHtml = imagemCapa ? `<div class="card-img-container"><img src="${imagemCapa}" alt="${local.nome}"><div class="badges-container">${deliveryBadge} ${statusBadge}</div></div>` : '';
@@ -877,10 +928,10 @@
                 } else {
                     btnStatus = local.is_featured 
                         ? `<button class="btn-admin-action" style="width: 100%; margin-bottom: 6px; background: #92400E;" onclick="toggleVIP('${local.idDoc}', false)">⬇️ Remover VIP</button>`
-                        : `<button class="btn-admin-action" style="background: var(--primary); color: white; width: 100%; margin-bottom: 6px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Virar VIP (Destaque)</button>`;
+                        : `<button class="btn-admin-action" style="background: var(--primary); color: #1E293B; width: 100%; margin-bottom: 6px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Virar VIP (Destaque)</button>`;
                 }
 
-                let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: #CBD5E1;");
+                let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: var(--gray);");
 
                 let card = `
                     <div class="kanban-card" style="${cardCSS}">
