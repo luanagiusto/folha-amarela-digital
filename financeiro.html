@@ -12,34 +12,66 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
+        /* Design Tokens - Modo Claro (Padrão) */
         :root {
-            --primary: #FFD700;
-            --dark: #1A1A1A;
-            --light: #F5F5F5;
-            --gray: #666666;
-            --success: #28a745;
-            --danger: #dc3545;
+            --primary: #F59E0B;
+            --primary-hover: #D97706;
+            --dark: #1E293B;
+            --light: #F8FAFC;
+            --surface: #FFFFFF;
+            --gray: #64748B;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --danger: #EF4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --input-bg: #F1F5F9;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--light); color: var(--dark); padding: 20px; }
+        /* Design Tokens - Modo Escuro */
+        body.dark-mode {
+            --primary: #FBBF24;
+            --primary-hover: #F59E0B;
+            --dark: #F1F5F9;
+            --light: #0B0F17;
+            --surface: #131C2E;
+            --gray: #94A3B8;
+            --border: #1E293B;
+            --success: #34D399;
+            --danger: #F87171;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            --input-bg: #1A263E;
+        }
 
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .header-fin { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        body { background-color: var(--light); color: var(--dark); padding: 20px; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+        .container { width: 100%; max-width: 800px; background: var(--surface); padding: 28px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; outline: none; }
-        .btn-submit { background-color: var(--success); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .header-fin { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .header-actions { display: flex; gap: 8px; align-items: center; }
 
-        .tabela-financeira { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; margin-top: 15px; }
-        .tabela-financeira th { background: var(--dark); color: white; padding: 12px 10px; }
-        .tabela-financeira td { padding: 10px; border-bottom: 1px solid #eee; }
-        .tabela-financeira tr:hover { background-color: #f9f9f9; }
+        .btn-theme-toggle { background: var(--input-bg); border: 1px solid var(--border); color: var(--dark); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .btn-theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Modal de Senha Inicial */
-        .modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; width: 90%; max-width: 350px; border-radius: 12px; text-align: center; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
+        .form-control { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
+        .form-control:focus { border-color: var(--primary); }
+
+        .btn-submit { background-color: var(--success); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-top: 12px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .btn-submit:hover { opacity: 0.9; }
+
+        /* Tabela Moderna */
+        .tabela-wrapper { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; margin-top: 16px; background: var(--surface); }
+        .tabela-financeira { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        .tabela-financeira th { background: var(--input-bg); color: var(--dark); padding: 14px 16px; font-weight: 700; border-bottom: 1px solid var(--border); }
+        .tabela-financeira td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--dark); }
+        .tabela-financeira tr:last-child td { border-bottom: none; }
+        .tabela-financeira tr:hover { background-color: var(--input-bg); }
+
+        /* Modal de Autenticação na Rota */
+        .modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--surface); padding: 32px; width: 90%; max-width: 360px; border-radius: 24px; text-align: center; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -47,26 +79,37 @@
     <!-- Modal de Autenticação na Rota -->
     <div id="modalSenha" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 5px;"><i class="fas fa-lock"></i> Rota Protegida</h2>
+            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-lock"></i></div>
+            <h2 style="margin-bottom: 4px; font-size: 20px; color: var(--dark);">Rota Protegida</h2>
             <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Digite a senha do gestor</p>
-            <input type="password" id="senhaRota" class="form-control" placeholder="Senha..." style="text-align: center; margin-bottom: 15px;">
-            <button class="btn-submit" onclick="verificarSenha()" style="background: var(--dark);">Acessar Financeiro</button>
-            <button onclick="window.location.href='index.html'" style="background: none; border: none; color: var(--gray); margin-top: 15px; cursor: pointer; text-decoration: underline;">Voltar ao site</button>
+            <input type="password" id="senhaRota" class="form-control" placeholder="Senha..." style="text-align: center; margin-bottom: 16px;">
+            <button class="btn-submit" onclick="verificarSenha()" style="background: var(--dark); color: var(--surface);">Acessar Financeiro</button>
+            <button onclick="window.location.href='index.html'" style="background: none; border: none; color: var(--gray); margin-top: 16px; cursor: pointer; font-size: 13px; text-decoration: underline;">Voltar ao site</button>
         </div>
     </div>
 
     <div class="container" id="conteudoFinanceiro" style="display: none;">
         <div class="header-fin">
             <div>
-                <h2><i class="fas fa-hand-holding-usd" style="color: var(--success);"></i> Central Financeira</h2>
-                <p style="font-size: 13px; color: var(--gray);">Gestão de assinaturas e faturamento VIP</p>
+                <h2 style="font-size: 22px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-hand-holding-usd" style="color: var(--success);"></i> Central Financeira
+                </h2>
+                <p style="font-size: 13px; color: var(--gray); margin-top: 2px;">Gestão de assinaturas e faturamento VIP</p>
             </div>
-            <button onclick="window.location.href='index.html'" class="form-control" style="width: auto; background: var(--dark); color: white; border: none; cursor: pointer; font-weight: bold;"><i class="fas fa-arrow-left"></i> Voltar ao App</button>
+            
+            <div class="header-actions">
+                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button onclick="window.location.href='index.html'" class="form-control" style="width: auto; background: var(--dark); color: var(--surface); border: none; cursor: pointer; font-weight: 700; font-size: 13px; padding: 10px 16px; border-radius: 12px;">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+            </div>
         </div>
 
-        <div style="background: #fdfdfd; border: 1px solid #eee; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-            <h3 style="font-size: 16px; margin-bottom: 15px;">Lançar Novo Pagamento Pix</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 24px; border-radius: 20px; margin-bottom: 28px;">
+            <h3 style="font-size: 16px; margin-bottom: 16px; font-weight: 700;"><i class="fas fa-plus-circle" style="color: var(--primary);"></i> Lançar Novo Pagamento Pix</h3>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                 <div style="flex: 2; min-width: 200px;">
                     <label>Estabelecimento</label>
                     <select id="pagLocal" class="form-control"></select>
@@ -80,19 +123,21 @@
                     <input type="date" id="pagData" class="form-control">
                 </div>
             </div>
-            <label style="margin-top: 15px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px;">
-                <input type="checkbox" id="pagAutoVip" checked style="width: 16px; height: 16px;"> 
+            <label style="margin-top: 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; font-weight: 500;">
+                <input type="checkbox" id="pagAutoVip" checked style="width: 18px; height: 18px; accent-color: var(--primary);"> 
                 <b>Ativar destaque VIP automaticamente ao lançar</b>
             </label>
             <button class="btn-submit" onclick="registrarPagamento()">Registrar Pagamento na Nuvem</button>
         </div>
 
-        <h3 style="font-size: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-            Histórico de Receita
-            <span style="color: var(--success); font-size: 20px;">Total: R$ <span id="totalReceita">0,00</span></span>
-        </h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 18px; font-weight: 700; letter-spacing: -0.3px;">Histórico de Receita</h3>
+            <div style="font-size: 15px; font-weight: 700; color: var(--success); background: var(--input-bg); padding: 8px 14px; border-radius: 12px; border: 1px solid var(--border);">
+                Total: R$ <span id="totalReceita">0,00</span>
+            </div>
+        </div>
         
-        <div style="overflow-x: auto; border: 1px solid #ddd; border-radius: 8px;">
+        <div class="tabela-wrapper">
             <table class="tabela-financeira">
                 <thead>
                     <tr>
@@ -103,13 +148,31 @@
                     </tr>
                 </thead>
                 <tbody id="tabelaPagamentos">
-                    <tr><td colspan="4" style="text-align:center;">Carregando histórico...</td></tr>
+                    <tr><td colspan="4" style="text-align:center; padding: 20px; color: var(--gray);">Carregando histórico...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
+        // Sincronização do Tema Claro/Escuro com o app principal
+        function carregarTemaSalvo() {
+            const temaSalvo = localStorage.getItem('folha_theme');
+            if (temaSalvo === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        carregarTemaSalvo();
+
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -139,7 +202,6 @@
         function iniciarDadosFinanceiros() {
             document.getElementById('pagData').valueAsDate = new Date();
 
-            // Puxa locais para o select
             db.collection("locais").onSnapshot((snapshot) => {
                 listaLocaisCache = [];
                 snapshot.forEach((doc) => {
@@ -148,7 +210,6 @@
                 popularSelectLocais();
             });
 
-            // Puxa pagamentos
             db.collection("pagamentos").orderBy("data", "desc").onSnapshot((snapshot) => {
                 listaPagamentosCache = [];
                 snapshot.forEach((doc) => {
@@ -202,7 +263,7 @@
             let total = 0;
 
             if(listaPagamentosCache.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:#666;">Nenhum pagamento registrado.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--gray);">Nenhum pagamento registrado.</td></tr>';
                 document.getElementById('totalReceita').textContent = '0,00';
                 return;
             }
@@ -212,11 +273,11 @@
                 let dataF = p.data.split('-').reverse().join('/');
                 tbody.innerHTML += `
                     <tr>
-                        <td>${dataF}</td>
-                        <td style="font-weight: bold;">${p.nomeLocal}</td>
-                        <td style="color: var(--success); font-weight: bold;">R$ ${p.valor.toFixed(2).replace('.',',')}</td>
+                        <td style="font-weight: 500;">${dataF}</td>
+                        <td style="font-weight: 700;">${p.nomeLocal}</td>
+                        <td style="color: var(--success); font-weight: 700;">R$ ${p.valor.toFixed(2).replace('.',',')}</td>
                         <td style="text-align: center;">
-                            <button onclick="excluirPagamento('${p.idDoc}')" style="background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;"><i class="fas fa-trash"></i></button>
+                            <button onclick="excluirPagamento('${p.idDoc}')" style="background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer;"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
