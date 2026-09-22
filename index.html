@@ -302,11 +302,18 @@
                     <input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro">
                 </div>
             </div>
+
             <div class="form-group">
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="cadApenasDelivery" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    <input type="checkbox" id="cadApenasDelivery" onchange="toggleDeliveryMode()" style="width: 18px; height: 18px; accent-color: var(--primary);">
                     <span>Trabalha apenas com Delivery (Sem loja física)</span>
                 </label>
+            </div>
+
+            <!-- Campo de Endereço Físico (oculto se apenas delivery) -->
+            <div class="form-group" id="grupoEndereco">
+                <label>Endereço Físico (Rua e Número)</label>
+                <input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Major Luiz Pinto, 123">
             </div>
 
             <!-- Grade de Horários por Dia da Semana -->
@@ -372,8 +379,11 @@
             
             <div style="padding: 24px;">
                 <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome do Local</h2>
-                <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">
+                <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;">
                     <span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span>
+                </p>
+                <p id="detDetalhesEnderecoCompleto" style="font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 20px; display: none;">
+                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="textoEnderecoVal"></span>
                 </p>
                 
                 <div class="botoes-acao-detalhes">
@@ -495,6 +505,12 @@
         }
 
         carregarTemaSalvo();
+
+        function toggleDeliveryMode() {
+            let apenasDeliv = document.getElementById('cadApenasDelivery').checked;
+            let grupoEnd = document.getElementById('grupoEndereco');
+            grupoEnd.style.display = apenasDeliv ? 'none' : 'block';
+        }
 
         function toggleDiaFechado(dia) {
             let fechado = document.getElementById(`hor_${dia}_fechado`).checked;
@@ -747,7 +763,9 @@
             document.getElementById('cadId').value = '';
             document.getElementById('cadNome').value = '';
             document.getElementById('cadBairro').value = '';
+            document.getElementById('cadEndereco').value = '';
             document.getElementById('cadApenasDelivery').checked = false;
+            toggleDeliveryMode();
             document.getElementById('cadWpp').value = '';
             document.getElementById('cadDesc').value = '';
             document.getElementById('cadFotos').value = '';
@@ -770,7 +788,9 @@
                     document.getElementById('cadCategoria').value = local.categoria;
                     document.getElementById('cadCidade').value = local.cidade;
                     document.getElementById('cadBairro').value = local.bairro || '';
+                    document.getElementById('cadEndereco').value = local.endereco || '';
                     document.getElementById('cadApenasDelivery').checked = local.apenasDelivery || false;
+                    toggleDeliveryMode();
                     document.getElementById('cadWpp').value = local.whatsapp;
                     document.getElementById('cadDesc').value = local.descricao || '';
                     imagensUploadTemp = local.imagens || [];
@@ -850,6 +870,7 @@
                     categoria: document.getElementById('cadCategoria').value,
                     cidade: document.getElementById('cadCidade').value,
                     bairro: document.getElementById('cadBairro').value,
+                    endereco: document.getElementById('cadApenasDelivery').checked ? '' : document.getElementById('cadEndereco').value,
                     apenasDelivery: document.getElementById('cadApenasDelivery').checked,
                     whatsapp: document.getElementById('cadWpp').value,
                     descricao: document.getElementById('cadDesc').value,
@@ -891,6 +912,16 @@
             document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
             document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição cadastrada.';
 
+            let boxEndereco = document.getElementById('detDetalhesEnderecoCompleto');
+            let textoEndVal = document.getElementById('textoEnderecoVal');
+            
+            if (local.endereco && !local.apenasDelivery) {
+                textoEndVal.textContent = `${local.endereco}, ${local.bairro ? local.bairro + ' - ' : ''}${local.cidade}`;
+                boxEndereco.style.display = 'block';
+            } else {
+                boxEndereco.style.display = 'none';
+            }
+
             document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
             document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
             
@@ -904,7 +935,8 @@
                 btnMapa.style.display = 'none';
             } else {
                 btnMapa.style.display = 'flex';
-                btnMapa.onclick = () => window.open(`https://maps.google.com/?q=${encodeURIComponent(local.nome + ', ' + local.cidade)}`, '_blank');
+                let consultaMapa = local.endereco ? `${local.endereco}, ${local.bairro || ''}, ${local.cidade}` : `${local.nome}, ${local.cidade}`;
+                btnMapa.onclick = () => window.open(`https://maps.google.com/?q=${encodeURIComponent(consultaMapa)}`, '_blank');
             }
 
             const galeria = document.getElementById('detDetalhesImagens');
@@ -956,7 +988,7 @@
             document.getElementById('cadDesc').value = `✨ Venha conhecer ${nome}, a melhor opção de ${cat} da cidade! Atendimento de qualidade e excelência que você merece.`;
         }
         function perguntarIA() {
-            document.getElementById('textoIA').innerHTML = `Analisei os registros en nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
+            document.getElementById('textoIA').innerHTML = `Analisei os registros em nuvem para <b>${cidadeAtual}</b>. Recomendo conferir os destaques no topo da página ou buscar diretamente por categoria e bairro!`;
             document.getElementById('modalIA').style.display = 'block';
         }
 
