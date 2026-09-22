@@ -1,33 +1,26 @@
-const CACHE_NAME = 'folha-amarela-v2';
+const CACHE_NAME = 'folha-amarela-v3';
 
-// Instala e força a ativação imediata
+// Instala e força a ativação imediata da nova versão
 self.addEventListener('install', event => {
   self.skipWaiting();
+});
+
+// Limpa todos os caches antigos imediatamente
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(['/', '/index.html']);
-    })
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
 });
 
-// Limpa caches antigos automaticamente ao atualizar
-self.addEventListener('activate', event => {
-  event.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(keys => {
-            return Promise.all(
-                keys.map(key => {
-                    if (key !== CACHE_NAME) {
-                        return caches.delete(key);
-                    }
-                })
-            );
-        }).then(() => self.clients.claim())
-    );
-});
-});
-
-// Estratégia Network-First: Tenta buscar a versão nova na internet; se estiver offline, usa o cache
+// Busca sempre a versão mais recente na internet (Vercel), usando cache apenas se estiver offline
 self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request).catch(() => {
