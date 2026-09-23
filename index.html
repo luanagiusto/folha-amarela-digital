@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,8 +59,10 @@
             z-index: 100; 
         }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        
+        /* Ajuste perfeito da Logo no Cabeçalho */
         .logo { text-decoration: none; display: flex; align-items: center; }
-        .logo img { height: 40px; width: auto; object-fit: contain; }
+        .logo img { height: 52px; width: auto; object-fit: contain; }
         
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
@@ -262,7 +264,7 @@
         <div id="secaoRegulares">
             <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos</h3>
             <div id="listaLocais" class="lista-locais">
-                <p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais da nuvem...</p>
+                <p style="text-align:center; color:var(--gray); padding:30px;">Carregando locais da nuvem...</p>
             </div>
         </div>
     </main>
@@ -280,14 +282,14 @@
                 <input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com">
             </div>
             <div class="form-group" style="text-align: left;">
-                <label>Palavra-passe</label>
-                <input type="password" id="acessoSenha" class="form-control" placeholder="A sua palavra-passe...">
+                <label>Senha</label>
+                <input type="password" id="acessoSenha" class="form-control" placeholder="Sua senha...">
             </div>
             
             <button class="btn-submit" id="btnSubmitAcesso" onclick="executarLoginUnificado()">Entrar</button>
             
             <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAcesso()">
-                <span id="txtAlternarAcesso">Não tem conta de lojista? <b>Registe-se grátis</b></span>
+                <span id="txtAlternarAcesso">Não tem conta de lojista? <b>Cadastre-se grátis</b></span>
             </p>
         </div>
     </div>
@@ -301,11 +303,11 @@
             </div>
             <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
                 <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
-                    Olá! Sou o assistente virtual da <b>Folha Amarela Digital</b> em <b><span id="cidadeChatAtual">Paraisópolis</span></b>. O que procura hoje? (Ex: <i>"Onde tem farmácia?", "Quero comer um lanche", "Tem pet shop aberto?"</i>)
+                    Olá! Sou o assistente virtual da <b>Folha Amarela Digital</b> em <b><span id="cidadeChatAtual">Paraisópolis</span></b>. O que você procura hoje? (Ex: <i>"Onde tem farmácia?", "Quero comer um lanche", "Tem pet shop aberto?"</i>)
                 </div>
             </div>
             <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; border-top: 1px solid var(--border);">
-                <input type="text" id="inputChatUser" class="form-control" placeholder="Escreva a sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
+                <input type="text" id="inputChatUser" class="form-control" placeholder="Digite sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
                 <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -408,7 +410,7 @@
                 </label>
                 <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea>
             </div>
-            <button class="btn-submit" id="btnSalvarCadastro" onclick="salvarLocal()">Guardar no Guia</button>
+            <button class="btn-submit" id="btnSalvarCadastro" onclick="salvarLocal()">Salvar no Guia</button>
         </div>
     </div>
 
@@ -433,7 +435,7 @@
                     <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                     <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
                     <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
-                    <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Partilhar</button>
+                    <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Compartilhar</button>
                 </div>
 
                 <div style="margin: 20px 0; background: var(--input-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
@@ -441,7 +443,7 @@
                 </div>
 
                 <div class="avaliacao-box">
-                    <p style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">O que achou deste local?</p>
+                    <p style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">O que você achou deste local?</p>
                     <div class="estrelas-input" id="containerEstrelasInput">
                         <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
                     </div>
@@ -463,19 +465,19 @@
         <div class="modal-content" style="text-align: center; max-width: 360px;">
             <span class="close" onclick="fecharModalCidade()">&times;</span>
             <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
-            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde está?</h2>
+            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde você está?</h2>
             <button class="btn-submit" onclick="mudarCidade('Paraisópolis')" style="margin-bottom: 10px;">Paraisópolis, MG</button>
             <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: var(--input-bg); color: var(--dark); margin-bottom: 16px; border: 1px solid var(--border); box-shadow: none;">Alfenas, MG</button>
-            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar a minha localização atual</button>
+            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar minha localização atual</button>
         </div>
     </div>
 
     <!-- Painel do Lojista -->
     <div id="painelLojista">
         <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-store"></i> O Meu Estabelecimento</h2>
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-store"></i> Meu Estabelecimento</h2>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair / Terminar Sessão</button>
+                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair / Logout</button>
             </div>
         </div>
 
@@ -489,7 +491,7 @@
         <div class="admin-header">
             <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial (Admin + IA)</h2>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="buscaKanban" class="form-control" placeholder="Procurar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
+                <input type="text" id="buscaKanban" class="form-control" placeholder="Buscar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                 <button onclick="window.location.href='financeiro.html'" class="btn-card" style="background: var(--success); color: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px;"><i class="fas fa-dollar-sign"></i> Financeiro</button>
                 <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
             </div>
@@ -498,7 +500,7 @@
         <!-- IA Insights Box para o Administrador -->
         <div style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.15)); border: 1px solid var(--purple); padding: 18px; border-radius: 16px; margin-bottom: 24px;">
             <h3 style="font-size: 15px; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Relatório de Oportunidades & Marketing (IA)</h3>
-            <p id="textoAdminInsights" style="font-size: 13px; line-height: 1.6; color: var(--dark);">A analisar dados da cidade...</p>
+            <p id="textoAdminInsights" style="font-size: 13px; line-height: 1.6; color: var(--dark);">Analisando dados da cidade...</p>
         </div>
 
         <div class="admin-kpis">
@@ -609,7 +611,7 @@
         auth.onAuthStateChanged((user) => {
             usuarioLogado = user;
             if(user) {
-                document.getElementById('txtBtnAcesso').textContent = user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel";
+                document.getElementById('txtBtnAcesso').textContent = user.email === ADMIN_EMAIL ? "Painel Admin" : "Meu Painel";
             } else {
                 document.getElementById('txtBtnAcesso').textContent = "Área de acesso";
             }
@@ -643,23 +645,23 @@
 
         function atualizarTextoAuthModal() {
             if(isModoCadastroAuth) {
-                document.getElementById('tituloAreaAcesso').textContent = "Registo de Lojista";
-                document.getElementById('btnSubmitAcesso').textContent = "Registar Conta";
+                document.getElementById('tituloAreaAcesso').textContent = "Cadastro de Lojista";
+                document.getElementById('btnSubmitAcesso').textContent = "Cadastrar Conta";
                 document.getElementById('txtAlternarAcesso').innerHTML = "Já tem uma conta? <b>Faça login</b>";
             } else {
                 document.getElementById('tituloAreaAcesso').textContent = "Área de Acesso";
                 document.getElementById('btnSubmitAcesso').textContent = "Entrar";
-                document.getElementById('txtAlternarAcesso').innerHTML = "Não tem conta de lojista? <b>Registe-se grátis</b>";
+                document.getElementById('txtAlternarAcesso').innerHTML = "Não tem conta de lojista? <b>Cadastre-se grátis</b>";
             }
         }
 
         async function executarLoginUnificado() {
             let email = document.getElementById('acessoEmail').value.trim();
             let senha = document.getElementById('acessoSenha').value;
-            if(!email || !senha) return alert("Por favor, preencha o e-mail e a palavra-passe.");
+            if(!email || !senha) return alert("Por favor, preencha o e-mail e a senha.");
 
             if(isModoCadastroAuth && senha.length < 6) {
-                return alert("A palavra-passe precisa de ter pelo menos 6 caracteres.");
+                return alert("A senha precisa ter pelo menos 6 caracteres.");
             }
 
             if(email === ADMIN_EMAIL) {
@@ -670,7 +672,7 @@
                     renderizarKanban();
                     return;
                 } else {
-                    return alert("Palavra-passe de Administrador incorreta!");
+                    return alert("Senha do Administrador incorreta!");
                 }
             }
 
@@ -686,7 +688,7 @@
             } catch (error) {
                 let msgErro = error.message;
                 if (error.code === 'auth/operation-not-allowed') {
-                    msgErro = "O login por E-mail/Palavra-passe não está ativado na consola do Firebase (Authentication -> Sign-in method).";
+                    msgErro = "O login por E-mail/Senha não está ativado no Console do Firebase (Authentication -> Sign-in method).";
                 }
                 alert("Erro na autenticação: " + msgErro);
             }
@@ -697,7 +699,7 @@
                 isAdminLogado = false;
                 document.getElementById('painelLojista').style.display = 'none';
                 document.getElementById('painelAdmin').style.display = 'none';
-                alert("Terminou a sessão com sucesso.");
+                alert("Você saiu da sessão.");
             });
         }
 
@@ -741,26 +743,26 @@
             let locaisCidade = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente');
 
             if (p.includes('aberto') || p.includes('funcionando')) {
-                return `Verifiquei os horários registados em <b>${cidadeAtual}</b>. Recomendo confirmar os selos de <b>"Aberto"</b> diretamente nos cartões da página principal ou contactar o estabelecimento pelo WhatsApp para ter a certeza!`;
+                return `Verifiquei os horários cadastrados em <b>${cidadeAtual}</b>. Recomendo confirmar os selos de <b>"Aberto"</b> diretamente nos cartões da página principal ou contatar o estabelecimento pelo WhatsApp para ter certeza!`;
             }
 
             let encontrados = locaisCidade.filter(l => l.nome.toLowerCase().includes(p) || l.categoria.toLowerCase().includes(p) || (l.bairro && l.bairro.toLowerCase().includes(p)));
 
             if (encontrados.length > 0) {
                 let listaStr = encontrados.map(e => `&bull; <b>${e.nome}</b> (${e.categoria} - ${e.bairro || 'Centro'}) - <a href="https://wa.me/55${e.whatsapp}" target="_blank" style="color:var(--success); font-weight:700;">Chamar no WhatsApp</a>`).join('<br>');
-                return `Encontrei estas opções em ${cidadeAtual} para si:<br><br>${listaStr}`;
+                return `Encontrei estas opções em ${cidadeAtual} para você:<br><br>${listaStr}`;
             }
 
-            return `Não encontrei nenhum registo exato para "${pergunta}" em ${cidadeAtual}. Pode tentar procurar por categorias como <i>Alimentação, Pets, Saúde</i> ou explorar os nossos destaques VIP no topo!`;
+            return `Não encontrei nenhum registro exato para "${pergunta}" em ${cidadeAtual}. Você pode tentar buscar por categorias como <i>Alimentação, Pets, Saúde</i> ou explorar nossos destaques VIP no topo!`;
         }
 
         function gerarDescricaoIAAvancada() {
             let nome = document.getElementById('cadNome').value;
             let cat = document.getElementById('cadCategoria').value;
             let bairro = document.getElementById('cadBairro').value || 'Centro';
-            if(!nome) return alert("Insira primeiro o nome do estabelecimento!");
+            if(!nome) return alert("Digite o nome do estabelecimento primeiro!");
             
-            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Trabalhamos com total dedicação, qualidade e rapidez para superar as suas expetativas. Venha visitar-nos ou faça o seu pedido agora mesmo com um clique no WhatsApp! 🚀`;
+            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Trabalhamos com total dedicação, qualidade e agilidade para superar suas expectativas. Venha nos visitar ou faça seu pedido agora mesmo com um toque no WhatsApp! 🚀`;
         }
 
         function abrirPainelLojista() {
@@ -774,25 +776,25 @@
                 container.innerHTML = `
                     <div style="text-align:center; padding: 20px;">
                         <div style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-store-alt-slash"></i></div>
-                        <h3 style="margin-bottom: 8px;">Ainda não registou a sua loja</h3>
-                        <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">Registe o seu negócio agora para aparecer na Folha Amarela Digital.</p>
-                        <button class="btn-submit" style="max-width: 250px; margin: 0 auto;" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Registar o Meu Negócio</button>
+                        <h3 style="margin-bottom: 8px;">Você ainda não cadastrou sua loja</h3>
+                        <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">Cadastre seu negócio agora para aparecer na Folha Amarela Digital.</p>
+                        <button class="btn-submit" style="max-width: 250px; margin: 0 auto;" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Cadastrar Meu Negócio</button>
                     </div>
                 `;
             } else {
                 let statusVipHtml = minhaLoja.is_featured 
                     ? `<div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--primary); padding: 16px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                            <div><strong style="color: var(--primary); font-size: 15px;"><i class="fas fa-crown"></i> VIP Destaque Ativo</strong><div style="font-size: 12px; color: var(--gray);">A sua loja está no topo das recomendações!</div></div>
+                            <div><strong style="color: var(--primary); font-size: 15px;"><i class="fas fa-crown"></i> VIP Destaque Ativo</strong><div style="font-size: 12px; color: var(--gray);">Sua loja está no topo das recomendações!</div></div>
                        </div>`
                     : `<div style="background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                            <div><strong style="font-size: 15px;">Plano Grátis</strong><div style="font-size: 12px; color: var(--gray);">A sua loja aparece nas pesquisas normais.</div></div>
+                            <div><strong style="font-size: 15px;">Plano Grátis</strong><div style="font-size: 12px; color: var(--gray);">Sua loja aparece nas buscas normais.</div></div>
                             <button class="btn-card" style="background: var(--primary); color: #1E293B; border: none; padding: 10px 16px; border-radius: 10px;" onclick="queroSerVip('${minhaLoja.nome}')"><i class="fas fa-star"></i> Quero Ser VIP por R$ 10/mês</button>
                        </div>`;
 
                 container.innerHTML = `
                     ${statusVipHtml}
                     <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--purple); padding: 14px; border-radius: 12px; margin-bottom: 20px; font-size: 13px;">
-                        🤖 <b>Consultor VIP IA:</b> Lojas em destaque recebem até 4x mais cliques no WhatsApp. Por apenas 10 R$ mensais, garanta o topo do carrossel na sua cidade!
+                        🤖 <b>Consultor VIP IA:</b> Lojas em destaque recebem até 4x mais cliques no WhatsApp. Por apenas R$ 10 mensais, garanta o topo do carrossel na sua cidade!
                     </div>
                     <h3 style="font-size: 18px; margin-bottom: 6px;">${minhaLoja.nome}</h3>
                     <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">Categoria: ${minhaLoja.categoria} &bull; Bairro: ${minhaLoja.bairro || 'Centro'}</p>
@@ -802,7 +804,7 @@
         }
 
         function queroSerVip(nomeLoja) {
-            let msg = `Olá! Sou o responsável pela loja *${nomeLoja}* (${usuarioLogado.email}) e quero colocar a minha loja nos destaques VIP da Folha Amarela Digital por R$ 10. Como faço o Pix?`;
+            let msg = `Olá! Sou o responsável pela loja *${nomeLoja}* (${usuarioLogado.email}) e quero colocar minha loja nos destaques VIP da Folha Amarela Digital por R$ 10. Como faço o Pix?`;
             window.open(`https://wa.me/5535999999999?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -960,13 +962,13 @@
             renderizarLocais();
         }
         function usarGPS() {
-            alert("Localização detetada: Paraisópolis, MG");
+            alert("Localização detectada: Paraisópolis, MG");
             mudarCidade('Paraisópolis');
         }
 
         async function processarImagensUpload(input) {
             const preview = document.getElementById('previewImagens');
-            preview.innerHTML = 'A processar imagens...';
+            preview.innerHTML = 'Processando imagens...';
             imagensUploadTemp = [];
 
             for (let file of input.files) {
@@ -1093,7 +1095,7 @@
             if(!nome) return alert("Por favor, preencha o nome do estabelecimento.");
 
             let btn = document.getElementById('btnSalvarCadastro');
-            btn.textContent = "A guardar na nuvem...";
+            btn.textContent = "Salvando na nuvem...";
             btn.disabled = true;
 
             try {
@@ -1145,7 +1147,7 @@
                 } else {
                     await db.collection("locais").add(dadosLocal);
                     if(!isAdminLogado) {
-                        alert("Registo enviado com sucesso! Passará por aprovação e em breve estará online.");
+                        alert("Cadastro enviado com sucesso! Ele passará por aprovação e logo estará no ar.");
                     }
                 }
 
@@ -1153,10 +1155,10 @@
                 if(isAdminLogado) renderizarKanban();
                 if(usuarioLogado && !isAdminLogado) abrirPainelLojista();
             } catch (error) {
-                console.error("Erro ao guardar:", error);
-                alert("Erro ao guardar na nuvem: " + error.message);
+                console.error("Erro ao salvar:", error);
+                alert("Erro ao salvar na nuvem: " + error.message);
             } finally {
-                btn.textContent = "Guardar no Guia";
+                btn.textContent = "Salvar no Guia";
                 btn.disabled = false;
             }
         }
@@ -1170,7 +1172,7 @@
             document.getElementById('detDetalhesNome').textContent = local.nome;
             document.getElementById('detDetalhesCategoria').textContent = local.categoria;
             document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
-            document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição registada.';
+            document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição cadastrada.';
 
             let boxEndereco = document.getElementById('detDetalhesEnderecoCompleto');
             let textoEndVal = document.getElementById('textoEnderecoVal');
@@ -1186,7 +1188,7 @@
             document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
             
             document.getElementById('btnDetCompartilhar').onclick = () => {
-                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade}\n📱 Contacto: ${local.whatsapp}\n\nVeja horários, fotos e avaliações na aplicação:\n👉 https://www.folhaamareladigital.com.br/`;
+                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade}\n📱 Contato: ${local.whatsapp}\n\nVeja horários, fotos e avaliações no app:\n👉 https://www.folhaamareladigital.com.br/`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoZap)}`, '_blank');
             };
             
@@ -1258,7 +1260,7 @@
             document.getElementById('kpiDelivery').textContent = ativos.filter(l => l.apenasDelivery).length;
             document.getElementById('kpiPendentes').textContent = pendentes.length;
 
-            let relatorioIA = `📊 <b>Estado da Cidade (${cidadeAtual}):</b> Existem atualmente ${ativos.length} estabelecimentos ativos e ${pendentes.length} à espera de aprovação. Há ${vips.length} lojas no plano VIP de destaque. <br>💡 <b>Sugestão de Marketing IA:</b> Que tal enviar uma mensagem no WhatsApp para os lojistas do plano grátis a relembrar que o destaque por R$ 10 garante prioridade no topo?`;
+            let relatorioIA = `📊 <b>Status da Cidade (${cidadeAtual}):</b> Atualmente existem ${ativos.length} estabelecimentos ativos e ${pendentes.length} aguardando aprovação. Há ${vips.length} lojas no plano VIP de destaque. <br>💡 <b>Sugestão de Marketing IA:</b> Que tal enviar uma mensagem no WhatsApp para os lojistas do plano grátis lembrando que o destaque por R$ 10 garante prioridade no topo?`;
             document.getElementById('textoAdminInsights').innerHTML = relatorioIA;
 
             let colPendentes = document.getElementById('colunaPendentes');
@@ -1271,11 +1273,11 @@
                 
                 let btnStatus = '';
                 if(isPendente) {
-                    btnStatus = `<button class="btn-admin-action btn-admin-approve" onclick="aprovarLocal('${local.idDoc}')"><i class="fas fa-check"></i> Aprovar Registo</button>`;
+                    btnStatus = `<button class="btn-admin-action btn-admin-approve" onclick="aprovarLocal('${local.idDoc}')"><i class="fas fa-check"></i> Aprovar Cadastro</button>`;
                 } else {
                     btnStatus = local.is_featured 
                         ? `<button class="btn-admin-action" style="width: 100%; margin-bottom: 6px; background: #92400E;" onclick="toggleVIP('${local.idDoc}', false)">⬇️ Remover VIP</button>`
-                        : `<button class="btn-admin-action" style="background: var(--primary); color: #1E293B; width: 100%; margin-bottom: 6px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Tornar VIP (Destaque)</button>`;
+                        : `<button class="btn-admin-action" style="background: var(--primary); color: #1E293B; width: 100%; margin-bottom: 6px;" onclick="toggleVIP('${local.idDoc}', true)">⭐ Virar VIP (Destaque)</button>`;
                 }
 
                 let cardCSS = isPendente ? "border-left-color: var(--warning);" : (local.is_featured ? "border-left-color: var(--primary);" : "border-left-color: var(--gray);");
@@ -1302,7 +1304,7 @@
                         </div>
                         <div style="display: flex; gap: 6px; margin-top: 6px;">
                             <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')"><i class="fas fa-edit"></i> Editar</button>
-                            <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i> Apagar</button>
+                            <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')"><i class="fas fa-trash"></i> Excluir</button>
                         </div>
                     </div>`;
                 
@@ -1321,7 +1323,7 @@
         }
 
         async function excluirLocal(docId) {
-            if(confirm("Tem a certeza de que deseja apagar permanentemente da nuvem?")) {
+            if(confirm("Tem certeza que deseja excluir permanentemente da nuvem?")) {
                 await db.collection("locais").doc(docId).delete();
             }
         }
