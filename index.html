@@ -49,7 +49,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
 
-        /* Cabeçalho com Estilo Superfície / Dark Sofisticado */
+        /* Cabeçalho Ajustado */
         header { 
             background: var(--surface); 
             padding: 16px 20px; 
@@ -60,33 +60,27 @@
             border-bottom: 1px solid var(--border);
         }
         
-        /* Logo Centralizada no Topo */
-        .logo-container-center { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin-bottom: 14px; 
+        /* Linha Superior: Logo à Esquerda e Ações à Direita */
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
+
         .logo { 
             text-decoration: none; 
             display: flex; 
             align-items: center; 
         }
         .logo img { 
-            height: 42px; 
+            height: 40px; 
             width: auto; 
             object-fit: contain; 
         }
 
-        .top-bar-actions { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 12px; 
-            flex-wrap: wrap; 
-            gap: 10px; 
-        }
-        
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
         .seletor-cidade { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
@@ -100,6 +94,25 @@
 
         .btn-lojista-nav { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .btn-lojista-nav:hover { border-color: var(--primary); }
+
+        /* Linha de Filtros (Cidade e Bairro) */
+        .header-filters-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .bairro-container {
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            background: var(--input-bg); 
+            border: 1px solid var(--border); 
+            padding: 5px 12px; 
+            border-radius: 20px;
+        }
 
         .search-container { position: relative; display: flex; gap: 8px; }
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
@@ -214,18 +227,11 @@
     <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
     <header>
-        <!-- Logo Centralizada no Topo -->
-        <div class="logo-container-center">
+        <!-- Linha Superior: Logo à Esquerda e Ações à Direita -->
+        <div class="header-top-row">
             <a href="#" class="logo">
                 <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
             </a>
-        </div>
-
-        <!-- Ações do Topo -->
-        <div class="top-bar-actions">
-            <div class="seletor-cidade" onclick="abrirModalCidade()">
-                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
-            </div>
             
             <div class="header-actions">
                 <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
@@ -236,15 +242,21 @@
             </div>
         </div>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px;">
+        <!-- Linha de Filtros (Cidade e Bairro) -->
+        <div class="header-filters-row">
+            <div class="seletor-cidade" onclick="abrirModalCidade()">
+                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+            </div>
+            
+            <div class="bairro-container">
                 <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
-                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 130px;">
+                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px;">
                     <option value="">Todos os Bairros</option>
                 </select>
             </div>
         </div>
 
+        <!-- Barra de Pesquisa -->
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
             <input type="text" class="search-bar" id="inputBusca" placeholder="Pesquisar padaria, farmácia, serviço..." onkeyup="filtrarBusca()">
@@ -794,7 +806,7 @@
             return `Não encontrei nenhum registo exato para "${pergunta}" em ${cidadeAtual}. Pode tentar procurar por categorias como <i>Alimentação, Pets, Saúde</i> ou explorar os nossos destaques VIP no topo!`;
         }
 
-        function gerarDescricaoIAAvancada() {
+        function gerardescricaoIAAvancada() {
             let nome = document.getElementById('cadNome').value;
             let cat = document.getElementById('cadCategoria').value;
             let bairro = document.getElementById('cadBairro').value || 'Centro';
