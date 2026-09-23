@@ -49,7 +49,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
 
-        /* Cabeçalho Amarelo Moderno */
+        /* Cabeçalho Amarelo Moderno com Logo Centralizada */
         header { 
             background: linear-gradient(135deg, #F59E0B, #EAB308); 
             padding: 16px 20px; 
@@ -58,19 +58,33 @@
             top: 0; 
             z-index: 100; 
         }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         
-        /* Logo com fundo branco dedicado para contraste perfeito no amarelo */
+        /* Contentor Central para a Logo */
+        .logo-container-center { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin-bottom: 14px; 
+        }
         .logo { 
             text-decoration: none; 
             display: flex; 
             align-items: center; 
-            background: #FFFFFF; 
-            padding: 6px 12px; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15); 
         }
-        .logo img { height: 38px; width: auto; object-fit: contain; }
+        .logo img { 
+            height: 42px; 
+            width: auto; 
+            object-fit: contain; 
+        }
+
+        .top-bar-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 12px; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
         
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
@@ -199,10 +213,18 @@
     <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
     <header>
-        <div class="top-bar">
+        <!-- Logo Centralizada -->
+        <div class="logo-container-center">
             <a href="#" class="logo">
-                <img src="logo.png" alt="Folha Amarela Digital">
+                <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
             </a>
+        </div>
+
+        <!-- Ações do Topo -->
+        <div class="top-bar-actions">
+            <div class="seletor-cidade" onclick="abrirModalCidade()">
+                <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+            </div>
             
             <div class="header-actions">
                 <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
@@ -214,10 +236,6 @@
         </div>
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <div class="seletor-cidade" onclick="abrirModalCidade()">
-                <i class="fas fa-map-marker-alt"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
-            </div>
-            
             <div style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.3); border: 1px solid rgba(255, 255, 255, 0.5); padding: 5px 12px; border-radius: 20px;">
                 <i class="fas fa-map-signs" style="color: #1E293B; font-size: 12px;"></i>
                 <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: #1E293B; outline: none; cursor: pointer; max-width: 130px;">
@@ -551,11 +569,21 @@
     </footer>
 
     <script>
+        function atualizarLogoTema(isDark) {
+            const logoImg = document.getElementById('logoImg');
+            if (logoImg) {
+                logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
+            }
+        }
+
         function carregarTemaSalvo() {
             const temaSalvo = localStorage.getItem('folha_theme');
             if (temaSalvo === 'dark') {
                 document.body.classList.add('dark-mode');
                 document.getElementById('themeIcon').className = 'fas fa-sun';
+                atualizarLogoTema(true);
+            } else {
+                atualizarLogoTema(false);
             }
         }
 
@@ -564,6 +592,7 @@
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
             document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            atualizarLogoTema(isDark);
         }
 
         carregarTemaSalvo();
