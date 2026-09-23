@@ -49,7 +49,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
 
-        /* Cabeçalho Ajustado */
         header { 
             background: var(--surface); 
             padding: 16px 20px; 
@@ -69,16 +68,8 @@
             gap: 12px;
         }
 
-        .logo { 
-            text-decoration: none; 
-            display: flex; 
-            align-items: center; 
-        }
-        .logo img { 
-            height: 40px; 
-            width: auto; 
-            object-fit: contain; 
-        }
+        .logo { text-decoration: none; display: flex; align-items: center; }
+        .logo img { height: 40px; width: auto; object-fit: contain; }
 
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         
@@ -94,37 +85,11 @@
         .btn-lojista-nav { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .btn-lojista-nav:hover { border-color: var(--primary); }
 
-        .header-filters-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
+        .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 
-        .bairro-container {
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            background: var(--input-bg); 
-            border: 1px solid var(--border); 
-            padding: 5px 12px; 
-            border-radius: 20px;
-        }
-        .bairro-container select {
-            border: none; 
-            background: transparent; 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: var(--dark); 
-            outline: none; 
-            cursor: pointer; 
-            max-width: 140px;
-        }
-        .bairro-container select option {
-            background-color: var(--surface);
-            color: var(--dark);
-        }
+        .bairro-container { display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
+        .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
+        .bairro-container select option { background-color: var(--surface); color: var(--dark); }
 
         .search-container { position: relative; display: flex; gap: 8px; }
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
@@ -136,6 +101,15 @@
         .chat-float-btn:hover { transform: scale(1.05); }
 
         .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+
+        /* Estilos do Banner Rotativo / Spotlight Ads */
+        .spotlight-banner-container { margin-bottom: 24px; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 2px solid var(--primary); background: var(--surface); }
+        .spotlight-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0; }
+        .spotlight-carousel::-webkit-scrollbar { display: none; }
+        .spotlight-slide { min-width: 100%; height: 170px; position: relative; flex-shrink: 0; scroll-snap-align: center; cursor: pointer; }
+        .spotlight-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .spotlight-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white; padding: 14px 18px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .badge-spotlight { background: var(--primary); color: #1E293B; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 8px; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
 
         .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
         .categorias::-webkit-scrollbar { display: none; }
@@ -155,6 +129,7 @@
 
         .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
         .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .card-local.patrocinado-categoria { border: 2px dashed var(--primary); }
         
         .card-img-container { position: relative; width: 100%; height: 160px; background: var(--border); }
         .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
@@ -168,6 +143,7 @@
         .status-delivery { background-color: rgba(139, 92, 246, 0.95); }
         .badge-premium { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; }
         .badge-pro { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; }
+        .badge-sponsor { background: var(--purple); color: white; }
 
         .card-body { padding: 18px; }
         .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
@@ -271,6 +247,11 @@
     </header>
 
     <main class="container">
+        <!-- Banner Rotativo Sazonal (Spotlight Ads) -->
+        <div id="secaoSpotlightBanners" class="spotlight-banner-container" style="display: none;">
+            <div id="listaSpotlightBanners" class="spotlight-carousel"></div>
+        </div>
+
         <!-- Categorias -->
         <div class="categorias">
             <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)">
@@ -531,7 +512,7 @@
     <!-- Painel Admin Kanban -->
     <div id="painelAdmin">
         <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard Gerencial (Camadas de Assinatura)</h2>
+            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard (Camadas & Spotlight Ads)</h2>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <input type="text" id="buscaKanban" class="form-control" placeholder="Procurar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
                 <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
@@ -539,7 +520,7 @@
         </div>
         
         <div style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.15)); border: 1px solid var(--purple); padding: 18px; border-radius: 16px; margin-bottom: 24px;">
-            <h3 style="font-size: 15px; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Insights de Monetização & Planos (IA)</h3>
+            <h3 style="font-size: 15px; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Insights de Monetização Pontual (IA)</h3>
             <p id="textoAdminInsights" style="font-size: 13px; line-height: 1.6; color: var(--dark);">A analisar dados da cidade...</p>
         </div>
 
@@ -549,12 +530,12 @@
                 <p id="kpiTotal">0</p>
             </div>
             <div class="kpi-card" style="border-color: var(--primary);">
-                <h3>Empresa Premium</h3>
-                <p id="kpiPremium">0</p>
+                <h3>Banners Spotlight</h3>
+                <p id="kpiSpotlight">0</p>
             </div>
             <div class="kpi-card" style="border-color: var(--purple);">
-                <h3>Autônomo Pro</h3>
-                <p id="kpiPro">0</p>
+                <h3>Patrocínios de Categoria</h3>
+                <p id="kpiSponsors">0</p>
             </div>
             <div class="kpi-card" style="border-color: var(--warning);">
                 <h3>Pendentes</h3>
@@ -572,12 +553,8 @@
                 <div id="colunaGratis"></div>
             </div>
             <div class="kanban-col">
-                <h3><i class="fas fa-check-circle" style="color: #3B82F6;"></i> Autônomo Pro</h3>
-                <div id="colunaPro"></div>
-            </div>
-            <div class="kanban-col">
-                <h3><i class="fas fa-crown" style="color: var(--primary);"></i> Empresa Premium</h3>
-                <div id="colunaPremium"></div>
+                <h3><i class="fas fa-bullhorn" style="color: var(--primary);"></i> Spotlight & Patrocínios</h3>
+                <div id="colunaAds"></div>
             </div>
         </div>
     </div>
@@ -589,9 +566,7 @@
     <script>
         function atualizarLogoTema(isDark) {
             const logoImg = document.getElementById('logoImg');
-            if (logoImg) {
-                logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
-            }
+            if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
         }
 
         function carregarTemaSalvo() {
@@ -617,8 +592,7 @@
 
         function toggleDeliveryMode() {
             let apenasDeliv = document.getElementById('cadApenasDelivery').checked;
-            let grupoEnd = document.getElementById('grupoEndereco');
-            grupoEnd.style.display = apenasDeliv ? 'none' : 'block';
+            document.getElementById('grupoEndereco').style.display = apenasDeliv ? 'none' : 'block';
         }
 
         function toggleDiaFechado(dia) {
@@ -785,7 +759,7 @@
             let cat = document.getElementById('cadCategoria').value;
             let bairro = document.getElementById('cadBairro').value || 'Centro';
             if(!nome) return alert("Insira primeiro o nome do estabelecimento!");
-            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Trabalhamos com total dedicação e qualidade.`;
+            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Venha conferir as nossas ofertas especiais!`;
         }
 
         function abrirPainelLojista() {
@@ -805,13 +779,10 @@
                     </div>
                 `;
             } else {
-                let planoAtual = minhaLoja.plan_tier || 'FREE';
-                let planoDesc = planoAtual === 'EMPRESA_PREMIUM' ? 'Empresa Premium (Destaque máximo e carrossel)' : (planoAtual === 'AUTONOMO_PRO' ? 'Autônomo Pro (Prioridade e galeria)' : 'Plano Grátis');
-
                 container.innerHTML = `
                     <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-                        <strong style="font-size: 15px;">Plano Atual: ${planoDesc}</strong>
-                        <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">Para atualizar o seu plano (Pro ou Premium), entre em contato com o suporte.</div>
+                        <strong style="font-size: 15px;">Visibilidade e Publicidade Pontual (Spotlight Ads)</strong>
+                        <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">Para aparecer no <b>Banner Rotativo da Home</b> ou patrocinar o topo de uma categoria, contacte o administrador da plataforma.</div>
                     </div>
                     <h3 style="font-size: 18px; margin-bottom: 6px;">${minhaLoja.nome}</h3>
                     <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">Categoria: ${minhaLoja.categoria} &bull; Bairro: ${minhaLoja.bairro || 'Centro'}</p>
@@ -869,9 +840,41 @@
                 filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt) || l.categoria.toLowerCase().includes(buscaTxt));
             }
 
-            // Ordenação por Camada: EMPRESA_PREMIUM (1) -> AUTONOMO_PRO (2) -> FREE (3)
+            // Renderizar Banner Rotativo (Spotlight Ads) na Home
+            const containerBanners = document.getElementById('listaSpotlightBanners');
+            const secaoBanners = document.getElementById('secaoSpotlightBanners');
+            let spotlightLocais = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente' && l.spotlight_banner && l.imagens && l.imagens.length > 0);
+
+            if (spotlightLocais.length > 0 && !categoriaAtual && !bairroAtual && !buscaTxt) {
+                secaoBanners.style.display = 'block';
+                containerBanners.innerHTML = '';
+                spotlightLocais.forEach(l => {
+                    containerBanners.innerHTML += `
+                        <div class="spotlight-slide" onclick="abrirDetalhes('${l.idDoc}')">
+                            <img src="${l.imagens[0]}" alt="${l.nome}">
+                            <div class="spotlight-caption">
+                                <div>
+                                    <span class="badge-spotlight"><i class="fas fa-bullhorn"></i> Destaque Sazonal</span>
+                                    <h4 style="font-size: 16px; color: white;">${l.nome}</h4>
+                                    <p style="font-size: 12px; opacity: 0.9;">${l.descricao ? l.descricao.substring(0, 75) + '...' : l.categoria}</p>
+                                </div>
+                                <button class="btn-card btn-wpp" style="padding: 6px 12px; font-size: 11px;" onclick="event.stopPropagation(); window.open('https://wa.me/55${l.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Ver</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                secaoBanners.style.display = 'none';
+            }
+
+            // Ordenação: Patrocínio de Categoria no topo se filtrando por categoria
             const tierWeight = { 'EMPRESA_PREMIUM': 1, 'AUTONOMO_PRO': 2, 'FREE': 3 };
             filtrados.sort((a, b) => {
+                if (categoriaAtual) {
+                    let aPat = a.sponsored_category === categoriaAtual ? 0 : 1;
+                    let bPat = b.sponsored_category === categoriaAtual ? 0 : 1;
+                    if (aPat !== bPat) return aPat - bPat;
+                }
                 let wA = tierWeight[a.plan_tier || 'FREE'] || 3;
                 let wB = tierWeight[b.plan_tier || 'FREE'] || 3;
                 if (wA !== wB) return wA - wB;
@@ -888,26 +891,26 @@
             containerPatrocinados.innerHTML = '';
             containerRegulares.innerHTML = '';
 
-            if(premiumList.length > 0) {
+            if(premiumList.length > 0 && !categoriaAtual) {
                 secaoPatrocinados.style.display = 'block';
                 premiumList.forEach(local => containerPatrocinados.innerHTML += gerarHTMLCard(local));
             } else {
                 secaoPatrocinados.style.display = 'none';
             }
 
-            if(regularesList.length > 0) {
-                regularesList.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local));
+            if(regularesList.length > 0 || (categoriaAtual && premiumList.length > 0)) {
+                let combinados = categoriaAtual ? [...premiumList, ...regularesList] : regularesList;
+                combinados.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local, categoriaAtual));
             } else if (premiumList.length === 0) {
                 containerRegulares.innerHTML = '<p style="text-align:center; color:var(--gray); padding:30px; font-weight: 500;">Nenhum estabelecimento encontrado.</p>';
             }
         }
 
-        function gerarHTMLCard(local) {
+        function gerarHTMLCard(local, catFiltro = '') {
             let statusBadge = '';
             const mapDias = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
             let hojeKey = mapDias[new Date().getDay()];
-            let horarios = local.horariosSemana || {};
-            let horarioHoje = horarios[hojeKey] || 'Fechado';
+            let horarioHoje = (local.horariosSemana || {})[hojeKey] || 'Fechado';
 
             if(horarioHoje && horarioHoje.toLowerCase() !== 'fechado') {
                 let partes = horarioHoje.split(' - ');
@@ -923,13 +926,7 @@
             }
 
             let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> Delivery</span>' : '';
-            
-            let tierBadge = '';
-            if (local.plan_tier === 'EMPRESA_PREMIUM') {
-                tierBadge = '<span class="status-badge badge-premium"><i class="fas fa-crown"></i> Premium</span>';
-            } else if (local.plan_tier === 'AUTONOMO_PRO') {
-                tierBadge = '<span class="status-badge badge-pro"><i class="fas fa-check-circle"></i> Pro</span>';
-            }
+            let sponsorBadge = (catFiltro && local.sponsored_category === catFiltro) ? '<span class="status-badge badge-sponsor"><i class="fas fa-star"></i> Patrocínio Categoria</span>' : '';
 
             let mediaEstrelas = 0;
             if(local.avaliacoes && local.avaliacoes.length > 0) {
@@ -938,13 +935,14 @@
             let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star" style="color: var(--primary);"></i> <span><b>${mediaEstrelas}</b> (${local.avaliacoes.length})</span></div>` : `<div class="card-estrelas" style="color:var(--gray); font-size:12px;">Sem avaliações</div>`;
 
             let imagemCapa = local.imagens && local.imagens.length > 0 ? local.imagens[0] : '';
-            let imagemHtml = imagemCapa ? `<div class="card-img-container"><img src="${imagemCapa}" alt="${local.nome}"><div class="badges-container">${tierBadge} ${deliveryBadge} ${statusBadge}</div></div>` : '';
+            let imagemHtml = imagemCapa ? `<div class="card-img-container"><img src="${imagemCapa}" alt="${local.nome}"><div class="badges-container">${sponsorBadge} ${deliveryBadge} ${statusBadge}</div></div>` : '';
+            let cardClass = (catFiltro && local.sponsored_category === catFiltro) ? 'card-local patrocinado-categoria' : 'card-local';
 
             return `
-                <div class="card-local">
+                <div class="${cardClass}">
                     ${imagemHtml}
                     <div class="card-body">
-                        ${!imagemCapa ? `<div class="badges-container-inline">${tierBadge}${deliveryBadge}${statusBadge}</div>` : ''}
+                        ${!imagemCapa ? `<div class="badges-container-inline">${sponsorBadge}${deliveryBadge}${statusBadge}</div>` : ''}
                         <div class="card-title">${local.nome}</div>
                         <div class="card-subtitle"><i class="fas fa-tag" style="font-size: 11px; margin-right: 4px;"></i>${local.categoria} &bull; <i class="fas fa-map-marker-alt" style="font-size: 11px; margin-left: 4px; margin-right: 2px;"></i>${local.bairro || 'Centro'}</div>
                         ${estrelasHtml}
@@ -975,9 +973,7 @@
             atualizarListaBairros();
             renderizarLocais();
         }
-        function usarGPS() {
-            mudarCidade('Paraisópolis');
-        }
+        function usarGPS() { mudarCidade('Paraisópolis'); }
 
         async function processarImagensUpload(input) {
             const preview = document.getElementById('previewImagens');
@@ -1120,7 +1116,6 @@
 
                 let existingLocal = docId ? listaLocaisCache.find(l => l.idDoc === docId) : null;
                 let statusFinal = docId ? (existingLocal?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente');
-                let planTierFinal = existingLocal?.plan_tier || 'FREE';
 
                 let dadosLocal = {
                     nome: nome,
@@ -1134,7 +1129,9 @@
                     horariosSemana: horariosSemana,
                     imagens: imagensLinks,
                     status: statusFinal,
-                    plan_tier: planTierFinal,
+                    plan_tier: existingLocal?.plan_tier || 'FREE',
+                    spotlight_banner: existingLocal?.spotlight_banner || false,
+                    sponsored_category: existingLocal?.sponsored_category || '',
                     userId: usuarioLogado ? usuarioLogado.uid : (existingLocal?.userId || ''),
                     avaliacoes: existingLocal?.avaliacoes || []
                 };
@@ -1236,45 +1233,46 @@
             }
 
             let ativos = listaLocaisCache.filter(l => l.status !== 'pendente');
-            let premiumList = ativos.filter(l => l.plan_tier === 'EMPRESA_PREMIUM');
-            let proList = ativos.filter(l => l.plan_tier === 'AUTONOMO_PRO');
-            let gratisList = ativos.filter(l => !l.plan_tier || l.plan_tier === 'FREE');
+            let spotlightList = ativos.filter(l => l.spotlight_banner);
+            let sponsorList = ativos.filter(l => l.sponsored_category);
             let pendentes = listaLocaisCache.filter(l => l.status === 'pendente');
 
             document.getElementById('kpiTotal').textContent = ativos.length;
-            document.getElementById('kpiPremium').textContent = premiumList.length;
-            document.getElementById('kpiPro').textContent = proList.length;
+            document.getElementById('kpiSpotlight').textContent = spotlightList.length;
+            document.getElementById('kpiSponsors').textContent = sponsorList.length;
             document.getElementById('kpiPendentes').textContent = pendentes.length;
 
-            document.getElementById('textoAdminInsights').innerHTML = `📊 <b>Resumo de Planos:</b> ${premiumList.length} Empresas Premium, ${proList.length} Autônomos Pro e ${gratisList.length} no plano Grátis.`;
+            document.getElementById('textoAdminInsights').innerHTML = `📊 <b>Monetización Sazonal:</b> ${spotlightList.length} banners no rotativo da Home e ${sponsorList.length} patrocínios de categorias ativos.`;
 
             let colPendentes = document.getElementById('colunaPendentes');
             let colGratis = document.getElementById('colunaGratis');
-            let colPro = document.getElementById('colunaPro');
-            let colPremium = document.getElementById('colunaPremium');
-            colPendentes.innerHTML = ''; colGratis.innerHTML = ''; colPro.innerHTML = ''; colPremium.innerHTML = '';
+            let colAds = document.getElementById('colunaAds');
+            colPendentes.innerHTML = ''; colGratis.innerHTML = ''; colAds.innerHTML = '';
 
             listaFiltrada.forEach(local => {
                 let isPendente = local.status === 'pendente';
-                let currentTier = local.plan_tier || 'FREE';
+                let isSpotlight = local.spotlight_banner;
+                let hasSponsor = local.sponsored_category;
                 
                 let btnStatus = '';
                 if(isPendente) {
                     btnStatus = `<button class="btn-admin-action btn-admin-approve" onclick="aprovarLocal('${local.idDoc}')"><i class="fas fa-check"></i> Aprovar</button>`;
                 } else {
-                    btnStatus = `
-                        <div style="display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap;">
-                            <button class="btn-admin-action" style="background:${currentTier==='FREE'?'var(--gray)':'#334155'}; font-size:10px; flex:1;" onclick="mudarPlano('${local.idDoc}', 'FREE')">Free</button>
-                            <button class="btn-admin-action" style="background:${currentTier==='AUTONOMO_PRO'?'#2563EB':'#334155'}; font-size:10px; flex:1;" onclick="mudarPlano('${local.idDoc}', 'AUTONOMO_PRO')">Pro</button>
-                            <button class="btn-admin-action" style="background:${currentTier==='EMPRESA_PREMIUM'?'var(--primary)':'#334155'}; color:${currentTier==='EMPRESA_PREMIUM'?'#1E293B':'white'}; font-size:10px; flex:1;" onclick="mudarPlano('${local.idDoc}', 'EMPRESA_PREMIUM')">Premium</button>
-                        </div>
-                    `;
+                    let spotlightBtn = isSpotlight 
+                        ? `<button class="btn-admin-action" style="background:#92400E; width:100%; margin-top:4px;" onclick="toggleSpotlight('${local.idDoc}', false)">❌ Remover Banner Spotlight</button>`
+                        : `<button class="btn-admin-action" style="background:var(--primary); color:#1E293B; width:100%; margin-top:4px;" onclick="toggleSpotlight('${local.idDoc}', true)">📢 Colocar em Banner Spotlight</button>`;
+                    
+                    let sponsorAction = hasSponsor
+                        ? `<button class="btn-admin-action" style="background:#92400E; width:100%; margin-top:4px;" onclick="removerSponsor('${local.idDoc}')">❌ Remover Patrocínio (${local.sponsored_category})</button>`
+                        : `<button class="btn-admin-action" style="background:var(--purple); color:white; width:100%; margin-top:4px;" onclick="adicionarSponsorPrompt('${local.idDoc}')">⭐ Patrocinar Categoria</button>`;
+
+                    btnStatus = spotlightBtn + sponsorAction;
                 }
 
                 let card = `
                     <div class="kanban-card">
                         <h4 style="font-size: 15px; margin-bottom: 2px;">${local.nome}</h4>
-                        <div style="font-size: 12px; color: var(--gray);">${local.categoria} &bull; ${local.bairro || 'Centro'}</div>
+                        <div style="font-size: 12px; color: var(--gray);">${local.categoria} &bull; ${local.bairro || 'Centro'} ${hasSponsor ? '&bull; 🌟 Patrocina: ' + hasSponsor : ''}</div>
                         ${btnStatus}
                         <div style="display: flex; gap: 6px; margin-top: 6px;">
                             <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')">Editar</button>
@@ -1283,8 +1281,7 @@
                     </div>`;
                 
                 if(isPendente) colPendentes.innerHTML += card;
-                else if(currentTier === 'EMPRESA_PREMIUM') colPremium.innerHTML += card;
-                else if(currentTier === 'AUTONOMO_PRO') colPro.innerHTML += card;
+                else if(isSpotlight || hasSponsor) colAds.innerHTML += card;
                 else colGratis.innerHTML += card;
             });
         }
@@ -1293,8 +1290,23 @@
             await db.collection("locais").doc(docId).update({ status: 'aprovado' });
         }
 
-        async function mudarPlano(docId, novoPlano) {
-            await db.collection("locais").doc(docId).update({ plan_tier: novoPlano });
+        async function toggleSpotlight(docId, status) {
+            let local = listaLocaisCache.find(l => l.idDoc === docId);
+            if(status && (!local.imagens || local.imagens.length === 0)) {
+                return alert("O estabelecimento precisa de pelo menos uma foto para aparecer no Banner Spotlight!");
+            }
+            await db.collection("locais").doc(docId).update({ spotlight_banner: status });
+        }
+
+        async function adicionarSponsorPrompt(docId) {
+            let cat = prompt("Qual categoria este estabelecimento vai patrocinar no topo? (Ex: Alimentação, Pet Shop, Saúde, Automotivo, Artigos Esportivos, Turismo, Serviços)");
+            if(cat) {
+                await db.collection("locais").doc(docId).update({ sponsored_category: cat.trim() });
+            }
+        }
+
+        async function removerSponsor(docId) {
+            await db.collection("locais").doc(docId).update({ sponsored_category: '' });
         }
 
         async function excluirLocal(docId) {
