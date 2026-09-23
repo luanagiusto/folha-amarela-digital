@@ -104,6 +104,7 @@
             flex-wrap: wrap;
         }
 
+        /* Ajuste do seletor de bairros para herdar a cor correta em modo claro e escuro */
         .bairro-container {
             display: flex; 
             align-items: center; 
@@ -112,6 +113,33 @@
             border: 1px solid var(--border); 
             padding: 5px 12px; 
             border-radius: 20px;
+        }
+        .bairro-container select {
+            border: none; 
+            background: transparent; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: var(--dark); 
+            outline: none; 
+            cursor: pointer; 
+            max-width: 140px;
+        }
+
+/* Correção do ícone da categoria para evitar cortes */
+        .cat-icon { 
+            width: 54px; 
+            height: 54px; 
+            background-color: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin: 0 auto 6px; 
+            font-size: 18px; /* Ajustado para não estourar o container */
+            color: var(--gray); 
+            box-shadow: var(--shadow); 
+            overflow: visible; 
         }
 
         .search-container { position: relative; display: flex; gap: 8px; }
