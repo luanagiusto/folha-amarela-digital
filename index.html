@@ -104,7 +104,6 @@
             flex-wrap: wrap;
         }
 
-        /* Ajuste do seletor de bairros para herdar a cor correta em modo claro e escuro */
         .bairro-container {
             display: flex; 
             align-items: center; 
@@ -124,22 +123,9 @@
             cursor: pointer; 
             max-width: 140px;
         }
-
-/* Correção do ícone da categoria para evitar cortes */
-        .cat-icon { 
-            width: 54px; 
-            height: 54px; 
-            background-color: var(--surface); 
-            border: 1px solid var(--border); 
-            border-radius: 16px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin: 0 auto 6px; 
-            font-size: 18px; /* Ajustado para não estourar o container */
-            color: var(--gray); 
-            box-shadow: var(--shadow); 
-            overflow: visible; 
+        .bairro-container select option {
+            background-color: var(--surface);
+            color: var(--dark);
         }
 
         .search-container { position: relative; display: flex; gap: 8px; }
@@ -158,7 +144,7 @@
         .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
         .categorias::-webkit-scrollbar { display: none; }
         .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
-        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 20px; color: var(--gray); box-shadow: var(--shadow); }
+        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 18px; color: var(--gray); box-shadow: var(--shadow); }
         .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
         .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
         .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
@@ -278,7 +264,7 @@
             
             <div class="bairro-container">
                 <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
-                <select id="filtroBairro" onchange="filtrarBairro()" style="border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px;">
+                <select id="filtroBairro" onchange="filtrarBairro()">
                     <option value="">Todos os Bairros</option>
                 </select>
             </div>
@@ -834,7 +820,7 @@
             return `Não encontrei nenhum registo exato para "${pergunta}" em ${cidadeAtual}. Pode tentar procurar por categorias como <i>Alimentação, Pets, Saúde</i> ou explorar os nossos destaques VIP no topo!`;
         }
 
-        function gerardescricaoIAAvancada() {
+        function gerarDescricaoIAAvancada() {
             let nome = document.getElementById('cadNome').value;
             let cat = document.getElementById('cadCategoria').value;
             let bairro = document.getElementById('cadBairro').value || 'Centro';
