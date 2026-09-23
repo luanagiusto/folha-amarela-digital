@@ -59,20 +59,11 @@
             border-bottom: 1px solid var(--border);
         }
         
-        .header-top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
+        .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
         .logo { text-decoration: none; display: flex; align-items: center; }
         .logo img { height: 40px; width: auto; object-fit: contain; }
 
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        
         .seletor-cidade { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .seletor-cidade:hover { border-color: var(--primary); }
 
@@ -80,13 +71,9 @@
         .btn-theme-toggle:hover { border-color: var(--primary); }
 
         .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245,158,11,0.2); }
-        .btn-anunciar:hover { opacity: 0.9; }
-
         .btn-lojista-nav { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .btn-lojista-nav:hover { border-color: var(--primary); }
 
         .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-
         .bairro-container { display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
         .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
         .bairro-container select option { background-color: var(--surface); color: var(--dark); }
@@ -95,14 +82,11 @@
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
         .search-bar:focus { border-color: var(--primary); background: var(--surface); }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
-        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(139,92,246,0.3); }
+        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
 
         .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
-        .chat-float-btn:hover { transform: scale(1.05); }
-
         .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
 
-        /* Estilos do Banner Rotativo / Spotlight Ads */
         .spotlight-banner-container { margin-bottom: 24px; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 2px solid var(--primary); background: var(--surface); }
         .spotlight-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 0; }
         .spotlight-carousel::-webkit-scrollbar { display: none; }
@@ -119,14 +103,12 @@
         .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
         .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
 
-        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
-        
+        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); }
         .patrocinados-scroll { display: flex; overflow-x: auto; gap: 16px; padding-bottom: 12px; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; scroll-snap-type: x mandatory; }
         .patrocinados-scroll::-webkit-scrollbar { display: none; }
         .patrocinados-scroll .card-local { min-width: 290px; flex-shrink: 0; scroll-snap-align: start; border: 2px solid var(--primary); background: var(--surface); }
 
         .lista-locais { display: flex; flex-direction: column; gap: 16px; }
-
         .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
         .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
         .card-local.patrocinado-categoria { border: 2px dashed var(--primary); }
@@ -146,32 +128,25 @@
         .badge-sponsor { background: var(--purple); color: white; }
 
         .card-body { padding: 18px; }
-        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); }
         .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
         .card-estrelas { font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; color: var(--dark); font-weight: 600; }
         
         .card-actions { display: flex; gap: 10px; }
         .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
         .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
-        .btn-outline:hover { border-color: var(--primary); }
         .btn-wpp { background-color: var(--success); color: white !important; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
         .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
         .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .close:hover { color: var(--dark); }
         
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
         .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
-        .form-control:focus { border-color: var(--primary); }
-        
-        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
-        .btn-submit:hover { opacity: 0.9; }
+        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
 
         .galeria-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; scroll-snap-type: x mandatory; margin-top: 15px; }
-        .galeria-scroll::-webkit-scrollbar { height: 4px; }
-        .galeria-scroll::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 4px; }
         .galeria-imagem { min-width: 85%; height: 220px; object-fit: cover; border-radius: 16px; scroll-snap-align: center; background-color: var(--input-bg); }
         
         .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
@@ -182,10 +157,7 @@
 
         .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
         .dia-fechado { color: var(--danger); font-weight: 700; }
-
         .avaliacao-box { background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-top: 16px; text-align: center; }
-        .estrelas-input { font-size: 26px; color: var(--gray); cursor: pointer; margin: 4px 0; }
-        .estrelas-input span:hover, .estrelas-input span.ativo { color: var(--primary); }
 
         footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
         
@@ -208,7 +180,6 @@
 </head>
 <body>
 
-    <!-- Botão Flutuante IA Chatbot -->
     <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
     <header>
@@ -216,7 +187,6 @@
             <a href="#" class="logo">
                 <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
             </a>
-            
             <div class="header-actions">
                 <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
                 <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro">
@@ -230,7 +200,6 @@
             <div class="seletor-cidade" onclick="abrirModalCidade()">
                 <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
             </div>
-            
             <div class="bairro-container">
                 <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
                 <select id="filtroBairro" onchange="filtrarBairro()">
@@ -247,46 +216,24 @@
     </header>
 
     <main class="container">
-        <!-- Banner Rotativo Sazonal (Spotlight Ads) -->
         <div id="secaoSpotlightBanners" class="spotlight-banner-container" style="display: none;">
             <div id="listaSpotlightBanners" class="spotlight-carousel"></div>
         </div>
 
-        <!-- Categorias -->
         <div class="categorias">
-            <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)">
-                <div class="cat-icon"><i class="fas fa-hamburger"></i></div>
-                <div class="cat-name">Alimentação</div>
-            </div>
-            <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)">
-                <div class="cat-icon"><i class="fas fa-paw"></i></div>
-                <div class="cat-name">Pets</div>
-            </div>
-            <div class="cat-item" onclick="filtrarCategoria('Saúde', this)">
-                <div class="cat-icon"><i class="fas fa-pills"></i></div>
-                <div class="cat-name">Saúde</div>
-            </div>
-            <div class="cat-item" onclick="filtrarCategoria('Automotivo', this)">
-                <div class="cat-icon"><i class="fas fa-car"></i></div>
-                <div class="cat-name">Auto</div>
-            </div>
-            <div class="cat-item" onclick="filtrarCategoria('Artigos Esportivos', this)">
-                <div class="cat-icon"><i class="fas fa-running"></i></div>
-                <div class="cat-name">Esportes</div>
-            </div>
-            <div class="cat-item active" onclick="filtrarCategoria('', this)">
-                <div class="cat-icon"><i class="fas fa-border-all"></i></div>
-                <div class="cat-name">Todos</div>
-            </div>
+            <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Automotivo', this)"><div class="cat-icon"><i class="fas fa-car"></i></div><div class="cat-name">Auto</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Artigos Esportivos', this)"><div class="cat-icon"><i class="fas fa-running"></i></div><div class="cat-name">Esportes</div></div>
+            <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
         </div>
 
-        <!-- Seção Patrocinados / Premium -->
         <div id="secaoPatrocinados" style="display: none; margin-bottom: 28px;">
             <h3 class="secao-header"><i class="fas fa-crown" style="color: var(--primary);"></i> Empresas em Destaque Premium</h3>
             <div id="listaPatrocinados" class="patrocinados-scroll"></div>
         </div>
 
-        <!-- Seção Todos os Locais -->
         <div id="secaoRegulares">
             <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos</h3>
             <div id="listaLocais" class="lista-locais">
@@ -295,44 +242,27 @@
         </div>
     </main>
 
-    <!-- Modal Área de Acesso -->
+    <!-- Modais (Acesso, Chat, Cadastro, Detalhes, Cidade) -->
     <div id="modalAreaAcesso" class="modal">
         <div class="modal-content" style="max-width: 380px; text-align: center;">
             <span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span>
             <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-user-shield"></i></div>
             <h2 id="tituloAreaAcesso" style="margin-bottom: 4px; font-size: 20px;">Área de Acesso</h2>
-            <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px;">Lojistas e Administrador</p>
-            
-            <div class="form-group" style="text-align: left;">
-                <label>E-mail</label>
-                <input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com">
-            </div>
-            <div class="form-group" style="text-align: left;">
-                <label>Palavra-passe</label>
-                <input type="password" id="acessoSenha" class="form-control" placeholder="A sua palavra-passe...">
-            </div>
-            
+            <div class="form-group" style="text-align: left;"><label>E-mail</label><input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com"></div>
+            <div class="form-group" style="text-align: left;"><label>Palavra-passe</label><input type="password" id="acessoSenha" class="form-control" placeholder="A sua palavra-passe..."></div>
             <button class="btn-submit" id="btnSubmitAcesso" onclick="executarLoginUnificado()">Entrar</button>
-            
-            <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAcesso()">
-                <span id="txtAlternarAcesso">Não tem conta de lojista? <b>Registe-se grátis</b></span>
-            </p>
+            <p style="font-size: 12px; color: var(--gray); margin-top: 16px; cursor: pointer;" onclick="alternarModoAcesso()"><span id="txtAlternarAcesso">Registar-se grátis</span></p>
         </div>
     </div>
 
-    <!-- Modal Chatbot IA Interativo -->
     <div id="modalChatIA" class="modal">
         <div class="modal-content" style="max-width: 450px; display: flex; flex-direction: column; height: 500px; padding: 0;">
-            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 24px; border-top-right-radius: 24px;">
-                <h3 style="font-size: 16px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA - Folha Amarela</h3>
+            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA</h3>
                 <span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position: static; background: rgba(255,255,255,0.2); color: white;">&times;</span>
             </div>
-            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
-                <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
-                    Olá! Sou o assistente virtual da <b>Folha Amarela Digital</b> em <b><span id="cidadeChatAtual">Paraisópolis</span></b>. O que procura hoje?
-                </div>
-            </div>
-            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; border-top: 1px solid var(--border);">
+            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);"></div>
+            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px;">
                 <input type="text" id="inputChatUser" class="form-control" placeholder="Escreva a sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
                 <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
             </div>
@@ -345,266 +275,89 @@
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
             <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px;">Anunciar Negócio</h2>
             <input type="hidden" id="cadId">
-            <div class="form-group">
-                <label>Nome do Estabelecimento</label>
-                <input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central">
-            </div>
+            <div class="form-group"><label>Nome do Estabelecimento</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central"></div>
             <div class="form-group">
                 <label>Categoria</label>
                 <select id="cadCategoria" class="form-control">
-                    <option>Alimentação</option>
-                    <option>Pet Shop</option>
-                    <option>Saúde</option>
-                    <option>Automotivo</option>
-                    <option>Artigos Esportivos</option>
-                    <option>Turismo</option>
-                    <option>Serviços</option>
+                    <option>Alimentação</option><option>Pet Shop</option><option>Saúde</option><option>Automotivo</option><option>Artigos Esportivos</option><option>Turismo</option><option>Serviços</option>
                 </select>
             </div>
             <div style="display: flex; gap: 12px;">
-                <div class="form-group" style="flex: 1;">
-                    <label>Cidade</label>
-                    <select id="cadCidade" class="form-control">
-                        <option>Paraisópolis</option>
-                        <option>Alfenas</option>
-                    </select>
+                <div class="form-group" style="flex: 1;"><label>Cidade</label><select id="cadCidade" class="form-control"><option>Paraisópolis</option><option>Alfenas</option></select></div>
+                <div class="form-group" style="flex: 1;"><label>Bairro / Região</label><input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro"></div>
+            </div>
+            <div class="form-group"><label>WhatsApp (com DDD)</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div>
+            
+            <!-- Configurações Financeiras (Exclusivo Admin ou visualização Lojista) -->
+            <div id="blocoFinanceiroAdmin" style="background: var(--input-bg); padding: 14px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border);">
+                <label style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 10px;"><i class="fas fa-file-invoice-dollar"></i> Gestão Financeira da Assinatura</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div class="form-group" style="flex: 1; min-width: 140px;">
+                        <label>Plano</label>
+                        <select id="cadPlanTier" class="form-control">
+                            <option value="FREE">Grátis (R$ 0)</option>
+                            <option value="AUTONOMO_PRO">Autônomo Pro (R$ 39)</option>
+                            <option value="EMPRESA_PREMIUM">Empresa Premium (R$ 119)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 140px;">
+                        <label>Status Pagamento</label>
+                        <select id="cadPaymentStatus" class="form-control">
+                            <option value="ativo">Ativo (Pago)</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="atrasado">Atrasado / Vencido</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Bairro / Região</label>
-                    <input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="cadApenasDelivery" onchange="toggleDeliveryMode()" style="width: 18px; height: 18px; accent-color: var(--primary);">
-                    <span>Trabalha apenas com Delivery (Sem loja física)</span>
-                </label>
-            </div>
-
-            <div class="form-group" id="grupoEndereco">
-                <label>Endereço Físico (Rua e Número)</label>
-                <input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Major Luiz Pinto, 123">
-            </div>
-
-            <div class="form-group">
-                <label style="margin-bottom: 8px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento</label>
-                <div style="display: flex; flex-direction: column; gap: 8px; background: var(--input-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--border);">
-                    <script>
-                        const diasSemanaConfig = [
-                            {k:'seg', n:'Segunda-feira'},
-                            {k:'ter', n:'Terça-feira'},
-                            {k:'qua', n:'Quarta-feira'},
-                            {k:'qui', n:'Quinta-feira'},
-                            {k:'sex', n:'Sexta-feira'},
-                            {k:'sab', n:'Sábado'},
-                            {k:'dom', n:'Domingo'}
-                        ];
-                        diasSemanaConfig.forEach(d => {
-                            document.write(`
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding-bottom: 6px; border-bottom: 1px solid var(--border);">
-                                    <span style="font-size: 13px; font-weight: 700; min-width: 105px;">${d.n}</span>
-                                    <div style="display: flex; align-items: center; gap: 6px; flex: 1; justify-content: flex-end;">
-                                        <label style="font-size: 11px; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--gray); font-weight: 600; margin-right: 4px;">
-                                            <input type="checkbox" id="hor_${d.k}_fechado" onchange="toggleDiaFechado('${d.k}')" style="accent-color: var(--danger);"> Fechado
-                                        </label>
-                                        <input type="time" id="hor_${d.k}_abre" class="form-control" style="width: 110px; padding: 6px 8px; font-size: 13px;" value="08:00">
-                                        <span style="font-size: 12px; color: var(--gray);">até</span>
-                                        <input type="time" id="hor_${d.k}_fecha" class="form-control" style="width: 110px; padding: 6px 8px; font-size: 13px;" value="18:00">
-                                    </div>
-                                </div>
-                            `);
-                        });
-                    </script>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+                    <div class="form-group" style="flex: 1;"><label>Data de Entrada (Início)</label><input type="date" id="cadDataEntrada" class="form-control"></div>
+                    <div class="form-group" style="flex: 1;"><label>Data de Vencimento</label><input type="date" id="cadDataVencimento" class="form-control"></div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>WhatsApp (com DDD)</label>
-                <input type="number" id="cadWpp" class="form-control" placeholder="35999999999">
-            </div>
-            <div class="form-group">
-                <label>Fotos do Estabelecimento</label>
-                <input type="file" id="cadFotos" class="form-control" accept="image/*" multiple onchange="processarImagensUpload(this)">
-                <div id="previewImagens" style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;"></div>
-            </div>
-            <div class="form-group">
-                <label style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Descrição Comercial</span>
-                    <button type="button" onclick="gerarDescricaoIAAvancada()" style="background: none; border: none; color: var(--purple); cursor: pointer; font-weight: 700; font-size: 12px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar IA</button>
-                </label>
-                <textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea>
-            </div>
+            <div class="form-group"><label>Fotos do Estabelecimento</label><input type="file" id="cadFotos" class="form-control" accept="image/*" multiple onchange="processarImagensUpload(this)"><div id="previewImagens" style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;"></div></div>
+            <div class="form-group"><label>Descrição Comercial</label><textarea id="cadDesc" class="form-control" rows="3" placeholder="Descreva os produtos ou serviços..."></textarea></div>
             <button class="btn-submit" id="btnSalvarCadastro" onclick="salvarLocal()">Guardar no Guia</button>
         </div>
     </div>
 
-    <!-- Modal de Detalhes -->
-    <div id="modalDetalhes" class="modal">
-        <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
-            <div style="position: relative;">
-                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.6); top: 16px; right: 16px; z-index: 10; position: absolute;">&times;</span>
-                <div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 12px;"></div>
-            </div>
-            
-            <div style="padding: 24px;">
-                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome do Local</h2>
-                <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;">
-                    <span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span>
-                </p>
-                <p id="detDetalhesEnderecoCompleto" style="font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 20px; display: none;">
-                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="textoEnderecoVal"></span>
-                </p>
-                
-                <div class="botoes-acao-detalhes">
-                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
-                    <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
-                    <button class="btn-share" id="btnDetCompartilhar"><i class="fas fa-share-alt"></i> Partilhar</button>
-                </div>
+    <!-- Modal Detalhes e Cidade -->
+    <div id="modalDetalhes" class="modal"><div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;"><span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.6); top: 16px; right: 16px; z-index: 10; position: absolute;">&times;</span><div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 12px;"></div><div style="padding: 24px;"><h2 id="detDetalhesNome"></h2><p id="detDetalhesDescricao" style="margin: 15px 0;"></p></div></div></div>
+    <div id="modalCidade" class="modal"><div class="modal-content" style="text-align: center; max-width: 360px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><button class="btn-submit" onclick="mudarCidade('Paraisópolis')">Paraisópolis, MG</button><button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background:var(--input-bg); color:var(--dark); border:1px solid var(--border);">Alfenas, MG</button></div></div>
 
-                <div style="margin: 20px 0; background: var(--input-bg); padding: 16px; border-radius: 16px; border: 1px solid var(--border);">
-                    <p id="detDetalhesDescricao" style="line-height: 1.6; font-size: 14px;"></p>
-                </div>
-
-                <div class="avaliacao-box">
-                    <p style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">O que achou deste local?</p>
-                    <div class="estrelas-input" id="containerEstrelasInput">
-                        <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
-                    </div>
-                    <p style="font-size: 12px; color: var(--gray);" id="textoMediaAvaliacao">Média atual: --</p>
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
-
-                <div class="horarios-semana">
-                    <h3 style="font-size: 14px; margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento</h3>
-                    <ul id="detDetalhesHorarios" style="list-style: none; padding: 0; margin: 0;"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Trocar Cidade -->
-    <div id="modalCidade" class="modal">
-        <div class="modal-content" style="text-align: center; max-width: 360px;">
-            <span class="close" onclick="fecharModalCidade()">&times;</span>
-            <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
-            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde está?</h2>
-            <button class="btn-submit" onclick="mudarCidade('Paraisópolis')" style="margin-bottom: 10px;">Paraisópolis, MG</button>
-            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background-color: var(--input-bg); color: var(--dark); margin-bottom: 16px; border: 1px solid var(--border); box-shadow: none;">Alfenas, MG</button>
-            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPS()"><i class="fas fa-location-arrow"></i> Usar a minha localização atual</button>
-        </div>
-    </div>
-
-    <!-- Painel do Lojista -->
+    <!-- Painel Lojista -->
     <div id="painelLojista">
-        <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-store"></i> O Meu Estabelecimento</h2>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 8px 14px; border-radius: 10px; color: #1E293B;">Sair</button>
-            </div>
-        </div>
-
-        <div id="conteudoPainelLojista" style="max-width: 700px; margin: 0 auto; background: var(--surface); padding: 24px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border);"></div>
+        <div class="admin-header"><h2 style="font-size: 18px;"><i class="fas fa-store"></i> O Meu Estabelecimento</h2><button onclick="logoutSessao()" class="btn-card btn-outline" style="background:white; color:#1E293B;">Sair</button></div>
+        <div id="conteudoPainelLojista" style="max-width: 700px; margin: 0 auto; background: var(--surface); padding: 24px; border-radius: 20px; box-shadow: var(--shadow);"></div>
     </div>
 
-    <!-- Painel Admin Kanban -->
+    <!-- Painel Admin Kanban com Gestão Financeira -->
     <div id="painelAdmin">
         <div class="admin-header">
-            <h2 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-chart-line"></i> Dashboard (Camadas & Spotlight Ads)</h2>
+            <h2 style="font-size: 18px;"><i class="fas fa-chart-line"></i> Dashboard Financeiro & Planos</h2>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <input type="text" id="buscaKanban" class="form-control" placeholder="Procurar estabelecimento..." onkeyup="renderizarKanban()" style="width: 220px; margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;">
-                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; border: none; margin: 0; padding: 10px 16px; border-radius: 10px; color: #1E293B;">Sair</button>
+                <input type="text" id="buscaKanban" class="form-control" placeholder="Procurar..." onkeyup="renderizarKanban()" style="width: 200px; margin: 0; background: rgba(255,255,255,0.1); color: white;">
+                <button onclick="logoutSessao()" class="btn-card btn-outline" style="background: white; color: #1E293B;">Sair</button>
             </div>
         </div>
         
-        <div style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(245,158,11,0.15)); border: 1px solid var(--purple); padding: 18px; border-radius: 16px; margin-bottom: 24px;">
-            <h3 style="font-size: 15px; color: var(--purple); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-wand-magic-sparkles"></i> Insights de Monetização Pontual (IA)</h3>
-            <p id="textoAdminInsights" style="font-size: 13px; line-height: 1.6; color: var(--dark);">A analisar dados da cidade...</p>
-        </div>
-
         <div class="admin-kpis">
-            <div class="kpi-card" style="border-color: var(--success);">
-                <h3>Total Ativos</h3>
-                <p id="kpiTotal">0</p>
-            </div>
-            <div class="kpi-card" style="border-color: var(--primary);">
-                <h3>Banners Spotlight</h3>
-                <p id="kpiSpotlight">0</p>
-            </div>
-            <div class="kpi-card" style="border-color: var(--purple);">
-                <h3>Patrocínios de Categoria</h3>
-                <p id="kpiSponsors">0</p>
-            </div>
-            <div class="kpi-card" style="border-color: var(--warning);">
-                <h3>Pendentes</h3>
-                <p id="kpiPendentes">0</p>
-            </div>
+            <div class="kpi-card" style="border-color: var(--success);"><h3>MRR (Receita Mensal)</h3><p id="kpiMRR">R$ 0</p></div>
+            <div class="kpi-card" style="border-color: var(--primary);"><h3>Assinantes Pagos</h3><p id="kpiPagos">0</p></div>
+            <div class="kpi-card" style="border-color: var(--danger);"><h3>Vencidos / Atrasados</h3><p id="kpiAtrasados">0</p></div>
+            <div class="kpi-card" style="border-color: var(--warning);"><h3>Pendentes</h3><p id="kpiPendentes">0</p></div>
         </div>
         
         <div class="kanban-board">
-            <div class="kanban-col">
-                <h3><i class="fas fa-hourglass-half"></i> Pendentes</h3>
-                <div id="colunaPendentes"></div>
-            </div>
-            <div class="kanban-col">
-                <h3><i class="fas fa-store"></i> Plano Grátis</h3>
-                <div id="colunaGratis"></div>
-            </div>
-            <div class="kanban-col">
-                <h3><i class="fas fa-bullhorn" style="color: var(--primary);"></i> Spotlight & Patrocínios</h3>
-                <div id="colunaAds"></div>
-            </div>
+            <div class="kanban-col"><h3><i class="fas fa-hourglass-half"></i> Pendentes</h3><div id="colunaPendentes"></div></div>
+            <div class="kanban-col"><h3><i class="fas fa-check-circle" style="color:var(--success);"></i> Ativos & Pagos</h3><div id="colunaAtivos"></div></div>
+            <div class="kanban-col"><h3><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> Vencidos / Atrasados</h3><div id="colunaAtrasados"></div></div>
         </div>
     </div>
 
-    <footer>
-        Folha Amarela Digital &copy; 2026 
-    </footer>
+    <footer>Folha Amarela Digital &copy; 2026</footer>
 
     <script>
-        function atualizarLogoTema(isDark) {
-            const logoImg = document.getElementById('logoImg');
-            if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
-        }
-
-        function carregarTemaSalvo() {
-            const temaSalvo = localStorage.getItem('folha_theme');
-            if (temaSalvo === 'dark') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('themeIcon').className = 'fas fa-sun';
-                atualizarLogoTema(true);
-            } else {
-                atualizarLogoTema(false);
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            atualizarLogoTema(isDark);
-        }
-
-        carregarTemaSalvo();
-
-        function toggleDeliveryMode() {
-            let apenasDeliv = document.getElementById('cadApenasDelivery').checked;
-            document.getElementById('grupoEndereco').style.display = apenasDeliv ? 'none' : 'block';
-        }
-
-        function toggleDiaFechado(dia) {
-            let fechado = document.getElementById(`hor_${dia}_fechado`).checked;
-            let inpAbre = document.getElementById(`hor_${dia}_abre`);
-            let inpFecha = document.getElementById(`hor_${dia}_fecha`);
-            inpAbre.disabled = fechado;
-            inpFecha.disabled = fechado;
-            inpAbre.style.opacity = fechado ? '0.4' : '1';
-            inpFecha.style.opacity = fechado ? '0.4' : '1';
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -613,706 +366,180 @@
             messagingSenderId: "377984429498",
             appId: "1:377984429498:web:0ec71abadab20a93420183"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        const auth = firebase.auth(); const db = firebase.firestore(); const storage = firebase.storage();
 
-        let cidadeAtual = 'Paraisópolis';
-        let categoriaAtual = '';
-        let bairroAtual = '';
-        let listaLocaisCache = [];
-        let imagensUploadTemp = [];
-        let idLocalDetalheAberto = null;
-        let isAdminLogado = false;
-        let usuarioLogado = null;
-        let isModoCadastroAuth = false;
-
+        let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
+        let listaLocaisCache = []; let imagensUploadTemp = []; let isAdminLogado = false; let usuarioLogado = null;
         const ADMIN_EMAIL = "admin@folhaamarela.com";
-        const ADMIN_SENHA_DEFAULT = "admin123";
 
         auth.onAuthStateChanged((user) => {
             usuarioLogado = user;
-            if(user) {
-                document.getElementById('txtBtnAcesso').textContent = user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel";
-            } else {
-                document.getElementById('txtBtnAcesso').textContent = "Área de acesso";
-            }
+            document.getElementById('txtBtnAcesso').textContent = user ? (user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel") : "Área de acesso";
         });
 
         function abrirAreaAcessoClick() {
-            if(!usuarioLogado) {
-                abrirModalAreaAcesso();
-            } else {
-                if(isAdminLogado || usuarioLogado.email === ADMIN_EMAIL) {
-                    document.getElementById('painelAdmin').style.display = 'block';
-                    renderizarKanban();
-                } else {
-                    abrirPainelLojista();
-                }
-            }
-        }
-
-        function abrirModalAreaAcesso() {
-            document.getElementById('acessoEmail').value = '';
-            document.getElementById('acessoSenha').value = '';
-            isModoCadastroAuth = false;
-            atualizarTextoAuthModal();
-            document.getElementById('modalAreaAcesso').style.display = 'block';
-        }
-
-        function alternarModoAcesso() {
-            isModoCadastroAuth = !isModoCadastroAuth;
-            atualizarTextoAuthModal();
-        }
-
-        function atualizarTextoAuthModal() {
-            if(isModoCadastroAuth) {
-                document.getElementById('tituloAreaAcesso').textContent = "Registo de Lojista";
-                document.getElementById('btnSubmitAcesso').textContent = "Registar Conta";
-                document.getElementById('txtAlternarAcesso').innerHTML = "Já tem uma conta? <b>Faça login</b>";
-            } else {
-                document.getElementById('tituloAreaAcesso').textContent = "Área de Acesso";
-                document.getElementById('btnSubmitAcesso').textContent = "Entrar";
-                document.getElementById('txtAlternarAcesso').innerHTML = "Não tem conta de lojista? <b>Registe-se grátis</b>";
+            if(!usuarioLogado) { document.getElementById('modalAreaAcesso').style.display = 'block'; }
+            else {
+                if(isAdminLogado || usuarioLogado.email === ADMIN_EMAIL) { document.getElementById('painelAdmin').style.display = 'block'; renderizarKanban(); }
+                else { abrirPainelLojista(); }
             }
         }
 
         async function executarLoginUnificado() {
             let email = document.getElementById('acessoEmail').value.trim();
             let senha = document.getElementById('acessoSenha').value;
-            if(!email || !senha) return alert("Por favor, preencha o e-mail e a palavra-passe.");
-
-            if(email === ADMIN_EMAIL) {
-                if(senha === ADMIN_SENHA_DEFAULT || senha === "1234") {
-                    isAdminLogado = true;
-                    document.getElementById('modalAreaAcesso').style.display = 'none';
-                    document.getElementById('painelAdmin').style.display = 'block';
-                    renderizarKanban();
-                    return;
-                } else {
-                    return alert("Palavra-passe de Administrador incorreta!");
-                }
+            if(email === ADMIN_EMAIL && (senha === "admin123" || senha === "1234")) {
+                isAdminLogado = true; document.getElementById('modalAreaAcesso').style.display = 'none';
+                document.getElementById('painelAdmin').style.display = 'block'; renderizarKanban(); return;
             }
-
             try {
-                if(isModoCadastroAuth) {
-                    await auth.createUserWithEmailAndPassword(email, senha);
-                    alert("Conta de lojista criada com sucesso!");
-                } else {
-                    await auth.signInWithEmailAndPassword(email, senha);
-                }
-                document.getElementById('modalAreaAcesso').style.display = 'none';
-                abrirPainelLojista();
-            } catch (error) {
-                alert("Erro na autenticação: " + error.message);
-            }
+                await auth.signInWithEmailAndPassword(email, senha);
+                document.getElementById('modalAreaAcesso').style.display = 'none'; abrirPainelLojista();
+            } catch (e) { alert("Erro: " + e.message); }
         }
 
         function logoutSessao() {
             auth.signOut().then(() => {
-                isAdminLogado = false;
-                document.getElementById('painelLojista').style.display = 'none';
-                document.getElementById('painelAdmin').style.display = 'none';
-                alert("Terminou a sessão com sucesso.");
+                isAdminLogado = false; document.getElementById('painelLojista').style.display = 'none'; document.getElementById('painelAdmin').style.display = 'none';
             });
         }
 
-        function abrirChatIA() {
-            document.getElementById('cidadeChatAtual').textContent = cidadeAtual;
-            document.getElementById('modalChatIA').style.display = 'block';
-            document.getElementById('inputChatUser').focus();
-        }
-
+        function abrirChatIA() { document.getElementById('modalChatIA').style.display = 'block'; }
         function enviarMensagemChat() {
-            let input = document.getElementById('inputChatUser');
-            let texto = input.value.trim();
-            if(!texto) return;
-
-            let container = document.getElementById('chatMensagens');
-            container.innerHTML += `<div style="background: var(--purple); color: white; padding: 10px 14px; border-radius: 16px; max-width: 85%; align-self: flex-end; font-size: 13px;">${texto}</div>`;
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-
-            setTimeout(() => {
-                let respostaIA = processarConsultaChatIA(texto);
-                container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
-                container.scrollTop = container.scrollHeight;
-            }, 600);
-        }
-
-        function processarConsultaChatIA(pergunta) {
-            let p = pergunta.toLowerCase();
-            let locaisCidade = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente');
-            let encontrados = locaisCidade.filter(l => l.nome.toLowerCase().includes(p) || l.categoria.toLowerCase().includes(p) || (l.bairro && l.bairro.toLowerCase().includes(p)));
-
-            if (encontrados.length > 0) {
-                let listaStr = encontrados.map(e => `&bull; <b>${e.nome}</b> (${e.categoria} - ${e.bairro || 'Centro'})`).join('<br>');
-                return `Encontrei estas opções em ${cidadeAtual}:<br><br>${listaStr}`;
-            }
-            return `Não encontrei nenhum registo exato para "${pergunta}" em ${cidadeAtual}.`;
-        }
-
-        function gerarDescricaoIAAvancada() {
-            let nome = document.getElementById('cadNome').value;
-            let cat = document.getElementById('cadCategoria').value;
-            let bairro = document.getElementById('cadBairro').value || 'Centro';
-            if(!nome) return alert("Insira primeiro o nome do estabelecimento!");
-            document.getElementById('cadDesc').value = `✨ Seja muito bem-vindo ao ${nome}! Referência em ${cat} na região de ${bairro}. Venha conferir as nossas ofertas especiais!`;
+            let i = document.getElementById('inputChatUser'); if(!i.value) return;
+            document.getElementById('chatMensagens').innerHTML += `<div style="background:var(--purple); color:white; padding:10px; border-radius:12px; align-self:flex-end;">${i.value}</div>`;
+            i.value = '';
         }
 
         function abrirPainelLojista() {
-            if(!usuarioLogado) return abrirModalAreaAcesso();
+            if(!usuarioLogado) return;
             document.getElementById('painelLojista').style.display = 'block';
-            
-            let minhaLoja = listaLocaisCache.find(l => l.userId === usuarioLogado.uid);
-            let container = document.getElementById('conteudoPainelLojista');
-
-            if(!minhaLoja) {
-                container.innerHTML = `
-                    <div style="text-align:center; padding: 20px;">
-                        <div style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-store-alt-slash"></i></div>
-                        <h3 style="margin-bottom: 8px;">Ainda não registou a sua loja</h3>
-                        <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">Registe o seu negócio agora na Folha Amarela Digital.</p>
-                        <button class="btn-submit" style="max-width: 250px; margin: 0 auto;" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Registar o Meu Negócio</button>
-                    </div>
-                `;
+            let l = listaLocaisCache.find(x => x.userId === usuarioLogado.uid);
+            let c = document.getElementById('conteudoPainelLojista');
+            if(!l) {
+                c.innerHTML = `<p>Ainda não registou a sua loja.</p><button class="btn-submit" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Registar</button>`;
             } else {
-                container.innerHTML = `
-                    <div style="background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-                        <strong style="font-size: 15px;">Visibilidade e Publicidade Pontual (Spotlight Ads)</strong>
-                        <div style="font-size: 12px; color: var(--gray); margin-top: 4px;">Para aparecer no <b>Banner Rotativo da Home</b> ou patrocinar o topo de uma categoria, contacte o administrador da plataforma.</div>
-                    </div>
-                    <h3 style="font-size: 18px; margin-bottom: 6px;">${minhaLoja.nome}</h3>
-                    <p style="color: var(--gray); font-size: 13px; margin-bottom: 20px;">Categoria: ${minhaLoja.categoria} &bull; Bairro: ${minhaLoja.bairro || 'Centro'}</p>
-                    <button class="btn-submit" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro('${minhaLoja.idDoc}')"><i class="fas fa-edit"></i> Editar Dados e Horários</button>
-                `;
+                c.innerHTML = `<h3>${l.nome}</h3><p>Plano: <b>${l.plan_tier || 'FREE'}</b></p><p>Status do Pagamento: <b>${l.payment_status || 'ativo'}</b></p><p>Vencimento: <b>${l.data_vencimento || 'N/A'}</b></p>`;
             }
         }
 
         function iniciarListenerLocais() {
             db.collection("locais").onSnapshot((snapshot) => {
                 listaLocaisCache = [];
-                snapshot.forEach((doc) => {
-                    listaLocaisCache.push({ idDoc: doc.id, ...doc.data() });
-                });
-                atualizarListaBairros();
+                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
                 renderizarLocais();
                 if(isAdminLogado) renderizarKanban();
             });
         }
 
-        function atualizarListaBairros() {
-            const selectBairro = document.getElementById('filtroBairro');
-            let bairros = listaLocaisCache
-                .filter(l => l.cidade === cidadeAtual && l.bairro && l.status !== 'pendente')
-                .map(l => l.bairro.trim());
-            
-            bairros = [...new Set(bairros)].sort();
-            let valorAnterior = selectBairro.value;
-            
-            selectBairro.innerHTML = '<option value="">Todos os Bairros</option>';
-            bairros.forEach(b => { selectBairro.innerHTML += `<option value="${b}">${b}</option>`; });
-            
-            if (bairros.includes(valorAnterior)) {
-                selectBairro.value = valorAnterior;
-                bairroAtual = valorAnterior;
-            } else {
-                selectBairro.value = "";
-                bairroAtual = "";
-            }
-        }
-
-        function filtrarBairro() {
-            bairroAtual = document.getElementById('filtroBairro').value;
-            renderizarLocais();
-        }
-
         function renderizarLocais() {
-            let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente');
+            let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente' && l.payment_status !== 'atrasado');
+            if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
             
-            if (categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-            if (bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
-            
-            let buscaTxt = document.getElementById('inputBusca').value.toLowerCase();
-            if (buscaTxt) {
-                filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(buscaTxt) || l.categoria.toLowerCase().includes(buscaTxt));
-            }
-
-            // Renderizar Banner Rotativo (Spotlight Ads) na Home
-            const containerBanners = document.getElementById('listaSpotlightBanners');
-            const secaoBanners = document.getElementById('secaoSpotlightBanners');
-            let spotlightLocais = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente' && l.spotlight_banner && l.imagens && l.imagens.length > 0);
-
-            if (spotlightLocais.length > 0 && !categoriaAtual && !bairroAtual && !buscaTxt) {
-                secaoBanners.style.display = 'block';
-                containerBanners.innerHTML = '';
-                spotlightLocais.forEach(l => {
-                    containerBanners.innerHTML += `
-                        <div class="spotlight-slide" onclick="abrirDetalhes('${l.idDoc}')">
-                            <img src="${l.imagens[0]}" alt="${l.nome}">
-                            <div class="spotlight-caption">
-                                <div>
-                                    <span class="badge-spotlight"><i class="fas fa-bullhorn"></i> Destaque Sazonal</span>
-                                    <h4 style="font-size: 16px; color: white;">${l.nome}</h4>
-                                    <p style="font-size: 12px; opacity: 0.9;">${l.descricao ? l.descricao.substring(0, 75) + '...' : l.categoria}</p>
-                                </div>
-                                <button class="btn-card btn-wpp" style="padding: 6px 12px; font-size: 11px;" onclick="event.stopPropagation(); window.open('https://wa.me/55${l.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Ver</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                secaoBanners.style.display = 'none';
-            }
-
-            // Ordenação: Patrocínio de Categoria no topo se filtrando por categoria
             const tierWeight = { 'EMPRESA_PREMIUM': 1, 'AUTONOMO_PRO': 2, 'FREE': 3 };
-            filtrados.sort((a, b) => {
-                if (categoriaAtual) {
-                    let aPat = a.sponsored_category === categoriaAtual ? 0 : 1;
-                    let bPat = b.sponsored_category === categoriaAtual ? 0 : 1;
-                    if (aPat !== bPat) return aPat - bPat;
-                }
-                let wA = tierWeight[a.plan_tier || 'FREE'] || 3;
-                let wB = tierWeight[b.plan_tier || 'FREE'] || 3;
-                if (wA !== wB) return wA - wB;
-                return a.nome.localeCompare(b.nome);
-            });
+            filtrados.sort((a, b) => (tierWeight[a.plan_tier || 'FREE'] || 3) - (tierWeight[b.plan_tier || 'FREE'] || 3));
 
-            let premiumList = filtrados.filter(l => l.plan_tier === 'EMPRESA_PREMIUM');
-            let regularesList = filtrados.filter(l => l.plan_tier !== 'EMPRESA_PREMIUM');
-
-            const containerPatrocinados = document.getElementById('listaPatrocinados');
-            const containerRegulares = document.getElementById('listaLocais');
-            const secaoPatrocinados = document.getElementById('secaoPatrocinados');
-            
-            containerPatrocinados.innerHTML = '';
-            containerRegulares.innerHTML = '';
-
-            if(premiumList.length > 0 && !categoriaAtual) {
-                secaoPatrocinados.style.display = 'block';
-                premiumList.forEach(local => containerPatrocinados.innerHTML += gerarHTMLCard(local));
-            } else {
-                secaoPatrocinados.style.display = 'none';
-            }
-
-            if(regularesList.length > 0 || (categoriaAtual && premiumList.length > 0)) {
-                let combinados = categoriaAtual ? [...premiumList, ...regularesList] : regularesList;
-                combinados.forEach(local => containerRegulares.innerHTML += gerarHTMLCard(local, categoriaAtual));
-            } else if (premiumList.length === 0) {
-                containerRegulares.innerHTML = '<p style="text-align:center; color:var(--gray); padding:30px; font-weight: 500;">Nenhum estabelecimento encontrado.</p>';
-            }
-        }
-
-        function gerarHTMLCard(local, catFiltro = '') {
-            let statusBadge = '';
-            const mapDias = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-            let hojeKey = mapDias[new Date().getDay()];
-            let horarioHoje = (local.horariosSemana || {})[hojeKey] || 'Fechado';
-
-            if(horarioHoje && horarioHoje.toLowerCase() !== 'fechado') {
-                let partes = horarioHoje.split(' - ');
-                if(partes.length === 2) {
-                    let tempoAtualMin = new Date().getHours() * 60 + new Date().getMinutes();
-                    let [hAbre, mAbre] = partes[0].split(':').map(Number);
-                    let [hFecha, mFecha] = partes[1].split(':').map(Number);
-                    let isAberto = tempoAtualMin >= (hAbre * 60 + (mAbre || 0)) && tempoAtualMin < (hFecha * 60 + (mFecha || 0));
-                    statusBadge = isAberto ? '<span class="status-badge status-aberto"><i class="fas fa-circle" style="font-size: 7px;"></i> Aberto</span>' : '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado</span>';
-                }
-            } else {
-                statusBadge = '<span class="status-badge status-fechado"><i class="fas fa-circle" style="font-size: 7px;"></i> Fechado</span>';
-            }
-
-            let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> Delivery</span>' : '';
-            let sponsorBadge = (catFiltro && local.sponsored_category === catFiltro) ? '<span class="status-badge badge-sponsor"><i class="fas fa-star"></i> Patrocínio Categoria</span>' : '';
-
-            let mediaEstrelas = 0;
-            if(local.avaliacoes && local.avaliacoes.length > 0) {
-                mediaEstrelas = (local.avaliacoes.reduce((a, b) => a + b, 0) / local.avaliacoes.length).toFixed(1);
-            }
-            let estrelasHtml = mediaEstrelas > 0 ? `<div class="card-estrelas"><i class="fas fa-star" style="color: var(--primary);"></i> <span><b>${mediaEstrelas}</b> (${local.avaliacoes.length})</span></div>` : `<div class="card-estrelas" style="color:var(--gray); font-size:12px;">Sem avaliações</div>`;
-
-            let imagemCapa = local.imagens && local.imagens.length > 0 ? local.imagens[0] : '';
-            let imagemHtml = imagemCapa ? `<div class="card-img-container"><img src="${imagemCapa}" alt="${local.nome}"><div class="badges-container">${sponsorBadge} ${deliveryBadge} ${statusBadge}</div></div>` : '';
-            let cardClass = (catFiltro && local.sponsored_category === catFiltro) ? 'card-local patrocinado-categoria' : 'card-local';
-
-            return `
-                <div class="${cardClass}">
-                    ${imagemHtml}
-                    <div class="card-body">
-                        ${!imagemCapa ? `<div class="badges-container-inline">${sponsorBadge}${deliveryBadge}${statusBadge}</div>` : ''}
-                        <div class="card-title">${local.nome}</div>
-                        <div class="card-subtitle"><i class="fas fa-tag" style="font-size: 11px; margin-right: 4px;"></i>${local.categoria} &bull; <i class="fas fa-map-marker-alt" style="font-size: 11px; margin-left: 4px; margin-right: 2px;"></i>${local.bairro || 'Centro'}</div>
-                        ${estrelasHtml}
-                        <div class="card-actions">
-                            <button class="btn-card btn-outline" onclick="abrirDetalhes('${local.idDoc}')">Ver Detalhes</button>
-                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${local.whatsapp}', '_blank')"><i class="fab fa-whatsapp" style="font-size: 15px;"></i> Chamar</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function filtrarCategoria(cat, elemento) {
-            document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
-            elemento.classList.add('active');
-            categoriaAtual = cat;
-            renderizarLocais();
-        }
-
-        function filtrarBusca() { renderizarLocais(); }
-        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
-        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
-        function mudarCidade(cidade) {
-            cidadeAtual = cidade;
-            document.getElementById('cidadeAtivaHeader').textContent = cidade;
-            document.getElementById('cadCidade').value = cidade;
-            fecharModalCidade();
-            atualizarListaBairros();
-            renderizarLocais();
-        }
-        function usarGPS() { mudarCidade('Paraisópolis'); }
-
-        async function processarImagensUpload(input) {
-            const preview = document.getElementById('previewImagens');
-            preview.innerHTML = 'A processar imagens...';
-            imagensUploadTemp = [];
-
-            for (let file of input.files) {
-                let reader = new FileReader();
-                reader.readAsDataURL(file);
-                await new Promise(resolve => {
-                    reader.onload = (e) => {
-                        let img = new Image();
-                        img.src = e.target.result;
-                        img.onload = () => {
-                            let canvas = document.createElement('canvas');
-                            let ctx = canvas.getContext('2d');
-                            let maxW = 600;
-                            let scale = maxW / img.width;
-                            canvas.width = maxW;
-                            canvas.height = img.height * scale;
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            imagensUploadTemp.push(canvas.toDataURL('image/jpeg', 0.7));
-                            resolve();
-                        }
-                    }
-                });
-            }
-
-            preview.innerHTML = '';
-            imagensUploadTemp.forEach((url, index) => {
-                preview.innerHTML += `
-                    <div style="position:relative; flex-shrink:0;">
-                        <img src="${url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
-                        <span onclick="removerFotoTemp(${index})" style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
-                    </div>
-                `;
+            let container = document.getElementById('listaLocais');
+            container.innerHTML = '';
+            filtrados.forEach(l => {
+                container.innerHTML += `
+                    <div class="card-local" style="padding:16px;">
+                        <h4>${l.nome} (${l.categoria})</h4>
+                        <p style="font-size:13px; color:var(--gray);">${l.bairro || 'Centro'} &bull; ${l.plan_tier || 'FREE'}</p>
+                        <button class="btn-card btn-wpp" style="margin-top:10px;" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')">WhatsApp</button>
+                    </div>`;
             });
         }
 
-        function removerFotoTemp(index) {
-            imagensUploadTemp.splice(index, 1);
-            let preview = document.getElementById('previewImagens');
-            preview.innerHTML = '';
-            imagensUploadTemp.forEach((url, i) => {
-                preview.innerHTML += `
-                    <div style="position:relative; flex-shrink:0;">
-                        <img src="${url}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
-                        <span onclick="removerFotoTemp(${i})" style="position:absolute; top:-5px; right:-5px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer;">&times;</span>
-                    </div>
-                `;
-            });
+        function filtrarCategoria(cat, el) {
+            document.querySelectorAll('.cat-item').forEach(e => e.classList.remove('active'));
+            el.classList.add('active'); categoriaAtual = cat; renderizarLocais();
         }
 
         function abrirModalCadastro(docId = null) {
-            document.getElementById('cadId').value = '';
-            document.getElementById('cadNome').value = '';
-            document.getElementById('cadBairro').value = '';
-            document.getElementById('cadEndereco').value = '';
-            document.getElementById('cadApenasDelivery').checked = false;
-            toggleDeliveryMode();
-            document.getElementById('cadWpp').value = '';
-            document.getElementById('cadDesc').value = '';
-            document.getElementById('cadFotos').value = '';
-            document.getElementById('previewImagens').innerHTML = '';
-            imagensUploadTemp = [];
-            document.getElementById('tituloModalCadastro').textContent = 'Anunciar Negócio';
-
-            diasSemanaConfig.forEach(d => {
-                document.getElementById(`hor_${d.k}_fechado`).checked = false;
-                document.getElementById(`hor_${d.k}_abre`).value = "08:00";
-                document.getElementById(`hor_${d.k}_fecha`).value = "18:00";
-                toggleDiaFechado(d.k);
-            });
+            document.getElementById('cadId').value = ''; document.getElementById('cadNome').value = '';
+            // Definir datas padrão para hoje e vencimento em 30 dias
+            let hoje = new Date().toISOString().split('T')[0];
+            let vencimento = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
+            document.getElementById('cadDataEntrada').value = hoje;
+            document.getElementById('cadDataVencimento').value = vencimento;
 
             if(docId) {
-                let local = listaLocaisCache.find(l => l.idDoc === docId);
-                if(local) {
-                    document.getElementById('cadId').value = local.idDoc;
-                    document.getElementById('cadNome').value = local.nome;
-                    document.getElementById('cadCategoria').value = local.categoria;
-                    document.getElementById('cadCidade').value = local.cidade;
-                    document.getElementById('cadBairro').value = local.bairro || '';
-                    document.getElementById('cadEndereco').value = local.endereco || '';
-                    document.getElementById('cadApenasDelivery').checked = local.apenasDelivery || false;
-                    toggleDeliveryMode();
-                    document.getElementById('cadWpp').value = local.whatsapp;
-                    document.getElementById('cadDesc').value = local.descricao || '';
-                    imagensUploadTemp = local.imagens || [];
-
-                    if(local.horariosSemana) {
-                        diasSemanaConfig.forEach(d => {
-                            let val = local.horariosSemana[d.k];
-                            if(val === 'Fechado' || !val) {
-                                document.getElementById(`hor_${d.k}_fechado`).checked = true;
-                            } else {
-                                let partes = val.split(' - ');
-                                if(partes.length === 2) {
-                                    document.getElementById(`hor_${d.k}_abre`).value = partes[0];
-                                    document.getElementById(`hor_${d.k}_fecha`).value = partes[1];
-                                }
-                            }
-                            toggleDiaFechado(d.k);
-                        });
-                    }
-                    document.getElementById('tituloModalCadastro').textContent = 'Editar Negócio';
+                let l = listaLocaisCache.find(x => x.idDoc === docId);
+                if(l) {
+                    document.getElementById('cadId').value = l.idDoc;
+                    document.getElementById('cadNome').value = l.nome;
+                    document.getElementById('cadPlanTier').value = l.plan_tier || 'FREE';
+                    document.getElementById('cadPaymentStatus').value = l.payment_status || 'ativo';
+                    document.getElementById('cadDataEntrada').value = l.data_entrada || hoje;
+                    document.getElementById('cadDataVencimento').value = l.data_vencimento || vencimento;
+                    document.getElementById('cadWpp').value = l.whatsapp || '';
                 }
             }
             document.getElementById('modalCadastro').style.display = 'block';
         }
-        
+
         function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
-        
+
         async function salvarLocal() {
             let docId = document.getElementById('cadId').value;
             let nome = document.getElementById('cadNome').value;
-            if(!nome) return alert("Por favor, preencha o nome do estabelecimento.");
+            if(!nome) return alert("Insira o nome!");
 
-            let btn = document.getElementById('btnSalvarCadastro');
-            btn.textContent = "A guardar na nuvem...";
-            btn.disabled = true;
-
-            try {
-                let imagensLinks = [];
-                for (let [index, imgBase64] of imagensUploadTemp.entries()) {
-                    if (imgBase64.startsWith('http')) {
-                        imagensLinks.push(imgBase64); 
-                    } else {
-                        let storageRef = storage.ref(`estabelecimentos/${Date.now()}_${index}.jpg`);
-                        let res = await storageRef.putString(imgBase64, 'data_url');
-                        let downloadUrl = await res.ref.getDownloadURL();
-                        imagensLinks.push(downloadUrl);
-                    }
-                }
-
-                let horariosSemana = {};
-                diasSemanaConfig.forEach(d => {
-                    let fechado = document.getElementById(`hor_${d.k}_fechado`).checked;
-                    horariosSemana[d.k] = fechado ? 'Fechado' : `${document.getElementById(`hor_${d.k}_abre`).value} - ${document.getElementById(`hor_${d.k}_fecha`).value}`;
-                });
-
-                let existingLocal = docId ? listaLocaisCache.find(l => l.idDoc === docId) : null;
-                let statusFinal = docId ? (existingLocal?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente');
-
-                let dadosLocal = {
-                    nome: nome,
-                    categoria: document.getElementById('cadCategoria').value,
-                    cidade: document.getElementById('cadCidade').value,
-                    bairro: document.getElementById('cadBairro').value,
-                    endereco: document.getElementById('cadApenasDelivery').checked ? '' : document.getElementById('cadEndereco').value,
-                    apenasDelivery: document.getElementById('cadApenasDelivery').checked,
-                    whatsapp: document.getElementById('cadWpp').value,
-                    descricao: document.getElementById('cadDesc').value,
-                    horariosSemana: horariosSemana,
-                    imagens: imagensLinks,
-                    status: statusFinal,
-                    plan_tier: existingLocal?.plan_tier || 'FREE',
-                    spotlight_banner: existingLocal?.spotlight_banner || false,
-                    sponsored_category: existingLocal?.sponsored_category || '',
-                    userId: usuarioLogado ? usuarioLogado.uid : (existingLocal?.userId || ''),
-                    avaliacoes: existingLocal?.avaliacoes || []
-                };
-
-                if(docId) {
-                    await db.collection("locais").doc(docId).update(dadosLocal);
-                } else {
-                    await db.collection("locais").add(dadosLocal);
-                    if(!isAdminLogado) alert("Registo enviado com sucesso! Passará por aprovação.");
-                }
-
-                fecharModalCadastro();
-                if(isAdminLogado) renderizarKanban();
-                if(usuarioLogado && !isAdminLogado) abrirPainelLojista();
-            } catch (error) {
-                alert("Erro ao guardar na nuvem: " + error.message);
-            } finally {
-                btn.textContent = "Guardar no Guia";
-                btn.disabled = false;
-            }
-        }
-
-        function abrirDetalhes(docId) {
-            let local = listaLocaisCache.find(l => l.idDoc === docId);
-            if(!local) return;
-            idLocalDetalheAberto = docId;
-
-            document.getElementById('detDetalhesNome').textContent = local.nome;
-            document.getElementById('detDetalhesCategoria').textContent = local.categoria;
-            document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
-            document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição registada.';
-
-            let boxEndereco = document.getElementById('detDetalhesEnderecoCompleto');
-            if (local.endereco && !local.apenasDelivery) {
-                document.getElementById('textoEnderecoVal').textContent = `${local.endereco}, ${local.bairro ? local.bairro + ' - ' : ''}${local.cidade}`;
-                boxEndereco.style.display = 'block';
-            } else {
-                boxEndereco.style.display = 'none';
-            }
-
-            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
-            document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
-            document.getElementById('btnDetCompartilhar').onclick = () => {
-                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade}\n📱 Contacto: ${local.whatsapp}`;
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoZap)}`, '_blank');
+            let dados = {
+                nome: nome,
+                categoria: document.getElementById('cadCategoria').value,
+                cidade: document.getElementById('cadCidade').value,
+                bairro: document.getElementById('cadBairro').value || 'Centro',
+                whatsapp: document.getElementById('cadWpp').value,
+                plan_tier: document.getElementById('cadPlanTier').value,
+                payment_status: document.getElementById('cadPaymentStatus').value,
+                data_entrada: document.getElementById('cadDataEntrada').value,
+                data_vencimento: document.getElementById('cadDataVencimento').value,
+                status: docId ? (listaLocaisCache.find(x => x.idDoc === docId)?.status || 'aprovado') : (isAdminLogado ? 'aprovado' : 'pendente'),
+                userId: usuarioLogado ? usuarioLogado.uid : ''
             };
-            
-            let btnMapa = document.getElementById('btnDetMapa');
-            if (local.apenasDelivery) {
-                btnMapa.style.display = 'none';
-            } else {
-                btnMapa.style.display = 'flex';
-                btnMapa.onclick = () => window.open(`https://maps.google.com/?q=${encodeURIComponent(local.endereco + ', ' + local.cidade)}`, '_blank');
-            }
 
-            const galeria = document.getElementById('detDetalhesImagens');
-            galeria.innerHTML = '';
-            let imagens = local.imagens && local.imagens.length > 0 ? local.imagens : ['https://via.placeholder.com/400x220?text=Sem+Foto'];
-            imagens.forEach(imgUrl => { galeria.innerHTML += `<img src="${imgUrl}" class="galeria-imagem">`; });
+            if(docId) { await db.collection("locais").doc(docId).update(dados); }
+            else { await db.collection("locais").add(dados); }
 
-            let media = 0;
-            if(local.avaliacoes && local.avaliacoes.length > 0) {
-                media = (local.avaliacoes.reduce((a, b) => a + b, 0) / local.avaliacoes.length).toFixed(1);
-                document.getElementById('textoMediaAvaliacao').textContent = `Média: ${media} estrelas (${local.avaliacoes.length} avaliações)`;
-            } else {
-                document.getElementById('textoMediaAvaliacao').textContent = `Ainda sem avaliações. Seja o primeiro!`;
-            }
-
-            const listaHorarios = document.getElementById('detDetalhesHorarios');
-            listaHorarios.innerHTML = '';
-            const diasNomes = {seg:'Segunda', ter:'Terça', qua:'Quarta', qui:'Quinta', sex:'Sexta', sab:'Sábado', dom:'Domingo'};
-            let hor = local.horariosSemana || {};
-            Object.keys(diasNomes).forEach(k => {
-                let v = hor[k] || 'Não informado';
-                let css = v.toLowerCase() === 'fechado' ? 'class="dia-fechado"' : '';
-                listaHorarios.innerHTML += `<li><span>${diasNomes[k]}</span><span ${css}>${v}</span></li>`;
-            });
-
-            document.getElementById('modalDetalhes').style.display = 'block';
-        }
-        function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
-
-        async function enviarAvaliacao(nota) {
-            if(!idLocalDetalheAberto) return;
-            let local = listaLocaisCache.find(l => l.idDoc === idLocalDetalheAberto);
-            if(!local) return;
-            let avaliacoes = local.avaliacoes || [];
-            avaliacoes.push(nota);
-            await db.collection("locais").doc(idLocalDetalheAberto).update({ avaliacoes: avaliacoes });
-            alert("Obrigado pela sua avaliação!");
-            abrirDetalhes(idLocalDetalheAberto);
+            fecharModalCadastro();
+            if(isAdminLogado) renderizarKanban();
         }
 
         function renderizarKanban() {
-            let buscaKanban = document.getElementById('buscaKanban').value.toLowerCase();
-            let listaFiltrada = listaLocaisCache;
-            if(buscaKanban) {
-                listaFiltrada = listaLocaisCache.filter(l => l.nome.toLowerCase().includes(buscaKanban) || l.cidade.toLowerCase().includes(buscaKanban));
-            }
-
             let ativos = listaLocaisCache.filter(l => l.status !== 'pendente');
-            let spotlightList = ativos.filter(l => l.spotlight_banner);
-            let sponsorList = ativos.filter(l => l.sponsored_category);
-            let pendentes = listaLocaisCache.filter(l => l.status === 'pendente');
+            let mrr = 0; let pagosCount = 0; let atrasadosCount = 0; let pendentesCount = listaLocaisCache.filter(l => l.status === 'pendente').length;
 
-            document.getElementById('kpiTotal').textContent = ativos.length;
-            document.getElementById('kpiSpotlight').textContent = spotlightList.length;
-            document.getElementById('kpiSponsors').textContent = sponsorList.length;
-            document.getElementById('kpiPendentes').textContent = pendentes.length;
+            ativos.forEach(l => {
+                let preco = l.plan_tier === 'EMPRESA_PREMIUM' ? 119 : (l.plan_tier === 'AUTONOMO_PRO' ? 39 : 0);
+                if(l.payment_status === 'ativo' && preco > 0) { mrr += preco; pagosCount++; }
+                if(l.payment_status === 'atrasado') { atrasadosCount++; }
+            });
 
-            document.getElementById('textoAdminInsights').innerHTML = `📊 <b>Monetización Sazonal:</b> ${spotlightList.length} banners no rotativo da Home e ${sponsorList.length} patrocínios de categorias ativos.`;
+            document.getElementById('kpiMRR').textContent = `R$ ${mrr.toFixed(2)}`;
+            document.getElementById('kpiPagos').textContent = pagosCount;
+            document.getElementById('kpiAtrasados').textContent = atrasadosCount;
+            document.getElementById('kpiPendentes').textContent = pendentesCount;
 
-            let colPendentes = document.getElementById('colunaPendentes');
-            let colGratis = document.getElementById('colunaGratis');
-            let colAds = document.getElementById('colunaAds');
-            colPendentes.innerHTML = ''; colGratis.innerHTML = ''; colAds.innerHTML = '';
+            let colPend = document.getElementById('colunaPendentes');
+            let colAtiv = document.getElementById('colunaAtivos');
+            let colAtras = document.getElementById('colunaAtrasados');
+            colPend.innerHTML = ''; colAtiv.innerHTML = ''; colAtras.innerHTML = '';
 
-            listaFiltrada.forEach(local => {
-                let isPendente = local.status === 'pendente';
-                let isSpotlight = local.spotlight_banner;
-                let hasSponsor = local.sponsored_category;
-                
-                let btnStatus = '';
-                if(isPendente) {
-                    btnStatus = `<button class="btn-admin-action btn-admin-approve" onclick="aprovarLocal('${local.idDoc}')"><i class="fas fa-check"></i> Aprovar</button>`;
-                } else {
-                    let spotlightBtn = isSpotlight 
-                        ? `<button class="btn-admin-action" style="background:#92400E; width:100%; margin-top:4px;" onclick="toggleSpotlight('${local.idDoc}', false)">❌ Remover Banner Spotlight</button>`
-                        : `<button class="btn-admin-action" style="background:var(--primary); color:#1E293B; width:100%; margin-top:4px;" onclick="toggleSpotlight('${local.idDoc}', true)">📢 Colocar em Banner Spotlight</button>`;
-                    
-                    let sponsorAction = hasSponsor
-                        ? `<button class="btn-admin-action" style="background:#92400E; width:100%; margin-top:4px;" onclick="removerSponsor('${local.idDoc}')">❌ Remover Patrocínio (${local.sponsored_category})</button>`
-                        : `<button class="btn-admin-action" style="background:var(--purple); color:white; width:100%; margin-top:4px;" onclick="adicionarSponsorPrompt('${local.idDoc}')">⭐ Patrocinar Categoria</button>`;
-
-                    btnStatus = spotlightBtn + sponsorAction;
-                }
-
+            listaLocaisCache.forEach(l => {
                 let card = `
                     <div class="kanban-card">
-                        <h4 style="font-size: 15px; margin-bottom: 2px;">${local.nome}</h4>
-                        <div style="font-size: 12px; color: var(--gray);">${local.categoria} &bull; ${local.bairro || 'Centro'} ${hasSponsor ? '&bull; 🌟 Patrocina: ' + hasSponsor : ''}</div>
-                        ${btnStatus}
-                        <div style="display: flex; gap: 6px; margin-top: 6px;">
-                            <button class="btn-admin-action btn-admin-edit" style="flex: 1; margin-top: 0;" onclick="abrirModalCadastro('${local.idDoc}')">Editar</button>
-                            <button class="btn-admin-action btn-admin-del" style="flex: 1; margin-top: 0;" onclick="excluirLocal('${local.idDoc}')">Apagar</button>
-                        </div>
+                        <h4>${l.nome}</h4>
+                        <p style="font-size:12px; color:var(--gray);">Plano: <b>${l.plan_tier || 'FREE'}</b></p>
+                        <p style="font-size:12px; color:var(--gray);">Vencimento: <b>${l.data_vencimento || 'N/A'}</b></p>
+                        <button class="btn-admin-action btn-admin-edit" onclick="abrirModalCadastro('${l.idDoc}')">Gerir Financeiro</button>
                     </div>`;
-                
-                if(isPendente) colPendentes.innerHTML += card;
-                else if(isSpotlight || hasSponsor) colAds.innerHTML += card;
-                else colGratis.innerHTML += card;
+                if(l.status === 'pendente') colPend.innerHTML += card;
+                else if(l.payment_status === 'atrasado') colAtras.innerHTML += card;
+                else colAtiv.innerHTML += card;
             });
-        }
-
-        async function aprovarLocal(docId) {
-            await db.collection("locais").doc(docId).update({ status: 'aprovado' });
-        }
-
-        async function toggleSpotlight(docId, status) {
-            let local = listaLocaisCache.find(l => l.idDoc === docId);
-            if(status && (!local.imagens || local.imagens.length === 0)) {
-                return alert("O estabelecimento precisa de pelo menos uma foto para aparecer no Banner Spotlight!");
-            }
-            await db.collection("locais").doc(docId).update({ spotlight_banner: status });
-        }
-
-        async function adicionarSponsorPrompt(docId) {
-            let cat = prompt("Qual categoria este estabelecimento vai patrocinar no topo? (Ex: Alimentação, Pet Shop, Saúde, Automotivo, Artigos Esportivos, Turismo, Serviços)");
-            if(cat) {
-                await db.collection("locais").doc(docId).update({ sponsored_category: cat.trim() });
-            }
-        }
-
-        async function removerSponsor(docId) {
-            await db.collection("locais").doc(docId).update({ sponsored_category: '' });
-        }
-
-        async function excluirLocal(docId) {
-            if(confirm("Tem a certeza de que deseja apagar?")) {
-                await db.collection("locais").doc(docId).delete();
-            }
         }
 
         iniciarListenerLocais();
