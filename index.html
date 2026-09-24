@@ -13,7 +13,770 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
+    <style><!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folha Amarela Digital</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
     <style>
+        :root {
+            --primary: #F59E0B; --primary-hover: #D97706; --dark: #1E293B; --light: #F8FAFC;
+            --surface: #FFFFFF; --gray: #64748B; --border: #E2E8F0; --success: #10B981;
+            --danger: #EF4444; --purple: #8B5CF6; --warning: #F59E0B;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --input-bg: #F1F5F9;
+        }
+
+        body.dark-mode {
+            --primary: #FBBF24; --primary-hover: #F59E0B; --dark: #F1F5F9; --light: #0B0F17;
+            --surface: #131C2E; --gray: #94A3B8; --border: #1E293B; --success: #34D399;
+            --danger: #F87171; --purple: #A78BFA; --warning: #FBBF24;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); --input-bg: #1A263E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+
+        header { background: var(--surface); padding: 16px 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+        .logo { text-decoration: none; display: flex; align-items: center; }
+        .logo img { height: 40px; width: auto; object-fit: contain; }
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        
+        .seletor-cidade, .btn-theme-toggle, .btn-lojista-nav, .bairro-container { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; }
+        .seletor-cidade { padding: 7px 14px; font-size: 13px; gap: 6px; }
+        .btn-theme-toggle { width: 36px; height: 36px; justify-content: center; font-size: 14px; border-radius: 50%; }
+        .btn-lojista-nav { padding: 8px 14px; font-size: 13px; gap: 6px; }
+        .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245,158,11,0.2); }
+        
+        .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .bairro-container { padding: 5px 12px; gap: 6px; }
+        .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
+        .bairro-container select option { background-color: var(--surface); color: var(--dark); }
+
+        .search-container { position: relative; display: flex; gap: 8px; }
+        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
+        .search-bar:focus { border-color: var(--primary); background: var(--surface); }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
+        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+        .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
+        
+        .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+
+        .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
+        .categorias::-webkit-scrollbar { display: none; }
+        .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
+        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 18px; color: var(--gray); box-shadow: var(--shadow); }
+        .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
+        .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
+        .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
+
+        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
+        .lista-locais { display: flex; flex-direction: column; gap: 16px; }
+
+        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .card-img-container { position: relative; width: 100%; height: 160px; background: var(--border); }
+        .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .badges-container { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; align-items: center; z-index: 2; flex-wrap: wrap; justify-content: flex-end; }
+        .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; }
+        .status-aberto { background-color: rgba(16, 185, 129, 0.95); }
+        .status-fechado { background-color: rgba(239, 68, 68, 0.95); }
+        .status-delivery { background-color: rgba(139, 92, 246, 0.95); }
+
+        .card-body { padding: 18px; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
+        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
+        .card-estrelas { font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; color: var(--dark); font-weight: 600; }
+        .card-actions { display: flex; gap: 10px; }
+        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
+        .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
+        .btn-wpp { background-color: var(--success); color: white !important; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
+        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
+        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
+        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+
+        .galeria-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; scroll-snap-type: x mandatory; margin-top: 15px; }
+        .galeria-scroll::-webkit-scrollbar { height: 4px; }
+        .galeria-scroll::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 4px; }
+        .galeria-imagem { min-width: 85%; height: 220px; object-fit: cover; border-radius: 16px; scroll-snap-align: center; background-color: var(--input-bg); }
+        
+        .botoes-acao-detalhes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .botoes-acao-detalhes button { flex: 1; min-width: 85px; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; }
+        .btn-ligar { background-color: var(--dark); color: var(--surface); }
+        .btn-mapa { background-color: var(--input-bg); color: var(--dark); border: 1px solid var(--border); }
+        .btn-share { border: 1px solid var(--border); color: var(--purple); background: var(--input-bg); }
+
+        .horarios-semana li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
+        .dia-fechado { color: var(--danger); font-weight: 700; }
+        .avaliacao-box { background: var(--input-bg); border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-top: 16px; text-align: center; }
+        .estrelas-input { font-size: 26px; color: var(--gray); cursor: pointer; margin: 4px 0; }
+        .estrelas-input span:hover, .estrelas-input span.ativo { color: var(--primary); }
+
+        footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
+        
+        #painelAdmin, #painelLojista { display: none; padding: 24px 20px; background: var(--light); min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 2000; overflow-y: auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; background: var(--dark); color: var(--surface); padding: 18px 24px; border-radius: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; box-shadow: var(--shadow); }
+        .admin-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .kpi-card { flex: 1; min-width: 140px; background: var(--surface); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); border-left: 4px solid var(--primary); }
+        .kpi-card h3 { font-size: 11px; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+        .kpi-card p { font-size: 26px; font-weight: 800; color: var(--dark); }
+        
+        .kanban-board { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+        .kanban-col { flex: 1; min-width: 300px; background: var(--input-bg); border-radius: 16px; padding: 16px; border: 1px solid var(--border); }
+        .kanban-col h3 { font-size: 15px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); color: var(--dark); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .kanban-card { background: var(--surface); padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); border-left: 4px solid var(--gray); }
+        .btn-admin-action { background: var(--dark); color: var(--surface); border: none; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-top: 8px; font-weight: 700; }
+        .btn-admin-edit { background: #0EA5E9; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Chatbot IA Flutuante -->
+    <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
+
+    <header>
+        <div class="header-top-row">
+            <a href="#" class="logo">
+                <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
+            </a>
+            <div class="header-actions">
+                <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
+                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro"><i class="fas fa-moon" id="themeIcon"></i></button>
+                <button class="btn-anunciar" onclick="abrirModalCadastro()"><i class="fas fa-plus"></i> Anunciar</button>
+            </div>
+        </div>
+        
+        <div class="header-filters-row">
+            <div class="seletor-cidade" onclick="abrirModalCidade()">
+                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+            </div>
+            <div class="bairro-container">
+                <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
+                <select id="filtroBairro" onchange="filtrarBairro()">
+                    <option value="">Todos os Bairros</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-bar" id="inputBusca" placeholder="Pesquisar padaria, marido de aluguel, farmácia..." onkeyup="filtrarBusca()">
+            <button class="btn-ia" onclick="abrirChatIA()" title="Assistente IA"><i class="fas fa-wand-magic-sparkles"></i></button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="categorias">
+            <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Serviços', this)"><div class="cat-icon"><i class="fas fa-tools"></i></div><div class="cat-name">Serviços</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div></div>
+            <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
+            <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
+        </div>
+
+        <div id="secaoRegulares">
+            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
+            <div id="listaLocais" class="lista-locais">
+                <p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais da nuvem...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Detalhes Completo -->
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
+            <div style="position: relative;">
+                <span class="close" onclick="fecharDetalhes()" style="color: white; background: rgba(0,0,0,0.6); top: 16px; right: 16px; z-index: 10; position: absolute;">&times;</span>
+                <div class="galeria-scroll" id="detDetalhesImagens" style="margin-top: 0; padding: 12px;"></div>
+            </div>
+            
+            <div style="padding: 24px;">
+                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome do Local</h2>
+                <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;"><span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span></p>
+                <p id="detDetalhesEnderecoCompleto" style="font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 20px; display: none;"><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="textoEnderecoVal"></span></p>
+                
+                <div class="botoes-acao-detalhes">
+                    <button class="btn-wpp" id="btnDetWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="btn-ligar" id="btnDetLigar"><i class="fas fa-phone-alt"></i> Ligar</button>
+                    <button class="btn-mapa" id="btnDetMapa"><i class="fas fa-map-marker-alt"></i> Mapa</button>
+                </div>
+
+                <div class="avaliacao-box">
+                    <p style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">O que achou deste local?</p>
+                    <div class="estrelas-input" id="containerEstrelasInput">
+                        <span onclick="enviarAvaliacao(1)">★</span><span onclick="enviarAvaliacao(2)">★</span><span onclick="enviarAvaliacao(3)">★</span><span onclick="enviarAvaliacao(4)">★</span><span onclick="enviarAvaliacao(5)">★</span>
+                    </div>
+                    <p style="font-size: 12px; color: var(--gray);" id="textoMediaAvaliacao">Média atual: --</p>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+                <div class="horarios-semana">
+                    <h3 style="font-size: 14px; margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento</h3>
+                    <ul id="detDetalhesHorarios" style="list-style: none; padding: 0; margin: 0;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cidades e GPS -->
+    <div id="modalCidade" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 380px;">
+            <span class="close" onclick="fecharModalCidade()">&times;</span>
+            <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
+            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde está?</h2>
+            <div id="listaCidadesDinamica" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar a minha localização (GPS)</button>
+        </div>
+    </div>
+
+    <!-- Modal Chatbot IA -->
+    <div id="modalChatIA" class="modal">
+        <div class="modal-content" style="max-width: 450px; display: flex; flex-direction: column; height: 500px; padding: 0;">
+            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 16px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA</h3>
+                <span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position: static; background: rgba(255,255,255,0.2); color: white;">&times;</span>
+            </div>
+            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
+                <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
+                    Olá! Pergunte algo como: <i>"A Padaria X abre aos domingos?"</i>
+                </div>
+            </div>
+            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px;">
+                <input type="text" id="inputChatUser" class="form-control" placeholder="Escreva a sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
+                <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Autenticação -->
+    <div id="modalAreaAcesso" class="modal">
+        <div class="modal-content" style="max-width: 380px; text-align: center;">
+            <span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span>
+            <h2 style="margin-bottom: 4px; font-size: 20px;">Área de Acesso</h2>
+            <div class="form-group" style="text-align: left;"><label>E-mail</label><input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com"></div>
+            <div class="form-group" style="text-align: left;"><label>Palavra-passe</label><input type="password" id="acessoSenha" class="form-control" placeholder="A sua palavra-passe..."></div>
+            <button class="btn-submit" onclick="executarLoginUnificado()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL LOJISTA: CADASTRO BÁSICO DE DADOS -->
+    <!-- ========================================== -->
+    <div id="modalCadastro" class="modal">
+        <div class="modal-content" style="max-width: 560px;">
+            <span class="close" onclick="fecharModalCadastro()">&times;</span>
+            <h2 id="tituloModalCadastro" style="margin-bottom: 20px; font-size: 20px;">Anunciar Negócio ou Serviço</h2>
+            <input type="hidden" id="cadId">
+            <div class="form-group"><label>Nome do Estabelecimento / Prestador</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria X ou Carlos Eletricista"></div>
+            <div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option><option>Automotivo</option></select></div>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div>
+                <div class="form-group" style="flex: 1;"><label>Bairro / Região</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div>
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="cadApenasDelivery" onchange="toggleDeliveryMode()" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    <span>Trabalho apenas com Atendimento Móvel / Delivery (S/ Loja)</span>
+                </label>
+            </div>
+
+            <div class="form-group" id="grupoEndereco">
+                <label>Endereço Físico (Para o Mapa)</label>
+                <input type="text" id="cadEndereco" class="form-control" placeholder="Rua XYZ, 123">
+            </div>
+
+            <div class="form-group">
+                <label style="margin-bottom: 8px;"><i class="far fa-clock" style="color: var(--primary);"></i> Horários de Funcionamento</label>
+                <div style="display: flex; flex-direction: column; gap: 8px; background: var(--input-bg); padding: 14px; border-radius: 16px; border: 1px solid var(--border);">
+                    <script>
+                        const diasSemanaConfig = [
+                            {k:'seg', n:'Segunda'}, {k:'ter', n:'Terça'}, {k:'qua', n:'Quarta'},
+                            {k:'qui', n:'Quinta'}, {k:'sex', n:'Sexta'}, {k:'sab', n:'Sábado'}, {k:'dom', n:'Domingo'}
+                        ];
+                        diasSemanaConfig.forEach(d => {
+                            document.write(`
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 6px; border-bottom: 1px solid var(--border);">
+                                    <span style="font-size: 13px; font-weight: 700; width: 80px;">${d.n}</span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <label style="font-size: 11px; cursor: pointer; color: var(--gray);"><input type="checkbox" id="hor_${d.k}_fechado" onchange="toggleDiaFechado('${d.k}')"> Fechado</label>
+                                        <input type="time" id="hor_${d.k}_abre" class="form-control" style="width: 90px; padding: 4px; font-size: 12px;" value="08:00">
+                                        <span style="font-size: 12px;">às</span>
+                                        <input type="time" id="hor_${d.k}_fecha" class="form-control" style="width: 90px; padding: 4px; font-size: 12px;" value="18:00">
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="form-group"><label>WhatsApp (com DDD)</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div>
+            
+            <!-- ESCOLHA DE PLANO PELO CLIENTE (Intenção de Compra) -->
+            <div style="background: var(--surface); padding: 14px; border-radius: 12px; margin-bottom: 16px; border: 2px solid var(--primary);">
+                <label style="font-size: 14px; font-weight: 800; color: var(--dark); margin-bottom: 10px;">Escolha o seu Plano:</label>
+                <select id="cadPlanTier" class="form-control" style="font-weight: 700; color: var(--primary);">
+                    <option value="FREE">Plano Grátis (Básico)</option>
+                    <option value="AUTONOMO_PRO">Autônomo Pro (R$ 39/mês)</option>
+                    <option value="EMPRESA_PREMIUM">Empresa Premium (R$ 119/mês - VIP)</option>
+                </select>
+                <p style="font-size: 11px; color: var(--gray); margin-top: 8px;">Nota: Ao escolher um plano pago, a nossa equipa entrará em contacto para ativar a sua assinatura.</p>
+            </div>
+
+            <button class="btn-submit" onclick="salvarLocalLojista()">Guardar e Enviar</button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL ADMIN: GESTÃO FINANCEIRA (Restrito) -->
+    <!-- ========================================== -->
+    <div id="modalFinanceiroAdmin" class="modal">
+        <div class="modal-content" style="max-width: 450px; background: #F8FAFC;">
+            <span class="close" onclick="fecharModalFinanceiro()">&times;</span>
+            <h2 style="margin-bottom: 20px; font-size: 18px; color: var(--purple);"><i class="fas fa-file-invoice-dollar"></i> Gestão Financeira (Admin)</h2>
+            <input type="hidden" id="finId">
+            <h3 id="finNomeLoja" style="font-size: 15px; margin-bottom: 16px; color: var(--dark);"></h3>
+            
+            <div class="form-group">
+                <label>Plano Contratado</label>
+                <select id="finPlanTier" class="form-control">
+                    <option value="FREE">Grátis (R$ 0)</option>
+                    <option value="AUTONOMO_PRO">Autônomo Pro (R$ 39)</option>
+                    <option value="EMPRESA_PREMIUM">Empresa Premium (R$ 119)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Status do Pagamento</label>
+                <select id="finPaymentStatus" class="form-control" style="font-weight: bold;">
+                    <option value="pendente" style="color: var(--warning);">Pendente</option>
+                    <option value="ativo" style="color: var(--success);">Ativo (Pago)</option>
+                    <option value="atrasado" style="color: var(--danger);">Atrasado</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                <div class="form-group" style="flex: 1;"><label>Data de Entrada</label><input type="date" id="finDataEntrada" class="form-control"></div>
+                <div class="form-group" style="flex: 1;"><label>Data de Vencimento</label><input type="date" id="finDataVencimento" class="form-control"></div>
+            </div>
+
+            <button class="btn-submit" style="background: var(--purple); color: white;" onclick="salvarFinanceiroAdmin()">Atualizar Fatura</button>
+        </div>
+    </div>
+
+    <!-- Painéis -->
+    <div id="painelLojista">
+        <div class="admin-header"><h2 style="font-size: 18px;">O Meu Estabelecimento</h2><button onclick="logoutSessao()" class="btn-card" style="background:white; color:#1E293B;">Sair</button></div>
+        <div id="conteudoPainelLojista" style="max-width: 700px; margin: 0 auto; background: var(--surface); padding: 24px; border-radius: 20px;"></div>
+    </div>
+
+    <div id="painelAdmin">
+        <div class="admin-header">
+            <h2 style="font-size: 18px;"><i class="fas fa-chart-line"></i> Dashboard Admin & Financeiro</h2>
+            <button onclick="logoutSessao()" class="btn-card" style="background: white; color: #1E293B;">Sair</button>
+        </div>
+        <div class="admin-kpis">
+            <div class="kpi-card"><h3>MRR (Receita)</h3><p id="kpiMRR">R$ 0</p></div>
+            <div class="kpi-card"><h3>Assinantes Pagos</h3><p id="kpiPagos">0</p></div>
+            <div class="kpi-card"><h3>Atrasados</h3><p id="kpiAtrasados">0</p></div>
+        </div>
+        <div class="kanban-board">
+            <div class="kanban-col"><h3>Pendentes / Atrasados</h3><div id="colunaAtrasados"></div></div>
+            <div class="kanban-col"><h3>Ativos & Pagos</h3><div id="colunaAtivos"></div></div>
+        </div>
+    </div>
+
+    <footer>Folha Amarela Digital &copy; 2026</footer>
+
+    <script>
+        function atualizarLogoTema(isDark) {
+            const logoImg = document.getElementById('logoImg');
+            if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
+        }
+        function carregarTemaSalvo() {
+            const temaSalvo = localStorage.getItem('folha_theme');
+            if (temaSalvo === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+                atualizarLogoTema(true);
+            } else { atualizarLogoTema(false); }
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            atualizarLogoTema(isDark);
+        }
+        carregarTemaSalvo();
+
+        function toggleDeliveryMode() {
+            let apenasDeliv = document.getElementById('cadApenasDelivery').checked;
+            document.getElementById('grupoEndereco').style.display = apenasDeliv ? 'none' : 'block';
+        }
+        function toggleDiaFechado(dia) {
+            let fechado = document.getElementById(`hor_${dia}_fechado`).checked;
+            let inpAbre = document.getElementById(`hor_${dia}_abre`);
+            let inpFecha = document.getElementById(`hor_${dia}_fecha`);
+            inpAbre.disabled = fechado; inpFecha.disabled = fechado;
+            inpAbre.style.opacity = fechado ? '0.4' : '1';
+            inpFecha.style.opacity = fechado ? '0.4' : '1';
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
+            authDomain: "folha-amarela-digital.firebaseapp.com",
+            projectId: "folha-amarela-digital",
+            storageBucket: "folha-amarela-digital.firebasestorage.app",
+            messagingSenderId: "377984429498",
+            appId: "1:377984429498:web:0ec71abadab20a93420183"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(); const db = firebase.firestore();
+
+        let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
+        let listaLocaisCache = []; let idLocalDetalheAberto = null; let isAdminLogado = false; let usuarioLogado = null;
+        const ADMIN_EMAIL = "admin@folhaamarela.com";
+
+        auth.onAuthStateChanged((user) => {
+            usuarioLogado = user;
+            document.getElementById('txtBtnAcesso').textContent = user ? (user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel") : "Área de acesso";
+        });
+
+        function abrirAreaAcessoClick() {
+            if(!usuarioLogado) { document.getElementById('modalAreaAcesso').style.display = 'block'; }
+            else {
+                if(isAdminLogado || usuarioLogado.email === ADMIN_EMAIL) { document.getElementById('painelAdmin').style.display = 'block'; renderizarKanban(); }
+                else { abrirPainelLojista(); }
+            }
+        }
+
+        async function executarLoginUnificado() {
+            let email = document.getElementById('acessoEmail').value.trim();
+            let senha = document.getElementById('acessoSenha').value;
+            if(email === ADMIN_EMAIL && (senha === "admin123" || senha === "1234")) {
+                isAdminLogado = true; document.getElementById('modalAreaAcesso').style.display = 'none';
+                document.getElementById('painelAdmin').style.display = 'block'; renderizarKanban(); return;
+            }
+            try {
+                await auth.signInWithEmailAndPassword(email, senha);
+                document.getElementById('modalAreaAcesso').style.display = 'none'; abrirPainelLojista();
+            } catch (e) { alert("Erro: " + e.message); }
+        }
+
+        function logoutSessao() {
+            auth.signOut().then(() => {
+                isAdminLogado = false; document.getElementById('painelLojista').style.display = 'none'; document.getElementById('painelAdmin').style.display = 'none';
+            });
+        }
+
+        function abrirChatIA() {
+            document.getElementById('modalChatIA').style.display = 'block';
+            document.getElementById('inputChatUser').focus();
+        }
+
+        function enviarMensagemChat() {
+            let input = document.getElementById('inputChatUser');
+            let texto = input.value.trim();
+            if(!texto) return;
+            let container = document.getElementById('chatMensagens');
+            container.innerHTML += `<div style="background: var(--purple); color: white; padding: 10px 14px; border-radius: 16px; max-width: 85%; align-self: flex-end; font-size: 13px;">${texto}</div>`;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            setTimeout(() => {
+                let p = texto.toLowerCase();
+                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+                let respostaIA = "Não encontrei essa informação.";
+                let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
+                
+                if (encontrado) {
+                    let hor = encontrado.horariosSemana || {};
+                    if (p.includes('domingo') || p.includes('dom')) { respostaIA = `No domingo, funciona: <b>${hor['dom'] || 'Fechado'}</b>.`; }
+                    else if (p.includes('sabado') || p.includes('sábado')) { respostaIA = `No sábado, funciona: <b>${hor['sab'] || 'Fechado'}</b>.`; }
+                    else { respostaIA = `📍 ${encontrado.endereco || 'Atendimento Móvel'}<br>📱 WhatsApp: ${encontrado.whatsapp}`; }
+                }
+                container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        function abrirPainelLojista() {
+            if(!usuarioLogado) return;
+            document.getElementById('painelLojista').style.display = 'block';
+            let l = listaLocaisCache.find(x => x.userId === usuarioLogado.uid);
+            let c = document.getElementById('conteudoPainelLojista');
+            if(!l) {
+                c.innerHTML = `<button class="btn-submit" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro()">Registar o Meu Negócio</button>`;
+            } else {
+                let msgFin = l.payment_status === 'pendente' && l.plan_tier !== 'FREE' 
+                    ? `<div style="background: #FEF3C7; color: #92400E; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px;">⏳ A aguardar aprovação de pagamento pela administração para o plano ${l.plan_tier}.</div>` 
+                    : '';
+                
+                c.innerHTML = `
+                    ${msgFin}
+                    <h3>${l.nome}</h3>
+                    <p style="margin-top: 10px;">Plano Atual: <b style="color:var(--primary);">${l.plan_tier || 'FREE'}</b></p>
+                    <p>Status: <b>${l.payment_status || 'ativo'}</b></p>
+                    <p>Vencimento: <b>${l.data_vencimento || 'N/A'}</b></p>
+                    <button class="btn-submit" style="margin-top: 20px;" onclick="document.getElementById('painelLojista').style.display='none'; abrirModalCadastro('${l.idDoc}')">Editar Dados da Loja</button>
+                `;
+            }
+        }
+
+        function iniciarListenerLocais() {
+            db.collection("locais").onSnapshot((snapshot) => {
+                listaLocaisCache = [];
+                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                atualizarSeletorCidades(); atualizarListaBairros(); renderizarLocais();
+                if(isAdminLogado) renderizarKanban();
+            });
+        }
+
+        function atualizarSeletorCidades() {
+            let cidades = [...new Set(listaLocaisCache.map(l => (l.cidade || 'Paraisópolis').trim()))].sort();
+            if(cidades.length === 0) cidades = ['Paraisópolis'];
+            let container = document.getElementById('listaCidadesDinamica');
+            container.innerHTML = '';
+            cidades.forEach(c => { container.innerHTML += `<button class="btn-submit" style="margin:0;" onclick="mudarCidade('${c}')">${c}, MG</button>`; });
+        }
+
+        function atualizarListaBairros() {
+            const sb = document.getElementById('filtroBairro');
+            let bs = [...new Set(listaLocaisCache.filter(l => (l.cidade||'Paraisópolis')===cidadeAtual && l.bairro).map(l => l.bairro.trim()))].sort();
+            let v = sb.value;
+            sb.innerHTML = '<option value="">Todos os Bairros</option>';
+            bs.forEach(b => { sb.innerHTML += `<option value="${b}">${b}</option>`; });
+            if (bs.includes(v)) { sb.value = v; bairroAtual = v; } else { sb.value = ""; bairroAtual = ""; }
+        }
+
+        function filtrarBairro() { bairroAtual = document.getElementById('filtroBairro').value; renderizarLocais(); }
+        function usarGPSLocalizacao() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=18&addressdetails=1`);
+                    let data = await res.json();
+                    mudarCidade(data.address.city || data.address.town || 'Paraisópolis');
+                    fecharModalCidade();
+                } catch(e) { mudarCidade('Paraisópolis'); }
+            });
+        }
+
+        function renderizarLocais() {
+            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+            if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
+            if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+
+            const tierWeight = { 'EMPRESA_PREMIUM': 1, 'AUTONOMO_PRO': 2, 'FREE': 3 };
+            filtrados.sort((a, b) => (tierWeight[a.plan_tier || 'FREE'] || 3) - (tierWeight[b.plan_tier || 'FREE'] || 3));
+
+            let container = document.getElementById('listaLocais');
+            container.innerHTML = '';
+            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+            filtrados.forEach(local => { container.innerHTML += gerarHTMLCard(local); });
+        }
+
+        function gerarHTMLCard(local) {
+            let statusBadge = '<span class="status-badge status-aberto"><i class="fas fa-circle" style="font-size:7px;"></i> Aberto</span>';
+            let deliveryBadge = local.apenasDelivery ? '<span class="status-badge status-delivery"><i class="fas fa-motorcycle"></i> Móvel</span>' : '';
+            return `
+                <div class="card-local">
+                    <div class="card-body">
+                        <div class="badges-container-inline">${deliveryBadge}${statusBadge}</div>
+                        <div class="card-title">${local.nome}</div>
+                        <div class="card-subtitle"><i class="fas fa-tag"></i> ${local.categoria} &bull; <i class="fas fa-map-marker-alt"></i> ${local.bairro || 'Centro'}</div>
+                        <div class="card-actions">
+                            <button class="btn-card btn-outline" onclick="abrirDetalhes('${local.idDoc}')">Detalhes</button>
+                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${local.whatsapp}', '_blank')"><i class="fab fa-whatsapp"></i> Chamar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filtrarCategoria(cat, el) { document.querySelectorAll('.cat-item').forEach(e => e.classList.remove('active')); el.classList.add('active'); categoriaAtual = cat; renderizarLocais(); }
+        function filtrarBusca() { renderizarLocais(); }
+        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
+        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
+        function mudarCidade(cidade) { cidadeAtual = cidade; document.getElementById('cidadeAtivaHeader').textContent = cidade; fecharModalCidade(); atualizarListaBairros(); renderizarLocais(); }
+
+        function abrirDetalhes(docId) {
+            let l = listaLocaisCache.find(x => x.idDoc === docId);
+            if(!l) return;
+            idLocalDetalheAberto = docId;
+            document.getElementById('detDetalhesNome').textContent = l.nome;
+            document.getElementById('detDetalhesCategoria').textContent = l.categoria;
+            document.getElementById('detDetalhesLocal').textContent = `${l.bairro || 'Centro'}, ${l.cidade || 'Paraisópolis'}`;
+            
+            const lh = document.getElementById('detDetalhesHorarios'); lh.innerHTML = '';
+            const diasNomes = {seg:'Seg', ter:'Ter', qua:'Qua', qui:'Qui', sex:'Sex', sab:'Sáb', dom:'Dom'};
+            let hor = l.horariosSemana || {};
+            Object.keys(diasNomes).forEach(k => { lh.innerHTML += `<li><span>${diasNomes[k]}</span><span>${hor[k] || '08:00 - 18:00'}</span></li>`; });
+            
+            document.getElementById('modalDetalhes').style.display = 'block';
+        }
+        function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
+
+        // ==========================================
+        // FLUXO DE LOJISTA (SEPARAÇÃO DE ADMIN)
+        // ==========================================
+        function abrirModalCadastro(docId = null) {
+            document.getElementById('cadCidade').value = cidadeAtual;
+            document.getElementById('cadApenasDelivery').checked = false;
+            toggleDeliveryMode();
+
+            if(docId) {
+                let l = listaLocaisCache.find(x => x.idDoc === docId);
+                if(l) {
+                    document.getElementById('cadId').value = l.idDoc;
+                    document.getElementById('cadNome').value = l.nome;
+                    document.getElementById('cadCidade').value = l.cidade || 'Paraisópolis';
+                    document.getElementById('cadBairro').value = l.bairro || '';
+                    document.getElementById('cadEndereco').value = l.endereco || '';
+                    document.getElementById('cadApenasDelivery').checked = l.apenasDelivery || false;
+                    document.getElementById('cadWpp').value = l.whatsapp || '';
+                    // Mostra o plano atual do lojista, mas ele sabe que a troca depende de avaliação (via status)
+                    document.getElementById('cadPlanTier').value = l.plan_tier || 'FREE';
+                }
+            }
+            document.getElementById('modalCadastro').style.display = 'block';
+        }
+        function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
+
+        async function salvarLocalLojista() {
+            let docId = document.getElementById('cadId').value;
+            let nome = document.getElementById('cadNome').value;
+            if(!nome) return alert("Insira o nome!");
+
+            let horariosSemana = {};
+            diasSemanaConfig.forEach(d => {
+                let fech = document.getElementById(`hor_${d.k}_fechado`).checked;
+                horariosSemana[d.k] = fech ? 'Fechado' : `${document.getElementById(`hor_${d.k}_abre`).value} - ${document.getElementById(`hor_${d.k}_fecha`).value}`;
+            });
+
+            // Regra de Negócio: Se o lojista escolher um plano pago na criação/edição, o status vai para PENDENTE.
+            // Apenas o Admin pode definir como ATIVO no ModalFinanceiro.
+            let planoEscolhido = document.getElementById('cadPlanTier').value;
+            let statusPagamentoDefinido = planoEscolhido === 'FREE' ? 'ativo' : 'pendente';
+
+            let dados = {
+                nome: nome,
+                categoria: document.getElementById('cadCategoria').value,
+                cidade: document.getElementById('cadCidade').value.trim() || 'Paraisópolis',
+                bairro: document.getElementById('cadBairro').value.trim() || 'Centro',
+                apenasDelivery: document.getElementById('cadApenasDelivery').checked,
+                endereco: document.getElementById('cadApenasDelivery').checked ? '' : document.getElementById('cadEndereco').value,
+                whatsapp: document.getElementById('cadWpp').value,
+                horariosSemana: horariosSemana,
+                plan_tier: planoEscolhido,
+                userId: usuarioLogado ? usuarioLogado.uid : ''
+            };
+
+            // Se for criação nova ou se o lojista tentou fazer um "upgrade" de plano, forçamos o status para pendente
+            if (!docId) {
+                dados.payment_status = statusPagamentoDefinido;
+                dados.data_entrada = new Date().toISOString().split('T')[0];
+                await db.collection("locais").add(dados);
+                alert("Estabelecimento registado com sucesso! Se escolheu um plano Premium, aguarde o contacto do nosso suporte.");
+            } else {
+                // Se já existia, não mexemos na data de vencimento/entrada (isso é papel do Admin)
+                // Apenas mudamos o status se ele fez upgrade de FREE para Pago
+                let localExistente = listaLocaisCache.find(x => x.idDoc === docId);
+                if(localExistente && localExistente.plan_tier === 'FREE' && planoEscolhido !== 'FREE') {
+                    dados.payment_status = 'pendente';
+                    alert("Solicitação de Upgrade enviada! A nossa equipa irá avaliar.");
+                }
+                await db.collection("locais").doc(docId).update(dados);
+            }
+
+            fecharModalCadastro();
+            if(!isAdminLogado) abrirPainelLojista();
+        }
+
+        // ==========================================
+        // FLUXO DE ADMIN: GESTÃO FINANCEIRA
+        // ==========================================
+        function abrirFinanceiroAdmin(docId) {
+            let l = listaLocaisCache.find(x => x.idDoc === docId);
+            if(!l) return;
+            document.getElementById('finId').value = l.idDoc;
+            document.getElementById('finNomeLoja').textContent = `Fatura: ${l.nome}`;
+            document.getElementById('finPlanTier').value = l.plan_tier || 'FREE';
+            document.getElementById('finPaymentStatus').value = l.payment_status || 'ativo';
+            
+            let hoje = new Date().toISOString().split('T')[0];
+            let venc = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
+            document.getElementById('finDataEntrada').value = l.data_entrada || hoje;
+            document.getElementById('finDataVencimento').value = l.data_vencimento || venc;
+            
+            document.getElementById('modalFinanceiroAdmin').style.display = 'block';
+        }
+        function fecharModalFinanceiro() { document.getElementById('modalFinanceiroAdmin').style.display = 'none'; }
+
+        async function salvarFinanceiroAdmin() {
+            let docId = document.getElementById('finId').value;
+            let dadosFin = {
+                plan_tier: document.getElementById('finPlanTier').value,
+                payment_status: document.getElementById('finPaymentStatus').value,
+                data_entrada: document.getElementById('finDataEntrada').value,
+                data_vencimento: document.getElementById('finDataVencimento').value
+            };
+            await db.collection("locais").doc(docId).update(dadosFin);
+            fecharModalFinanceiro();
+            renderizarKanban();
+            alert("Informações financeiras atualizadas com sucesso!");
+        }
+
+        function renderizarKanban() {
+            let mrr = 0; let pagos = 0; let atrasados = 0;
+            let colAtiv = document.getElementById('colunaAtivos'); colAtiv.innerHTML = '';
+            let colAtras = document.getElementById('colunaAtrasados'); colAtras.innerHTML = '';
+
+            listaLocaisCache.forEach(l => {
+                let preco = l.plan_tier === 'EMPRESA_PREMIUM' ? 119 : (l.plan_tier === 'AUTONOMO_PRO' ? 39 : 0);
+                if(l.payment_status === 'ativo' && preco > 0) { mrr += preco; pagos++; }
+                if(l.payment_status === 'atrasado' || l.payment_status === 'pendente') { atrasados++; }
+
+                let card = `
+                    <div class="kanban-card" style="border-left-color: ${l.payment_status === 'pendente' ? 'var(--warning)' : (l.payment_status === 'atrasado' ? 'var(--danger)' : 'var(--success)')}">
+                        <h4>${l.nome}</h4>
+                        <p style="font-size:12px; color:var(--gray);">Plano: <b>${l.plan_tier || 'FREE'}</b></p>
+                        <p style="font-size:12px; color:var(--gray);">Status: <b style="text-transform: uppercase;">${l.payment_status || 'ativo'}</b></p>
+                        <button class="btn-admin-action btn-admin-edit" style="width:100%;" onclick="abrirFinanceiroAdmin('${l.idDoc}')"><i class="fas fa-dollar-sign"></i> Gerir Pagamento</button>
+                    </div>`;
+                if(l.payment_status === 'atrasado' || l.payment_status === 'pendente') colAtras.innerHTML += card;
+                else colAtiv.innerHTML += card;
+            });
+
+            document.getElementById('kpiMRR').textContent = `R$ ${mrr.toFixed(2)}`;
+            document.getElementById('kpiPagos').textContent = pagos;
+            document.getElementById('kpiAtrasados').textContent = atrasados;
+        }
+
+        iniciarListenerLocais();
+    </script>
+</body>
+</html>
         :root {
             --primary: #F59E0B;
             --primary-hover: #D97706;
