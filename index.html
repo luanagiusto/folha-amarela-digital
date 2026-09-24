@@ -104,10 +104,8 @@
         .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
 
         .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
-        
         .lista-locais { display: flex; flex-direction: column; gap: 16px; }
 
-        /* Estilos Detalhados dos Cards Originais */
         .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
         .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
         
@@ -234,7 +232,7 @@
         </div>
     </main>
 
-    <!-- Modal Detalhes Completo com Galeria e Avaliações -->
+    <!-- Modal Detalhes -->
     <div id="modalDetalhes" class="modal">
         <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
             <div style="position: relative;">
@@ -246,9 +244,6 @@
                 <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome do Local</h2>
                 <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;">
                     <span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span>
-                </p>
-                <p id="detDetalhesEnderecoCompleto" style="font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 20px; display: none;">
-                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="textoEnderecoVal"></span>
                 </p>
                 
                 <div class="botoes-acao-detalhes">
@@ -280,7 +275,21 @@
         </div>
     </div>
 
-    <!-- Modais de Acesso, Cidade e Cadastro/Financeiro -->
+    <!-- Modal Seleção Dinâmica de Cidades -->
+    <div id="modalCidade" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 380px;">
+            <span class="close" onclick="fecharModalCidade()">&times;</span>
+            <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-map-marked-alt"></i></div>
+            <h2 style="margin-bottom: 16px; font-size: 20px;">Onde está?</h2>
+            
+            <!-- Lista Dinâmica de Cidades populada pelos cards -->
+            <div id="listaCidadesDinamica" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+
+            <button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar a minha localização atual (GPS)</button>
+        </div>
+    </div>
+
+    <!-- Modais de Acesso e Cadastro/Financeiro -->
     <div id="modalAreaAcesso" class="modal">
         <div class="modal-content" style="max-width: 380px; text-align: center;">
             <span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span>
@@ -291,16 +300,6 @@
         </div>
     </div>
 
-    <div id="modalCidade" class="modal">
-        <div class="modal-content" style="text-align: center; max-width: 360px;">
-            <span class="close" onclick="fecharModalCidade()">&times;</span>
-            <h2>Onde está?</h2>
-            <button class="btn-submit" onclick="mudarCidade('Paraisópolis')">Paraisópolis, MG</button>
-            <button class="btn-submit" onclick="mudarCidade('Alfenas')" style="background:var(--input-bg); color:var(--dark); border:1px solid var(--border);">Alfenas, MG</button>
-        </div>
-    </div>
-
-    <!-- Modal Cadastro / Financeiro -->
     <div id="modalCadastro" class="modal">
         <div class="modal-content" style="max-width: 560px;">
             <span class="close" onclick="fecharModalCadastro()">&times;</span>
@@ -308,7 +307,10 @@
             <input type="hidden" id="cadId">
             <div class="form-group"><label>Nome do Estabelecimento</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central"></div>
             <div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Pet Shop</option><option>Saúde</option><option>Automotivo</option></select></div>
-            <div class="form-group"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Ex: Paraisópolis"></div>
+                <div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Ex: Centro"></div>
+            </div>
             <div class="form-group"><label>WhatsApp</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div>
             
             <div style="background: var(--input-bg); padding: 14px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border);">
@@ -327,25 +329,22 @@
         </div>
     </div>
 
-    <!-- Painel Lojista -->
+    <!-- Painel Lojista e Admin -->
     <div id="painelLojista">
         <div class="admin-header"><h2 style="font-size: 18px;">O Meu Estabelecimento</h2><button onclick="logoutSessao()" class="btn-card" style="background:white; color:#1E293B;">Sair</button></div>
         <div id="conteudoPainelLojista" style="max-width: 700px; margin: 0 auto; background: var(--surface); padding: 24px; border-radius: 20px;"></div>
     </div>
 
-    <!-- Painel Admin -->
     <div id="painelAdmin">
         <div class="admin-header">
             <h2 style="font-size: 18px;"><i class="fas fa-chart-line"></i> Dashboard Financeiro</h2>
             <button onclick="logoutSessao()" class="btn-card" style="background: white; color: #1E293B;">Sair</button>
         </div>
-        
         <div class="admin-kpis">
             <div class="kpi-card"><h3>MRR (Receita)</h3><p id="kpiMRR">R$ 0</p></div>
             <div class="kpi-card"><h3>Assinantes Pagos</h3><p id="kpiPagos">0</p></div>
             <div class="kpi-card"><h3>Atrasados</h3><p id="kpiAtrasados">0</p></div>
         </div>
-        
         <div class="kanban-board">
             <div class="kanban-col"><h3>Ativos & Pagos</h3><div id="colunaAtivos"></div></div>
             <div class="kanban-col"><h3>Atrasados</h3><div id="colunaAtrasados"></div></div>
@@ -446,13 +445,90 @@
             db.collection("locais").onSnapshot((snapshot) => {
                 listaLocaisCache = [];
                 snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                atualizarSeletorCidades();
+                atualizarListaBairros();
                 renderizarLocais();
                 if(isAdminLogado) renderizarKanban();
             });
         }
 
+        // Popular dinamicamente as cidades com base nos cards existentes
+        function atualizarSeletorCidades() {
+            let cidades = listaLocaisCache.map(l => (l.cidade || 'Paraisópolis').trim());
+            cidades = [...new Set(cidades)].sort();
+            if(cidades.length === 0) cidades = ['Paraisópolis', 'Alfenas'];
+
+            let containerCidades = document.getElementById('listaCidadesDinamica');
+            containerCidades.innerHTML = '';
+            cidades.forEach(cidade => {
+                containerCidades.innerHTML += `<button class="btn-submit" style="margin: 0;" onclick="mudarCidade('${cidade}')">${cidade}, MG</button>`;
+            });
+        }
+
+        // Popular dinamicamente os bairros com base nos cards da cidade atual
+        function atualizarListaBairros() {
+            const selectBairro = document.getElementById('filtroBairro');
+            let bairros = listaLocaisCache
+                .filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual && l.bairro && l.status !== 'pendente')
+                .map(l => l.bairro.trim());
+            
+            bairros = [...new Set(bairros)].sort();
+            let valorAnterior = selectBairro.value;
+            
+            selectBairro.innerHTML = '<option value="">Todos os Bairros</option>';
+            bairros.forEach(b => { selectBairro.innerHTML += `<option value="${b}">${b}</option>`; });
+            
+            if (bairros.includes(valorAnterior)) {
+                selectBairro.value = valorAnterior;
+                bairroAtual = valorAnterior;
+            } else {
+                selectBairro.value = "";
+                bairroAtual = "";
+            }
+        }
+
+        function filtrarBairro() {
+            bairroAtual = document.getElementById('filtroBairro').value;
+            renderizarLocais();
+        }
+
+        // Geolocalização via GPS do navegador com Geocodificação Reversa (Nominatim API)
+        function usarGPSLocalizacao() {
+            if (!navigator.geolocation) {
+                return alert("O seu navegador não suporta geolocalização.");
+            }
+            alert("A detetar a sua localização exata via GPS...");
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
+                try {
+                    let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                    let data = await response.json();
+                    let cidadeGeo = data.address.city || data.address.town || data.address.municipality || 'Paraisópolis';
+                    let bairroGeo = data.address.suburb || data.address.neighbourhood || '';
+                    
+                    mudarCidade(cidadeGeo);
+                    if(bairroGeo) {
+                        bairroAtual = bairroGeo;
+                        setTimeout(() => {
+                            let selectBairro = document.getElementById('filtroBairro');
+                            if(selectBairro) selectBairro.value = bairroGeo;
+                            renderizarLocais();
+                        }, 200);
+                    }
+                    fecharModalCidade();
+                    alert(`Localização detetada com sucesso: ${cidadeGeo}${bairroGeo ? ' - ' + bairroGeo : ''}`);
+                } catch (e) {
+                    alert("Não foi possível detetar o nome da cidade automaticamente. A definir Paraisópolis.");
+                    mudarCidade('Paraisópolis');
+                }
+            }, () => {
+                alert("Permissão de GPS negada ou indisponível.");
+            });
+        }
+
         function renderizarLocais() {
-            let filtrados = listaLocaisCache.filter(l => l.cidade === cidadeAtual && l.status !== 'pendente' && l.payment_status !== 'atrasado');
+            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual && l.status !== 'pendente' && l.payment_status !== 'atrasado');
             if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
             if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
 
@@ -507,14 +583,16 @@
             el.classList.add('active'); categoriaAtual = cat; renderizarLocais();
         }
 
-        function filtrarBairro() { bairroAtual = document.getElementById('filtroBairro').value; renderizarLocais(); }
         function filtrarBusca() { renderizarLocais(); }
         function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
         function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
+        
         function mudarCidade(cidade) {
             cidadeAtual = cidade;
             document.getElementById('cidadeAtivaHeader').textContent = cidade;
-            fecharModalCidade(); renderizarLocais();
+            fecharModalCidade();
+            atualizarListaBairros();
+            renderizarLocais();
         }
 
         function abrirDetalhes(docId) {
@@ -524,13 +602,13 @@
 
             document.getElementById('detDetalhesNome').textContent = local.nome;
             document.getElementById('detDetalhesCategoria').textContent = local.categoria;
-            document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade}`;
+            document.getElementById('detDetalhesLocal').textContent = `${local.bairro || 'Centro'}, ${local.cidade || 'Paraisópolis'}`;
             document.getElementById('detDetalhesDescricao').textContent = local.descricao || 'Sem descrição registada.';
 
             document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${local.whatsapp}`, '_blank');
             document.getElementById('btnDetLigar').onclick = () => window.location.href = `tel:${local.whatsapp}`;
             document.getElementById('btnDetCompartilhar').onclick = () => {
-                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade}\n📱 Contacto: ${local.whatsapp}`;
+                let textoZap = `🌟 Conheça *${local.nome}* na Folha Amarela Digital!\n📍 ${local.bairro || 'Centro'}, ${local.cidade || 'Paraisópolis'}\n📱 Contacto: ${local.whatsapp}`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoZap)}`, '_blank');
             };
 
@@ -576,12 +654,15 @@
             let vencimento = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
             document.getElementById('cadDataEntrada').value = hoje;
             document.getElementById('cadDataVencimento').value = vencimento;
+            document.getElementById('cadCidade').value = cidadeAtual;
 
             if(docId) {
                 let l = listaLocaisCache.find(x => x.idDoc === docId);
                 if(l) {
                     document.getElementById('cadId').value = l.idDoc;
                     document.getElementById('cadNome').value = l.nome;
+                    document.getElementById('cadCidade').value = l.cidade || 'Paraisópolis';
+                    document.getElementById('cadBairro').value = l.bairro || '';
                     document.getElementById('cadPlanTier').value = l.plan_tier || 'FREE';
                     document.getElementById('cadPaymentStatus').value = l.payment_status || 'ativo';
                     document.getElementById('cadDataEntrada').value = l.data_entrada || hoje;
@@ -602,8 +683,8 @@
             let dados = {
                 nome: nome,
                 categoria: document.getElementById('cadCategoria').value,
-                cidade: 'Paraisópolis',
-                bairro: document.getElementById('cadBairro').value || 'Centro',
+                cidade: document.getElementById('cadCidade').value.trim() || 'Paraisópolis',
+                bairro: document.getElementById('cadBairro').value.trim() || 'Centro',
                 whatsapp: document.getElementById('cadWpp').value,
                 plan_tier: document.getElementById('cadPlanTier').value,
                 payment_status: document.getElementById('cadPaymentStatus').value,
@@ -642,8 +723,8 @@
                 let card = `
                     <div class="kanban-card">
                         <h4>${l.nome}</h4>
+                        <p style="font-size:12px; color:var(--gray);">Cidade: <b>${l.cidade || 'Paraisópolis'}</b> (${l.bairro || 'Centro'})</p>
                         <p style="font-size:12px; color:var(--gray);">Plano: <b>${l.plan_tier || 'FREE'}</b></p>
-                        <p style="font-size:12px; color:var(--gray);">Vencimento: <b>${l.data_vencimento || 'N/A'}</b></p>
                         <button class="btn-admin-action btn-admin-edit" onclick="abrirModalCadastro('${l.idDoc}')">Gerir Financeiro</button>
                     </div>`;
                 if(l.payment_status === 'atrasado') colAtras.innerHTML += card;
