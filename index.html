@@ -342,16 +342,55 @@
         }
 
         function iniciarListeners() {
+            // Listener de Locais com Fallback / Tratamento de Erro
             db.collection("locais").onSnapshot((snapshot) => {
                 listaLocaisCache = [];
                 snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                atualizarSeletorCidades(); atualizarListaBairros(); if(tabAtual === 'servicos') renderizarLocais();
+                
+                // Se a base de dados estiver vazia, injeta um exemplo para testes
+                if(listaLocaisCache.length === 0) {
+                    listaLocaisCache.push({
+                        idDoc: "exemplo-1",
+                        nome: "Padaria Dois Irmãos",
+                        categoria: "Alimentação",
+                        cidade: "Paraisópolis",
+                        bairro: "Centro",
+                        whatsapp: "35984999999"
+                    });
+                }
+
+                atualizarSeletorCidades(); 
+                atualizarListaBairros(); 
+                if(tabAtual === 'servicos') renderizarLocais();
+            }, (error) => {
+                console.error("Erro ao carregar locais:", error);
             });
 
+            // Listener de Imóveis com Fallback / Tratamento de Erro
             db.collection("imoveis").onSnapshot((snapshot) => {
                 listaImoveisCache = [];
                 snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                
+                // Se a base de dados estiver vazia, injeta um exemplo para testes
+                if(listaImoveisCache.length === 0) {
+                    listaImoveisCache.push({
+                        idDoc: "imov-ex-1",
+                        titulo: "Casa Aconchegante no Centro",
+                        transacao: "Venda",
+                        tipo: "Casa",
+                        preco: 220000,
+                        quartos: "3",
+                        garagem: true,
+                        cidade: "Paraisópolis",
+                        bairro: "Centro",
+                        whatsapp: "35999999999",
+                        descricao: "Ótima casa com 3 quartos, garagem e excelente localização."
+                    });
+                }
+
                 if(tabAtual === 'imoveis') renderizarImoveis();
+            }, (error) => {
+                console.error("Erro ao carregar imóveis:", error);
             });
         }
 
@@ -381,9 +420,15 @@
         }
 
         function renderizarImoveis() {
-            let filtrados = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
+            // Filtro robusto (case-insensitive para cidade e bairro)
+            let filtrados = listaImoveisCache.filter(i => {
+                let cImov = (i.cidade || 'Paraisópolis').trim().toLowerCase();
+                let cAtual = cidadeAtual.trim().toLowerCase();
+                return cImov === cAtual;
+            });
+
             if(transacaoImovelAtual) filtrados = filtrados.filter(i => i.transacao === transacaoImovelAtual);
-            if(bairroAtual) filtrados = filtrados.filter(i => i.bairro === bairroAtual);
+            if(bairroAtual) filtrados = filtrados.filter(i => (i.bairro || '').trim().toLowerCase() === bairroAtual.trim().toLowerCase());
 
             let container = document.getElementById('listaImoveis');
             container.innerHTML = '';
@@ -397,7 +442,6 @@
                 let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 let badgeGaragem = i.garagem ? `<span class="status-badge badge-garagem"><i class="fas fa-car"></i> Com Garagem</span>` : '';
                 
-                // TEMPLATE DO WHATSAPP PARA IMÓVEIS
                 let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
 
                 container.innerHTML += `
@@ -445,16 +489,21 @@
         }
 
         function renderizarLocais() {
-            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+            // Filtro robusto (case-insensitive para cidade e bairro)
+            let filtrados = listaLocaisCache.filter(l => {
+                let cLocal = (l.cidade || 'Paraisópolis').trim().toLowerCase();
+                let cAtual = cidadeAtual.trim().toLowerCase();
+                return cLocal === cAtual;
+            });
+
             if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-            if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+            if(bairroAtual) filtrados = filtrados.filter(l => (l.bairro || '').trim().toLowerCase() === bairroAtual.trim().toLowerCase());
 
             let container = document.getElementById('listaLocais');
             container.innerHTML = '';
-            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--gray); padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
             
             filtrados.forEach(l => {
-                // TEMPLATE DO WHATSAPP PARA SERVIÇOS (IGUAL AO PRINT)
                 let msgWpp = `⭐ Conheça ${l.nome} na Folha Amarela Digital!\n📍 ${l.bairro || 'Centro'}, ${l.cidade || 'Paraisópolis'}\n📱 Contato: ${l.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
 
                 container.innerHTML += `
@@ -486,7 +535,7 @@
         function atualizarListaBairros() {
             const sb = document.getElementById('filtroBairro');
             let base = tabAtual === 'servicos' ? listaLocaisCache : listaImoveisCache;
-            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis')===cidadeAtual && l.bairro).map(l => l.bairro.trim()))].sort();
+            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase() && l.bairro).map(l => l.bairro.trim()))].sort();
             let v = sb.value;
             sb.innerHTML = '<option value="">Todos os Bairros</option>';
             bs.forEach(b => { sb.innerHTML += `<option value="${b}">${b}</option>`; });
@@ -498,7 +547,7 @@
         function abrirAreaAcessoClick() { document.getElementById('modalAreaAcesso').style.display = 'block'; }
         function executarLoginUnificado() { alert("Login efetuado"); document.getElementById('modalAreaAcesso').style.display = 'none'; }
 
-        // ASSISTENTE IA INTELIGENTE COM LINKS FORMATADOS NO WHATSAPP
+        // ASSISTENTE IA INTELIGENTE
         function abrirChatIA() {
             document.getElementById('modalChatIA').style.display = 'block';
             document.getElementById('inputChatUser').focus();
@@ -516,8 +565,8 @@
 
             setTimeout(() => {
                 let p = texto.toLowerCase();
-                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
-                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
+                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase());
+                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase());
                 let respostaIA = "Não encontrei essa informação.";
 
                 let termoImovel = p.includes('casa') || p.includes('apartamento') || p.includes('terreno') || p.includes('imóvel') || p.includes('temporada') || p.includes('aluguel') || p.includes('venda') || p.includes('garagem');
