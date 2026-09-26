@@ -291,7 +291,34 @@
 
         let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
         let tabAtual = 'servicos'; let transacaoImovelAtual = '';
-        let listaLocaisCache = []; let listaImoveisCache = [];
+        
+        // CACHE INICIAL COM DADOS DE EXEMPLO PARA NUNCA FICAR VAZIO/TRAVADO
+        let listaLocaisCache = [
+            {
+                idDoc: "ex-1",
+                nome: "Padaria Dois Irmãos",
+                categoria: "Alimentação",
+                cidade: "Paraisópolis",
+                bairro: "Centro",
+                whatsapp: "35984999999"
+            }
+        ];
+        let listaImoveisCache = [
+            {
+                idDoc: "imov-ex-1",
+                titulo: "Casa Aconchegante no Centro",
+                transacao: "Venda",
+                tipo: "Casa",
+                preco: 220000,
+                quartos: "3",
+                garagem: true,
+                cidade: "Paraisópolis",
+                bairro: "Centro",
+                whatsapp: "35999999999",
+                descricao: "Ótima casa com 3 quartos, garagem e excelente localização. Negociação direta sem taxas!"
+            }
+        ];
+
         let isAdminLogado = false; let usuarioLogado = null;
         const ADMIN_EMAIL = "admin@folhaamarela.com";
 
@@ -342,55 +369,33 @@
         }
 
         function iniciarListeners() {
-            // Listener de Locais com Fallback / Tratamento de Erro
-            db.collection("locais").onSnapshot((snapshot) => {
-                listaLocaisCache = [];
-                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                
-                // Se a base de dados estiver vazia, injeta um exemplo para testes
-                if(listaLocaisCache.length === 0) {
-                    listaLocaisCache.push({
-                        idDoc: "exemplo-1",
-                        nome: "Padaria Dois Irmãos",
-                        categoria: "Alimentação",
-                        cidade: "Paraisópolis",
-                        bairro: "Centro",
-                        whatsapp: "35984999999"
-                    });
-                }
+            // Renderiza imediatamente com os dados locais para evitar tela de "A carregar..."
+            atualizarSeletorCidades();
+            atualizarListaBairros();
+            renderizarAtual();
 
-                atualizarSeletorCidades(); 
-                atualizarListaBairros(); 
-                if(tabAtual === 'servicos') renderizarLocais();
+            // Sincroniza com o Firestore em segundo plano
+            db.collection("locais").onSnapshot((snapshot) => {
+                if (!snapshot.empty) {
+                    listaLocaisCache = [];
+                    snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                    atualizarSeletorCidades();
+                    atualizarListaBairros();
+                    if(tabAtual === 'servicos') renderizarLocais();
+                }
             }, (error) => {
-                console.error("Erro ao carregar locais:", error);
+                console.log("Modo offline ou a utilizar cache local para locais.");
             });
 
-            // Listener de Imóveis com Fallback / Tratamento de Erro
             db.collection("imoveis").onSnapshot((snapshot) => {
-                listaImoveisCache = [];
-                snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                
-                // Se a base de dados estiver vazia, injeta um exemplo para testes
-                if(listaImoveisCache.length === 0) {
-                    listaImoveisCache.push({
-                        idDoc: "imov-ex-1",
-                        titulo: "Casa Aconchegante no Centro",
-                        transacao: "Venda",
-                        tipo: "Casa",
-                        preco: 220000,
-                        quartos: "3",
-                        garagem: true,
-                        cidade: "Paraisópolis",
-                        bairro: "Centro",
-                        whatsapp: "35999999999",
-                        descricao: "Ótima casa com 3 quartos, garagem e excelente localização."
-                    });
+                if (!snapshot.empty) {
+                    listaImoveisCache = [];
+                    snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                    atualizarListaBairros();
+                    if(tabAtual === 'imoveis') renderizarImoveis();
                 }
-
-                if(tabAtual === 'imoveis') renderizarImoveis();
             }, (error) => {
-                console.error("Erro ao carregar imóveis:", error);
+                console.log("Modo offline ou a utilizar cache local para imóveis.");
             });
         }
 
@@ -420,7 +425,6 @@
         }
 
         function renderizarImoveis() {
-            // Filtro robusto (case-insensitive para cidade e bairro)
             let filtrados = listaImoveisCache.filter(i => {
                 let cImov = (i.cidade || 'Paraisópolis').trim().toLowerCase();
                 let cAtual = cidadeAtual.trim().toLowerCase();
@@ -489,7 +493,6 @@
         }
 
         function renderizarLocais() {
-            // Filtro robusto (case-insensitive para cidade e bairro)
             let filtrados = listaLocaisCache.filter(l => {
                 let cLocal = (l.cidade || 'Paraisópolis').trim().toLowerCase();
                 let cAtual = cidadeAtual.trim().toLowerCase();
@@ -501,7 +504,7 @@
 
             let container = document.getElementById('listaLocais');
             container.innerHTML = '';
-            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--gray); padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--gray);">Nenhum estabelecimento encontrado.</p>'; return; }
             
             filtrados.forEach(l => {
                 let msgWpp = `⭐ Conheça ${l.nome} na Folha Amarela Digital!\n📍 ${l.bairro || 'Centro'}, ${l.cidade || 'Paraisópolis'}\n📱 Contato: ${l.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
