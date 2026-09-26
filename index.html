@@ -201,7 +201,7 @@
         </div>
     </div>
 
-    <!-- MODAL CADASTRO DE IMÓVEL (Com Temporada, Garagem e IA de Texto) -->
+    <!-- MODAL CADASTRO DE IMÓVEL -->
     <div id="modalCadastroImovel" class="modal">
         <div class="modal-content" style="max-width: 520px;">
             <span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span>
@@ -326,7 +326,6 @@
         }
         function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
 
-        // GERADOR DE TEXTO COM IA PARA IMÓVEIS
         function gerarDescricaoImovelIA() {
             let titulo = document.getElementById('imovTitulo').value.trim() || 'Ótimo Imóvel';
             let transacao = document.getElementById('imovTransacao').value;
@@ -397,6 +396,10 @@
             filtrados.forEach(i => {
                 let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 let badgeGaragem = i.garagem ? `<span class="status-badge badge-garagem"><i class="fas fa-car"></i> Com Garagem</span>` : '';
+                
+                // TEMPLATE DO WHATSAPP PARA IMÓVEIS
+                let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
+
                 container.innerHTML += `
                     <div class="card-local">
                         <div class="card-body">
@@ -410,7 +413,7 @@
                             <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${i.descricao || 'Negociação direta com o proprietário.'}</p>
                             <div class="card-actions">
                                 <button class="btn-card btn-outline" onclick="abrirDetalhesImovel('${i.idDoc}')">Detalhes</button>
-                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=Olá,%20vi%20seu%20imóvel%20${encodeURIComponent(i.titulo)}%20na%20Folha%20Amarela.', '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
+                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=' + encodeURIComponent(`${msgWpp}`), '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
                             </div>
                         </div>
                     </div>
@@ -426,15 +429,18 @@
         function abrirDetalhesImovel(id) {
             let i = listaImoveisCache.find(x => x.idDoc === id);
             if(!i) return;
+            let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
+
             document.getElementById('detDetalhesNome').textContent = i.titulo;
             document.getElementById('detDetalhesCategoria').textContent = `${i.transacao} - ${i.tipo}`;
             document.getElementById('detDetalhesLocal').textContent = `${i.bairro || 'Centro'}, ${i.cidade}`;
             document.getElementById('detDetalhesConteudoExtra').innerHTML = `
-                <p><b>Preço:</b> ${Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                <p><b>Preço:</b> ${precoFmt}</p>
                 <p><b>Quartos:</b> ${i.quartos} &bull; <b>Garagem:</b> ${i.garagem ? 'Sim' : 'Não'}</p>
                 <p style="margin-top: 10px;">${i.descricao}</p>
             `;
-            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}`, '_blank');
+            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}?text=` + encodeURIComponent(msgWpp), '_blank');
             document.getElementById('modalDetalhes').style.display = 'block';
         }
 
@@ -446,13 +452,17 @@
             let container = document.getElementById('listaLocais');
             container.innerHTML = '';
             if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+            
             filtrados.forEach(l => {
+                // TEMPLATE DO WHATSAPP PARA SERVIÇOS (IGUAL AO PRINT)
+                let msgWpp = `⭐ Conheça ${l.nome} na Folha Amarela Digital!\n📍 ${l.bairro || 'Centro'}, ${l.cidade || 'Paraisópolis'}\n📱 Contato: ${l.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
+
                 container.innerHTML += `
                     <div class="card-local">
                         <div class="card-body">
                             <div class="card-title">${l.nome}</div>
                             <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
-                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}?text=' + encodeURIComponent(`${msgWpp}`), '_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                         </div>
                     </div>
                 `;
@@ -488,7 +498,7 @@
         function abrirAreaAcessoClick() { document.getElementById('modalAreaAcesso').style.display = 'block'; }
         function executarLoginUnificado() { alert("Login efetuado"); document.getElementById('modalAreaAcesso').style.display = 'none'; }
 
-        // ASSISTENTE IA INTELIGENTE
+        // ASSISTENTE IA INTELIGENTE COM LINKS FORMATADOS NO WHATSAPP
         function abrirChatIA() {
             document.getElementById('modalChatIA').style.display = 'block';
             document.getElementById('inputChatUser').focus();
@@ -524,15 +534,18 @@
                     
                     if (imoveisFiltrados.length === 0) imoveisFiltrados = imoveisCidade;
 
-                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => 
-                        `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 R$ ${Number(i.preco).toLocaleString('pt-BR')} | 🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}<br>📱 <a href="https://wa.me/55${i.whatsapp}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar com proprietário</a>`
-                    ).join('<br><br>');
+                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => {
+                        let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
+                        return `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 ${precoFmt} | 🛏️ ${i.quartos} Quartos<br>📱 <a href="https://wa.me/55${i.whatsapp}?text=${encodeURIComponent(msgWpp)}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar no WhatsApp</a>`;
+                    }).join('<br><br>');
                 } else {
                     let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
                     if (encontrado) {
-                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 WhatsApp: ${encontrado.whatsapp}`;
+                        let msgWpp = `⭐ Conheça ${encontrado.nome} na Folha Amarela Digital!\n📍 ${encontrado.bairro || 'Centro'}, ${encontrado.cidade || 'Paraisópolis'}\n📱 Contato: ${encontrado.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
+                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 <a href="https://wa.me/55${encontrado.whatsapp}?text=${encodeURIComponent(msgWpp)}" target="_blank" style="color:var(--purple); font-weight:bold;">Chamar no WhatsApp</a>`;
                     } else {
-                        respostaIA = `Não encontrei registos para "${texto}". Pode tentar pesquisar por imóveis para temporada ou serviços.`;
+                        respostaIA = `Não encontrei registos para "${texto}".`;
                     }
                 }
 
