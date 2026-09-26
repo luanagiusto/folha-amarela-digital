@@ -201,7 +201,7 @@
         </div>
     </div>
 
-    <!-- MODAL CADASTRO DE IMÓVEL -->
+    <!-- MODAL CADASTRO DE IMÓVEL (Com Temporada, Garagem e IA de Texto) -->
     <div id="modalCadastroImovel" class="modal">
         <div class="modal-content" style="max-width: 520px;">
             <span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span>
@@ -291,34 +291,7 @@
 
         let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
         let tabAtual = 'servicos'; let transacaoImovelAtual = '';
-        
-        // CACHE INICIAL COM DADOS DE EXEMPLO PARA NUNCA FICAR VAZIO/TRAVADO
-        let listaLocaisCache = [
-            {
-                idDoc: "ex-1",
-                nome: "Padaria Dois Irmãos",
-                categoria: "Alimentação",
-                cidade: "Paraisópolis",
-                bairro: "Centro",
-                whatsapp: "35984999999"
-            }
-        ];
-        let listaImoveisCache = [
-            {
-                idDoc: "imov-ex-1",
-                titulo: "Casa Aconchegante no Centro",
-                transacao: "Venda",
-                tipo: "Casa",
-                preco: 220000,
-                quartos: "3",
-                garagem: true,
-                cidade: "Paraisópolis",
-                bairro: "Centro",
-                whatsapp: "35999999999",
-                descricao: "Ótima casa com 3 quartos, garagem e excelente localização. Negociação direta sem taxas!"
-            }
-        ];
-
+        let listaLocaisCache = []; let listaImoveisCache = [];
         let isAdminLogado = false; let usuarioLogado = null;
         const ADMIN_EMAIL = "admin@folhaamarela.com";
 
@@ -353,6 +326,7 @@
         }
         function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
 
+        // GERADOR DE TEXTO COM IA PARA IMÓVEIS
         function gerarDescricaoImovelIA() {
             let titulo = document.getElementById('imovTitulo').value.trim() || 'Ótimo Imóvel';
             let transacao = document.getElementById('imovTransacao').value;
@@ -369,33 +343,16 @@
         }
 
         function iniciarListeners() {
-            // Renderiza imediatamente com os dados locais para evitar tela de "A carregar..."
-            atualizarSeletorCidades();
-            atualizarListaBairros();
-            renderizarAtual();
-
-            // Sincroniza com o Firestore em segundo plano
             db.collection("locais").onSnapshot((snapshot) => {
-                if (!snapshot.empty) {
-                    listaLocaisCache = [];
-                    snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                    atualizarSeletorCidades();
-                    atualizarListaBairros();
-                    if(tabAtual === 'servicos') renderizarLocais();
-                }
-            }, (error) => {
-                console.log("Modo offline ou a utilizar cache local para locais.");
+                listaLocaisCache = [];
+                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                atualizarSeletorCidades(); atualizarListaBairros(); if(tabAtual === 'servicos') renderizarLocais();
             });
 
             db.collection("imoveis").onSnapshot((snapshot) => {
-                if (!snapshot.empty) {
-                    listaImoveisCache = [];
-                    snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                    atualizarListaBairros();
-                    if(tabAtual === 'imoveis') renderizarImoveis();
-                }
-            }, (error) => {
-                console.log("Modo offline ou a utilizar cache local para imóveis.");
+                listaImoveisCache = [];
+                snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
+                if(tabAtual === 'imoveis') renderizarImoveis();
             });
         }
 
@@ -425,14 +382,9 @@
         }
 
         function renderizarImoveis() {
-            let filtrados = listaImoveisCache.filter(i => {
-                let cImov = (i.cidade || 'Paraisópolis').trim().toLowerCase();
-                let cAtual = cidadeAtual.trim().toLowerCase();
-                return cImov === cAtual;
-            });
-
+            let filtrados = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
             if(transacaoImovelAtual) filtrados = filtrados.filter(i => i.transacao === transacaoImovelAtual);
-            if(bairroAtual) filtrados = filtrados.filter(i => (i.bairro || '').trim().toLowerCase() === bairroAtual.trim().toLowerCase());
+            if(bairroAtual) filtrados = filtrados.filter(i => i.bairro === bairroAtual);
 
             let container = document.getElementById('listaImoveis');
             container.innerHTML = '';
@@ -445,9 +397,6 @@
             filtrados.forEach(i => {
                 let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 let badgeGaragem = i.garagem ? `<span class="status-badge badge-garagem"><i class="fas fa-car"></i> Com Garagem</span>` : '';
-                
-                let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
-
                 container.innerHTML += `
                     <div class="card-local">
                         <div class="card-body">
@@ -461,7 +410,7 @@
                             <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${i.descricao || 'Negociação direta com o proprietário.'}</p>
                             <div class="card-actions">
                                 <button class="btn-card btn-outline" onclick="abrirDetalhesImovel('${i.idDoc}')">Detalhes</button>
-                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=' + encodeURIComponent(`${msgWpp}`), '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
+                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=Olá,%20vi%20seu%20imóvel%20${encodeURIComponent(i.titulo)}%20na%20Folha%20Amarela.', '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
                             </div>
                         </div>
                     </div>
@@ -477,44 +426,33 @@
         function abrirDetalhesImovel(id) {
             let i = listaImoveisCache.find(x => x.idDoc === id);
             if(!i) return;
-            let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
-
             document.getElementById('detDetalhesNome').textContent = i.titulo;
             document.getElementById('detDetalhesCategoria').textContent = `${i.transacao} - ${i.tipo}`;
             document.getElementById('detDetalhesLocal').textContent = `${i.bairro || 'Centro'}, ${i.cidade}`;
             document.getElementById('detDetalhesConteudoExtra').innerHTML = `
-                <p><b>Preço:</b> ${precoFmt}</p>
+                <p><b>Preço:</b> ${Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                 <p><b>Quartos:</b> ${i.quartos} &bull; <b>Garagem:</b> ${i.garagem ? 'Sim' : 'Não'}</p>
                 <p style="margin-top: 10px;">${i.descricao}</p>
             `;
-            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}?text=` + encodeURIComponent(msgWpp), '_blank');
+            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}`, '_blank');
             document.getElementById('modalDetalhes').style.display = 'block';
         }
 
         function renderizarLocais() {
-            let filtrados = listaLocaisCache.filter(l => {
-                let cLocal = (l.cidade || 'Paraisópolis').trim().toLowerCase();
-                let cAtual = cidadeAtual.trim().toLowerCase();
-                return cLocal === cAtual;
-            });
-
+            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
             if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-            if(bairroAtual) filtrados = filtrados.filter(l => (l.bairro || '').trim().toLowerCase() === bairroAtual.trim().toLowerCase());
+            if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
 
             let container = document.getElementById('listaLocais');
             container.innerHTML = '';
-            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--gray);">Nenhum estabelecimento encontrado.</p>'; return; }
-            
+            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
             filtrados.forEach(l => {
-                let msgWpp = `⭐ Conheça ${l.nome} na Folha Amarela Digital!\n📍 ${l.bairro || 'Centro'}, ${l.cidade || 'Paraisópolis'}\n📱 Contato: ${l.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
-
                 container.innerHTML += `
                     <div class="card-local">
                         <div class="card-body">
                             <div class="card-title">${l.nome}</div>
                             <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
-                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}?text=' + encodeURIComponent(`${msgWpp}`), '_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                         </div>
                     </div>
                 `;
@@ -538,7 +476,7 @@
         function atualizarListaBairros() {
             const sb = document.getElementById('filtroBairro');
             let base = tabAtual === 'servicos' ? listaLocaisCache : listaImoveisCache;
-            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase() && l.bairro).map(l => l.bairro.trim()))].sort();
+            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis')===cidadeAtual && l.bairro).map(l => l.bairro.trim()))].sort();
             let v = sb.value;
             sb.innerHTML = '<option value="">Todos os Bairros</option>';
             bs.forEach(b => { sb.innerHTML += `<option value="${b}">${b}</option>`; });
@@ -568,8 +506,8 @@
 
             setTimeout(() => {
                 let p = texto.toLowerCase();
-                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase());
-                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis').trim().toLowerCase() === cidadeAtual.trim().toLowerCase());
+                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
                 let respostaIA = "Não encontrei essa informação.";
 
                 let termoImovel = p.includes('casa') || p.includes('apartamento') || p.includes('terreno') || p.includes('imóvel') || p.includes('temporada') || p.includes('aluguel') || p.includes('venda') || p.includes('garagem');
@@ -586,18 +524,15 @@
                     
                     if (imoveisFiltrados.length === 0) imoveisFiltrados = imoveisCidade;
 
-                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => {
-                        let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                        let msgWpp = `🏠 Vi o anúncio de ${i.titulo} na Folha Amarela Digital!\n💰 ${precoFmt} (${i.transacao} - ${i.tipo})\n📍 ${i.bairro || 'Centro'}, ${i.cidade}\n🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}\n\nVeja mais detalhes no app:\n👉 https://www.folhaamareladigital.com.br/`;
-                        return `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 ${precoFmt} | 🛏️ ${i.quartos} Quartos<br>📱 <a href="https://wa.me/55${i.whatsapp}?text=${encodeURIComponent(msgWpp)}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar no WhatsApp</a>`;
-                    }).join('<br><br>');
+                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => 
+                        `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 R$ ${Number(i.preco).toLocaleString('pt-BR')} | 🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}<br>📱 <a href="https://wa.me/55${i.whatsapp}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar com proprietário</a>`
+                    ).join('<br><br>');
                 } else {
                     let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
                     if (encontrado) {
-                        let msgWpp = `⭐ Conheça ${encontrado.nome} na Folha Amarela Digital!\n📍 ${encontrado.bairro || 'Centro'}, ${encontrado.cidade || 'Paraisópolis'}\n📱 Contato: ${encontrado.whatsapp}\n\nVeja horários, fotos e avaliação no app:\n👉 https://www.folhaamareladigital.com.br/`;
-                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 <a href="https://wa.me/55${encontrado.whatsapp}?text=${encodeURIComponent(msgWpp)}" target="_blank" style="color:var(--purple); font-weight:bold;">Chamar no WhatsApp</a>`;
+                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 WhatsApp: ${encontrado.whatsapp}`;
                     } else {
-                        respostaIA = `Não encontrei registos para "${texto}".`;
+                        respostaIA = `Não encontrei registos para "${texto}". Pode tentar pesquisar por imóveis para temporada ou serviços.`;
                     }
                 }
 
