@@ -1,548 +1,1094 @@
-
 <!DOCTYPE html>
+
 <html lang="pt-PT">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Folha Amarela Digital</title>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
-    <style>
-        :root {
-            --primary: #F59E0B; --primary-hover: #D97706; --dark: #1E293B; --light: #F8FAFC;
-            --surface: #FFFFFF; --gray: #64748B; --border: #E2E8F0; --success: #10B981;
-            --danger: #EF4444; --purple: #8B5CF6; --warning: #F59E0B;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            --input-bg: #F1F5F9;
-        }
+    <meta charset="UTF-8">
 
-        body.dark-mode {
-            --primary: #FBBF24; --primary-hover: #F59E0B; --dark: #F1F5F9; --light: #0B0F17;
-            --surface: #131C2E; --gray: #94A3B8; --border: #1E293B; --success: #34D399;
-            --danger: #F87171; --purple: #A78BFA; --warning: #FBBF24;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); --input-bg: #1A263E;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
-        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+    <title>Folha Amarela Digital</title>
 
-        header { background: var(--surface); padding: 16px 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-        .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
-        .logo { text-decoration: none; display: flex; align-items: center; }
-        .logo img { height: 40px; width: auto; object-fit: contain; }
-        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        
-        .seletor-cidade, .btn-theme-toggle, .btn-lojista-nav, .bairro-container { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; }
-        .seletor-cidade { padding: 7px 14px; font-size: 13px; gap: 6px; }
-        .btn-theme-toggle { width: 36px; height: 36px; justify-content: center; font-size: 14px; border-radius: 50%; }
-        .btn-lojista-nav { padding: 8px 14px; font-size: 13px; gap: 6px; }
-        .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245,158,11,0.2); }
-        
-        .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-        .bairro-container { padding: 5px 12px; gap: 6px; }
-        .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
-        .bairro-container select option { background-color: var(--surface); color: var(--dark); }
+    
 
-        .search-container { position: relative; display: flex; gap: 8px; }
-        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
-        .search-bar:focus { border-color: var(--primary); background: var(--surface); }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
-        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-        .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
-        
-        .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-        .main-tabs { display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--gray); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow); }
-        .tab-btn.active { background: var(--primary); color: #1E293B; border-color: var(--primary); }
+    
 
-        .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
-        .categorias::-webkit-scrollbar { display: none; }
-        .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
-        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 18px; color: var(--gray); box-shadow: var(--shadow); }
-        .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
-        .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
-        .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
+    <!-- Firebase SDKs -->
 
-        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
-        .lista-locais { display: flex; flex-direction: column; gap: 16px; }
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 
-        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
-        .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
-        .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-        
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; }
-        .badge-imovel-tipo { background-color: var(--purple); color: white; }
-        .badge-imovel-preco { background-color: var(--success); color: white; font-size: 13px; font-weight: 800; }
-        .badge-garagem { background-color: #0EA5E9; color: white; }
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-        .card-body { padding: 18px; }
-        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
-        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
-        .card-actions { display: flex; gap: 10px; }
-        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
-        .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
-        .btn-wpp { background-color: var(--success); color: white !important; }
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
-        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
-        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
-        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
-        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
-        footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
-    </style>
+
+
+    <style>
+
+        :root {
+
+            --primary: #F59E0B; --primary-hover: #D97706; --dark: #1E293B; --light: #F8FAFC;
+
+            --surface: #FFFFFF; --gray: #64748B; --border: #E2E8F0; --success: #10B981;
+
+            --danger: #EF4444; --purple: #8B5CF6; --warning: #F59E0B;
+
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
+            --input-bg: #F1F5F9;
+
+        }
+
+
+
+        body.dark-mode {
+
+            --primary: #FBBF24; --primary-hover: #F59E0B; --dark: #F1F5F9; --light: #0B0F17;
+
+            --surface: #131C2E; --gray: #94A3B8; --border: #1E293B; --success: #34D399;
+
+            --danger: #F87171; --purple: #A78BFA; --warning: #FBBF24;
+
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); --input-bg: #1A263E;
+
+        }
+
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+
+        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+
+
+
+        header { background: var(--surface); padding: 16px 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+
+        .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+
+        .logo { text-decoration: none; display: flex; align-items: center; }
+
+        .logo img { height: 40px; width: auto; object-fit: contain; }
+
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        
+
+        .seletor-cidade, .btn-theme-toggle, .btn-lojista-nav, .bairro-container { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; }
+
+        .seletor-cidade { padding: 7px 14px; font-size: 13px; gap: 6px; }
+
+        .btn-theme-toggle { width: 36px; height: 36px; justify-content: center; font-size: 14px; border-radius: 50%; }
+
+        .btn-lojista-nav { padding: 8px 14px; font-size: 13px; gap: 6px; }
+
+        .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245,158,11,0.2); }
+
+        
+
+        .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+
+        .bairro-container { padding: 5px 12px; gap: 6px; }
+
+        .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
+
+        .bairro-container select option { background-color: var(--surface); color: var(--dark); }
+
+
+
+        .search-container { position: relative; display: flex; gap: 8px; }
+
+        .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
+
+        .search-bar:focus { border-color: var(--primary); background: var(--surface); }
+
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
+
+        .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+
+        .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
+
+        
+
+        .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+
+
+
+        .main-tabs { display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+
+        .tab-btn { flex: 1; padding: 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--gray); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow); }
+
+        .tab-btn.active { background: var(--primary); color: #1E293B; border-color: var(--primary); }
+
+
+
+        .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
+
+        .categorias::-webkit-scrollbar { display: none; }
+
+        .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
+
+        .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 18px; color: var(--gray); box-shadow: var(--shadow); }
+
+        .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
+
+        .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
+
+        .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
+
+
+
+        .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
+
+        .lista-locais { display: flex; flex-direction: column; gap: 16px; }
+
+
+
+        .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+
+        .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+        .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+
+        
+
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; }
+
+        .badge-imovel-tipo { background-color: var(--purple); color: white; }
+
+        .badge-imovel-preco { background-color: var(--success); color: white; font-size: 13px; font-weight: 800; }
+
+        .badge-garagem { background-color: #0EA5E9; color: white; }
+
+
+
+        .card-body { padding: 18px; }
+
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
+
+        .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
+
+        .card-actions { display: flex; gap: 10px; }
+
+        .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
+
+        .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
+
+        .btn-wpp { background-color: var(--success); color: white !important; }
+
+
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
+
+        .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+
+        .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
+
+        .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
+
+        .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+
+
+
+        footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
+
+    </style>
+
 </head>
+
 <body>
 
-    <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
-    <header>
-        <div class="header-top-row">
-            <a href="#" class="logo">
-                <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
-            </a>
-            <div class="header-actions">
-                <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
-                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro"><i class="fas fa-moon" id="themeIcon"></i></button>
-                <button class="btn-anunciar" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-plus"></i> Anunciar</button>
-            </div>
-        </div>
-        
-        <div class="header-filters-row">
-            <div class="seletor-cidade" onclick="abrirModalCidade()">
-                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
-            </div>
-            <div class="bairro-container">
-                <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
-                <select id="filtroBairro" onchange="filtrarBairro()">
-                    <option value="">Todos os Bairros</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="search" class="search-bar" id="inputBusca" autocomplete="off" placeholder="Pesquisar comércio, imóvel, casa, serviço..." onkeyup="filtrarBusca()">
-            <button class="btn-ia" onclick="abrirChatIA()" title="Assistente IA"><i class="fas fa-wand-magic-sparkles"></i></button>
-        </div>
-    </header>
+    <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente Virtual IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
-    <main class="container">
-        <div class="main-tabs">
-            <button class="tab-btn active" id="tabBtnServicos" onclick="mudarTabPrincipal('servicos')"><i class="fas fa-store"></i> Estabelecimentos & Serviços</button>
-            <button class="tab-btn" id="tabBtnImoveis" onclick="mudarTabPrincipal('imoveis')"><i class="fas fa-home"></i> Imóveis (Direto s/ Taxa)</button>
-        </div>
 
-        <!-- ABA SERVIÇOS -->
-        <div id="secaoTabServicos">
-            <div class="categorias">
-                <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Serviços', this)"><div class="cat-icon"><i class="fas fa-tools"></i></div><div class="cat-name">Serviços</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
-                <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
-            </div>
-            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
-            <div id="listaLocais" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais...</p></div>
-        </div>
 
-        <!-- ABA IMÓVEIS -->
-        <div id="secaoTabImoveis" style="display: none;">
-            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--primary); padding: 14px 18px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">
-                🏠 <b>Negociação Direta:</b> Compre, alugue ou reserve por temporada sem taxas de imobiliária. Fale direto com o proprietário!
-            </div>
-            <div class="categorias">
-                <div class="cat-item active" onclick="filtrarTransacaoImovel('', this)"><div class="cat-icon"><i class="fas fa-building"></i></div><div class="cat-name">Todos</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Venda', this)"><div class="cat-icon"><i class="fas fa-tag"></i></div><div class="cat-name">Venda</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Aluguel', this)"><div class="cat-icon"><i class="fas fa-key"></i></div><div class="cat-name">Aluguel</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Temporada', this)"><div class="cat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="cat-name">Temporada</div></div>
-            </div>
-            <h3 class="secao-header"><i class="fas fa-home"></i> Imóveis Disponíveis</h3>
-            <div id="listaImoveis" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar imóveis...</p></div>
-        </div>
-    </main>
+    <header>
 
-    <!-- Modal Chatbot IA -->
-    <div id="modalChatIA" class="modal">
-        <div class="modal-content" style="max-width: 450px; display: flex; flex-direction: column; height: 500px; padding: 0;">
-            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 16px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA - Folha Amarela</h3>
-                <span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position: static; background: rgba(255,255,255,0.2); color: white;">&times;</span>
-            </div>
-            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
-                <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
-                    Olá! Pergunte por serviços ou imóveis (ex: "casa para temporada", "aluguel com garagem").
-                </div>
-            </div>
-            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px;">
-                <input type="search" id="inputChatUser" autocomplete="off" class="form-control" placeholder="Escreva a sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
-                <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
+        <div class="header-top-row">
 
-    <!-- Modal Escolha Anúncio -->
-    <div id="modalEscolhaAnuncio" class="modal">
-        <div class="modal-content" style="max-width: 380px; text-align: center;">
-            <span class="close" onclick="document.getElementById('modalEscolhaAnuncio').style.display='none'">&times;</span>
-            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-bullhorn"></i></div>
-            <h2 style="margin-bottom: 16px; font-size: 20px;">O que deseja anunciar?</h2>
-            <button class="btn-submit" onclick="abrirModalCadastroServico()" style="margin-bottom: 10px;"><i class="fas fa-store"></i> Estabelecimento / Serviço</button>
-            <button class="btn-submit" onclick="abrirModalCadastroImovel()" style="background: var(--purple); color: white;"><i class="fas fa-home"></i> Imóvel (Venda / Temporada)</button>
-        </div>
-    </div>
+            <a href="#" class="logo">
 
-    <!-- MODAL CADASTRO DE IMÓVEL (Com Temporada, Garagem e IA de Texto) -->
-    <div id="modalCadastroImovel" class="modal">
-        <div class="modal-content" style="max-width: 520px;">
-            <span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span>
-            <h2 style="margin-bottom: 20px; font-size: 20px;"><i class="fas fa-home" style="color: var(--purple);"></i> Anunciar Imóvel</h2>
-            <input type="hidden" id="imovId">
-            <div class="form-group"><label>Título do Anúncio</label><input type="text" id="imovTitulo" class="form-control" placeholder="Ex: Casa aconchegante para temporada"></div>
-            <div style="display: flex; gap: 12px;">
-                <div class="form-group" style="flex: 1;"><label>Transação</label><select id="imovTransacao" class="form-control"><option value="Venda">Venda</option><option value="Aluguel">Aluguel Mensal</option><option value="Temporada">Aluguel por Temporada</option></select></div>
-                <div class="form-group" style="flex: 1;"><label>Tipo</label><select id="imovTipo" class="form-control"><option>Casa</option><option>Apartamento</option><option>Chácara / Sítio</option><option>Terreno</option><option>Comercial</option></select></div>
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <div class="form-group" style="flex: 1;"><label>Valor (R$)</label><input type="number" id="imovPreco" class="form-control" placeholder="1500 (ou valor total)"></div>
-                <div class="form-group" style="flex: 1;"><label>Quartos</label><select id="imovQuartos" class="form-control"><option value="0">N/A</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+</option></select></div>
-            </div>
-            
-            <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="imovGaragem" style="width: 18px; height: 18px; accent-color: var(--purple);">
-                    <span>Possui Garagem / Estacionamento</span>
-                </label>
-            </div>
+                <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital">
 
-            <div style="display: flex; gap: 12px;">
-                <div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="imovCidade" class="form-control" placeholder="Paraisópolis"></div>
-                <div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="imovBairro" class="form-control" placeholder="Centro"></div>
-            </div>
-            <div class="form-group"><label>WhatsApp do Proprietário</label><input type="number" id="imovWpp" class="form-control" placeholder="35999999999"></div>
-            
-            <div class="form-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label style="margin:0;">Descrição Detalhada</label>
-                    <button type="button" onclick="gerarDescricaoImovelIA()" style="background: var(--purple); color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar com IA</button>
-                </div>
-                <textarea id="imovDesc" class="form-control" rows="3" placeholder="Clique em 'Gerar com IA' ou escreva os detalhes..."></textarea>
-            </div>
+            </a>
 
-            <button class="btn-submit" style="background: var(--purple); color: white;" onclick="salvarImovel()">Publicar Imóvel</button>
-        </div>
-    </div>
+            <div class="header-actions">
 
-    <div id="modalDetalhes" class="modal">
-        <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
-            <div style="padding: 24px;">
-                <span class="close" onclick="fecharDetalhes()" style="top: 16px; right: 16px; position: absolute;">&times;</span>
-                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome</h2>
-                <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;"><span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span></p>
-                <div id="detDetalhesConteudoExtra" style="margin: 16px 0; font-size: 14px; line-height: 1.6;"></div>
-                <button class="btn-card btn-wpp" id="btnDetWpp" style="width: 100%; padding: 12px;"><i class="fab fa-whatsapp"></i> Falar com Proprietário</button>
-            </div>
-        </div>
-    </div>
+                <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
 
-    <!-- Modais Auxiliares -->
-    <div id="modalCidade" class="modal"><div class="modal-content" style="text-align: center; max-width: 380px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><div id="listaCidadesDinamica" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div><button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar GPS</button></div></div>
-    <div id="modalAreaAcesso" class="modal"><div class="modal-content" style="max-width: 380px; text-align: center;"><span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span><h2>Área de Acesso</h2><div class="form-group" style="text-align: left;"><label>E-mail</label><input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com"></div><div class="form-group" style="text-align: left;"><label>Palavra-passe</label><input type="password" id="acessoSenha" class="form-control" placeholder="Palavra-passe"></div><button class="btn-submit" onclick="executarLoginUnificado()">Entrar</button></div></div>
-    <div id="modalCadastro" class="modal"><div class="modal-content" style="max-width: 520px;"><span class="close" onclick="fecharModalCadastro()">&times;</span><h2>Anunciar Estabelecimento ou Serviço</h2><input type="hidden" id="cadId"><div class="form-group"><label>Nome</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central"></div><div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div><div style="display: flex; gap: 12px;"><div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div><div class="form-group"><label>WhatsApp</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div><button class="btn-submit" onclick="salvarLocalLojista()">Guardar Serviço</button></div></div>
+                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro"><i class="fas fa-moon" id="themeIcon"></i></button>
 
-    <script>
-        function atualizarLogoTema(isDark) {
-            const logoImg = document.getElementById('logoImg');
-            if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
-        }
-        function carregarTemaSalvo() {
-            const temaSalvo = localStorage.getItem('folha_theme');
-            if (temaSalvo === 'dark') { document.body.classList.add('dark-mode'); document.getElementById('themeIcon').className = 'fas fa-sun'; atualizarLogoTema(true); }
-            else { atualizarLogoTema(false); }
-        }
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            atualizarLogoTema(isDark);
-        }
-        carregarTemaSalvo();
+                <button class="btn-anunciar" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-plus"></i> Anunciar</button>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
-            authDomain: "folha-amarela-digital.firebaseapp.com",
-            projectId: "folha-amarela-digital",
-            storageBucket: "folha-amarela-digital.firebasestorage.app",
-            messagingSenderId: "377984429498",
-            appId: "1:377984429498:web:0ec71abadab20a93420183"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(); const db = firebase.firestore();
+            </div>
 
-        let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
-        let tabAtual = 'servicos'; let transacaoImovelAtual = '';
-        let listaLocaisCache = []; let listaImoveisCache = [];
-        let isAdminLogado = false; let usuarioLogado = null;
-        const ADMIN_EMAIL = "admin@folhaamarela.com";
+        </div>
 
-        auth.onAuthStateChanged((user) => {
-            usuarioLogado = user;
-            document.getElementById('txtBtnAcesso').textContent = user ? (user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel") : "Área de acesso";
-        });
+        
 
-        function mudarTabPrincipal(tab) {
-            tabAtual = tab;
-            document.getElementById('tabBtnServicos').classList.toggle('active', tab === 'servicos');
-            document.getElementById('tabBtnImoveis').classList.toggle('active', tab === 'imoveis');
-            document.getElementById('secaoTabServicos').style.display = tab === 'servicos' ? 'block' : 'none';
-            document.getElementById('secaoTabImoveis').style.display = tab === 'imoveis' ? 'block' : 'none';
-            atualizarListaBairros();
-            renderizarAtual();
-        }
+        <div class="header-filters-row">
 
-        function renderizarAtual() {
-            if(tabAtual === 'servicos') renderizarLocais();
-            else renderizarImoveis();
-        }
+            <div class="seletor-cidade" onclick="abrirModalCidade()">
 
-        function abrirModalEscolhaAnuncio() { document.getElementById('modalEscolhaAnuncio').style.display = 'block'; }
-        function abrirModalCadastroServico() { document.getElementById('modalEscolhaAnuncio').style.display = 'none'; document.getElementById('modalCadastro').style.display = 'block'; }
-        function abrirModalCadastroImovel() {
-            document.getElementById('modalEscolhaAnuncio').style.display = 'none';
-            document.getElementById('imovCidade').value = cidadeAtual;
-            document.getElementById('imovGaragem').checked = false;
-            document.getElementById('imovDesc').value = '';
-            document.getElementById('modalCadastroImovel').style.display = 'block';
-        }
-        function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
+                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
 
-        // GERADOR DE TEXTO COM IA PARA IMÓVEIS
-        function gerarDescricaoImovelIA() {
-            let titulo = document.getElementById('imovTitulo').value.trim() || 'Ótimo Imóvel';
-            let transacao = document.getElementById('imovTransacao').value;
-            let tipo = document.getElementById('imovTipo').value;
-            let quartos = document.getElementById('imovQuartos').value;
-            let temGaragem = document.getElementById('imovGaragem').checked;
-            let cidade = document.getElementById('imovCidade').value.trim() || cidadeAtual;
-            let bairro = document.getElementById('imovBairro').value.trim() || 'Centro';
+            </div>
 
-            let textoGaragem = temGaragem ? 'com vaga de garagem' : 'sem garagem';
-            let descGerada = `🌟 ${titulo}! Excelente opção de ${tipo.toLowerCase()} para ${transacao.toLowerCase()} localizado(a) no bairro ${bairro} em ${cidade}. O imóvel possui ${quartos} quarto(s) e conta ${textoGaragem}. Negociação 100% direta com o proprietário, sem taxas abusivas de imobiliária. Entre em contacto agora mesmo pelo WhatsApp para mais informações e agende uma visita!`;
+            <div class="bairro-container">
 
-            document.getElementById('imovDesc').value = descGerada;
-        }
+                <i class="fas fa-map-signs" style="color: var(--gray); font-size: 12px;"></i>
 
-        function iniciarListeners() {
-            db.collection("locais").onSnapshot((snapshot) => {
-                listaLocaisCache = [];
-                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                atualizarSeletorCidades(); atualizarListaBairros(); if(tabAtual === 'servicos') renderizarLocais();
-            });
+                <select id="filtroBairro" onchange="filtrarBairro()">
 
-            db.collection("imoveis").onSnapshot((snapshot) => {
-                listaImoveisCache = [];
-                snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
-                if(tabAtual === 'imoveis') renderizarImoveis();
-            });
-        }
+                    <option value="">Todos os Bairros</option>
 
-        async function salvarImovel() {
-            let titulo = document.getElementById('imovTitulo').value;
-            let preco = document.getElementById('imovPreco').value;
-            let wpp = document.getElementById('imovWpp').value;
-            if(!titulo || !preco || !wpp) return alert("Preencha o título, o preço e o WhatsApp!");
+                </select>
 
-            let dadosImovel = {
-                titulo: titulo,
-                transacao: document.getElementById('imovTransacao').value,
-                tipo: document.getElementById('imovTipo').value,
-                preco: Number(preco),
-                quartos: document.getElementById('imovQuartos').value,
-                garagem: document.getElementById('imovGaragem').checked,
-                cidade: document.getElementById('imovCidade').value.trim() || 'Paraisópolis',
-                bairro: document.getElementById('imovBairro').value.trim() || 'Centro',
-                whatsapp: wpp,
-                descricao: document.getElementById('imovDesc').value,
-                userId: usuarioLogado ? usuarioLogado.uid : ''
-            };
+            </div>
 
-            await db.collection("imoveis").add(dadosImovel);
-            document.getElementById('modalCadastroImovel').style.display = 'none';
-            alert("Imóvel publicado com sucesso!");
-        }
+        </div>
 
-        function renderizarImoveis() {
-            let filtrados = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
-            if(transacaoImovelAtual) filtrados = filtrados.filter(i => i.transacao === transacaoImovelAtual);
-            if(bairroAtual) filtrados = filtrados.filter(i => i.bairro === bairroAtual);
 
-            let container = document.getElementById('listaImoveis');
-            container.innerHTML = '';
 
-            if(filtrados.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--gray);">Nenhum imóvel encontrado nesta região.</p>';
-                return;
-            }
+        <div class="search-container">
 
-            filtrados.forEach(i => {
-                let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                let badgeGaragem = i.garagem ? `<span class="status-badge badge-garagem"><i class="fas fa-car"></i> Com Garagem</span>` : '';
-                container.innerHTML += `
-                    <div class="card-local">
-                        <div class="card-body">
-                            <div class="badges-container-inline">
-                                <span class="status-badge badge-imovel-tipo">${i.transacao} &bull; ${i.tipo}</span>
-                                <span class="status-badge badge-imovel-preco">${precoFmt}</span>
-                                ${badgeGaragem}
-                            </div>
-                            <div class="card-title">${i.titulo}</div>
-                            <div class="card-subtitle"><i class="fas fa-bed"></i> ${i.quartos} Quartos &bull; <i class="fas fa-map-marker-alt"></i> ${i.bairro || 'Centro'}</div>
-                            <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${i.descricao || 'Negociação direta com o proprietário.'}</p>
-                            <div class="card-actions">
-                                <button class="btn-card btn-outline" onclick="abrirDetalhesImovel('${i.idDoc}')">Detalhes</button>
-                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=Olá,%20vi%20seu%20imóvel%20${encodeURIComponent(i.titulo)}%20na%20Folha%20Amarela.', '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+            <i class="fas fa-search search-icon"></i>
 
-        function filtrarTransacaoImovel(trans, el) {
-            document.querySelectorAll('#secaoTabImoveis .cat-item').forEach(e => e.classList.remove('active'));
-            el.classList.add('active'); transacaoImovelAtual = trans; renderizarImoveis();
-        }
+            <input type="search" class="search-bar" id="inputBusca" autocomplete="off" placeholder="Pesquisar comércio, imóvel, casa, serviço..." onkeyup="filtrarBusca()">
 
-        function abrirDetalhesImovel(id) {
-            let i = listaImoveisCache.find(x => x.idDoc === id);
-            if(!i) return;
-            document.getElementById('detDetalhesNome').textContent = i.titulo;
-            document.getElementById('detDetalhesCategoria').textContent = `${i.transacao} - ${i.tipo}`;
-            document.getElementById('detDetalhesLocal').textContent = `${i.bairro || 'Centro'}, ${i.cidade}`;
-            document.getElementById('detDetalhesConteudoExtra').innerHTML = `
-                <p><b>Preço:</b> ${Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-                <p><b>Quartos:</b> ${i.quartos} &bull; <b>Garagem:</b> ${i.garagem ? 'Sim' : 'Não'}</p>
-                <p style="margin-top: 10px;">${i.descricao}</p>
-            `;
-            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}`, '_blank');
-            document.getElementById('modalDetalhes').style.display = 'block';
-        }
+            <button class="btn-ia" onclick="abrirChatIA()" title="Assistente IA"><i class="fas fa-wand-magic-sparkles"></i></button>
 
-        function renderizarLocais() {
-            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
-            if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-            if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+        </div>
 
-            let container = document.getElementById('listaLocais');
-            container.innerHTML = '';
-            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
-            filtrados.forEach(l => {
-                container.innerHTML += `
-                    <div class="card-local">
-                        <div class="card-body">
-                            <div class="card-title">${l.nome}</div>
-                            <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
-                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+    </header>
 
-        function filtrarCategoria(cat, el) { document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e => e.classList.remove('active')); el.classList.add('active'); categoriaAtual = cat; renderizarLocais(); }
-        function filtrarBusca() { renderizarAtual(); }
-        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
-        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
-        function mudarCidade(cidade) { cidadeAtual = cidade; document.getElementById('cidadeAtivaHeader').textContent = cidade; fecharModalCidade(); atualizarListaBairros(); renderizarAtual(); }
 
-        function atualizarSeletorCidades() {
-            let cidades = [...new Set(listaLocaisCache.map(l => (l.cidade || 'Paraisópolis').trim()))].sort();
-            if(cidades.length === 0) cidades = ['Paraisópolis'];
-            let container = document.getElementById('listaCidadesDinamica');
-            container.innerHTML = '';
-            cidades.forEach(c => { container.innerHTML += `<button class="btn-submit" style="margin:0;" onclick="mudarCidade('${c}')">${c}, MG</button>`; });
-        }
 
-        function atualizarListaBairros() {
-            const sb = document.getElementById('filtroBairro');
-            let base = tabAtual === 'servicos' ? listaLocaisCache : listaImoveisCache;
-            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis')===cidadeAtual && l.bairro).map(l => l.bairro.trim()))].sort();
-            let v = sb.value;
-            sb.innerHTML = '<option value="">Todos os Bairros</option>';
-            bs.forEach(b => { sb.innerHTML += `<option value="${b}">${b}</option>`; });
-            if (bs.includes(v)) { sb.value = v; bairroAtual = v; } else { sb.value = ""; bairroAtual = ""; }
-        }
+    <main class="container">
 
-        function filtrarBairro() { bairroAtual = document.getElementById('filtroBairro').value; renderizarAtual(); }
-        function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
-        function abrirAreaAcessoClick() { document.getElementById('modalAreaAcesso').style.display = 'block'; }
-        function executarLoginUnificado() { alert("Login efetuado"); document.getElementById('modalAreaAcesso').style.display = 'none'; }
+        <div class="main-tabs">
 
-        // ASSISTENTE IA INTELIGENTE
-        function abrirChatIA() {
-            document.getElementById('modalChatIA').style.display = 'block';
-            document.getElementById('inputChatUser').focus();
-        }
+            <button class="tab-btn active" id="tabBtnServicos" onclick="mudarTabPrincipal('servicos')"><i class="fas fa-store"></i> Estabelecimentos & Serviços</button>
 
-        function enviarMensagemChat() {
-            let input = document.getElementById('inputChatUser');
-            let texto = input.value.trim();
-            if(!texto) return;
+            <button class="tab-btn" id="tabBtnImoveis" onclick="mudarTabPrincipal('imoveis')"><i class="fas fa-home"></i> Imóveis (Direto s/ Taxa)</button>
 
-            let container = document.getElementById('chatMensagens');
-            container.innerHTML += `<div style="background: var(--purple); color: white; padding: 10px 14px; border-radius: 16px; max-width: 85%; align-self: flex-end; font-size: 13px;">${texto}</div>`;
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
+        </div>
 
-            setTimeout(() => {
-                let p = texto.toLowerCase();
-                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
-                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
-                let respostaIA = "Não encontrei essa informação.";
 
-                let termoImovel = p.includes('casa') || p.includes('apartamento') || p.includes('terreno') || p.includes('imóvel') || p.includes('temporada') || p.includes('aluguel') || p.includes('venda') || p.includes('garagem');
 
-                if (termoImovel && imoveisCidade.length > 0) {
-                    let imoveisFiltrados = imoveisCidade.filter(i => 
-                        i.titulo.toLowerCase().includes(p) || 
-                        i.tipo.toLowerCase().includes(p) || 
-                        i.transacao.toLowerCase().includes(p) ||
-                        (p.includes('garagem') && i.garagem) ||
-                        (i.bairro && i.bairro.toLowerCase().includes(p)) ||
-                        (i.descricao && i.descricao.toLowerCase().includes(p))
-                    );
-                    
-                    if (imoveisFiltrados.length === 0) imoveisFiltrados = imoveisCidade;
+        <!-- ABA SERVIÇOS -->
 
-                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => 
-                        `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 R$ ${Number(i.preco).toLocaleString('pt-BR')} | 🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}<br>📱 <a href="https://wa.me/55${i.whatsapp}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar com proprietário</a>`
-                    ).join('<br><br>');
-                } else {
-                    let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
-                    if (encontrado) {
-                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 WhatsApp: ${encontrado.whatsapp}`;
-                    } else {
-                        respostaIA = `Não encontrei registos para "${texto}". Pode tentar pesquisar por imóveis para temporada ou serviços.`;
-                    }
-                }
+        <div id="secaoTabServicos">
 
-                container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
-                container.scrollTop = container.scrollHeight;
-            }, 600);
-        }
+            <div class="categorias">
 
-        iniciarListeners();
-    </script>
+                <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div></div>
+
+                <div class="cat-item" onclick="filtrarCategoria('Serviços', this)"><div class="cat-icon"><i class="fas fa-tools"></i></div><div class="cat-name">Serviços</div></div>
+
+                <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div></div>
+
+                <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
+
+                <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
+
+            </div>
+
+            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
+
+            <div id="listaLocais" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais...</p></div>
+
+        </div>
+
+
+
+        <!-- ABA IMÓVEIS -->
+
+        <div id="secaoTabImoveis" style="display: none;">
+
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--primary); padding: 14px 18px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">
+
+                🏠 <b>Negociação Direta:</b> Compre, alugue ou reserve por temporada sem taxas de imobiliária. Fale direto com o proprietário!
+
+            </div>
+
+            <div class="categorias">
+
+                <div class="cat-item active" onclick="filtrarTransacaoImovel('', this)"><div class="cat-icon"><i class="fas fa-building"></i></div><div class="cat-name">Todos</div></div>
+
+                <div class="cat-item" onclick="filtrarTransacaoImovel('Venda', this)"><div class="cat-icon"><i class="fas fa-tag"></i></div><div class="cat-name">Venda</div></div>
+
+                <div class="cat-item" onclick="filtrarTransacaoImovel('Aluguel', this)"><div class="cat-icon"><i class="fas fa-key"></i></div><div class="cat-name">Aluguel</div></div>
+
+                <div class="cat-item" onclick="filtrarTransacaoImovel('Temporada', this)"><div class="cat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="cat-name">Temporada</div></div>
+
+            </div>
+
+            <h3 class="secao-header"><i class="fas fa-home"></i> Imóveis Disponíveis</h3>
+
+            <div id="listaImoveis" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar imóveis...</p></div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Modal Chatbot IA -->
+
+    <div id="modalChatIA" class="modal">
+
+        <div class="modal-content" style="max-width: 450px; display: flex; flex-direction: column; height: 500px; padding: 0;">
+
+            <div style="background: var(--purple); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+
+                <h3 style="font-size: 16px;"><i class="fas fa-wand-magic-sparkles"></i> Assistente IA - Folha Amarela</h3>
+
+                <span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position: static; background: rgba(255,255,255,0.2); color: white;">&times;</span>
+
+            </div>
+
+            <div id="chatMensagens" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--input-bg);">
+
+                <div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">
+
+                    Olá! Pergunte por serviços ou imóveis (ex: "casa para temporada", "aluguel com garagem").
+
+                </div>
+
+            </div>
+
+            <div style="padding: 12px; background: var(--surface); display: flex; gap: 8px;">
+
+                <input type="search" id="inputChatUser" autocomplete="off" class="form-control" placeholder="Escreva a sua dúvida..." onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin: 0;">
+
+                <button class="btn-submit" onclick="enviarMensagemChat()" style="margin: 0; width: 50px; background: var(--purple); color: white;"><i class="fas fa-paper-plane"></i></button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modal Escolha Anúncio -->
+
+    <div id="modalEscolhaAnuncio" class="modal">
+
+        <div class="modal-content" style="max-width: 380px; text-align: center;">
+
+            <span class="close" onclick="document.getElementById('modalEscolhaAnuncio').style.display='none'">&times;</span>
+
+            <div style="font-size: 32px; color: var(--primary); margin-bottom: 12px;"><i class="fas fa-bullhorn"></i></div>
+
+            <h2 style="margin-bottom: 16px; font-size: 20px;">O que deseja anunciar?</h2>
+
+            <button class="btn-submit" onclick="abrirModalCadastroServico()" style="margin-bottom: 10px;"><i class="fas fa-store"></i> Estabelecimento / Serviço</button>
+
+            <button class="btn-submit" onclick="abrirModalCadastroImovel()" style="background: var(--purple); color: white;"><i class="fas fa-home"></i> Imóvel (Venda / Temporada)</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL CADASTRO DE IMÓVEL (Com Temporada, Garagem e IA de Texto) -->
+
+    <div id="modalCadastroImovel" class="modal">
+
+        <div class="modal-content" style="max-width: 520px;">
+
+            <span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span>
+
+            <h2 style="margin-bottom: 20px; font-size: 20px;"><i class="fas fa-home" style="color: var(--purple);"></i> Anunciar Imóvel</h2>
+
+            <input type="hidden" id="imovId">
+
+            <div class="form-group"><label>Título do Anúncio</label><input type="text" id="imovTitulo" class="form-control" placeholder="Ex: Casa aconchegante para temporada"></div>
+
+            <div style="display: flex; gap: 12px;">
+
+                <div class="form-group" style="flex: 1;"><label>Transação</label><select id="imovTransacao" class="form-control"><option value="Venda">Venda</option><option value="Aluguel">Aluguel Mensal</option><option value="Temporada">Aluguel por Temporada</option></select></div>
+
+                <div class="form-group" style="flex: 1;"><label>Tipo</label><select id="imovTipo" class="form-control"><option>Casa</option><option>Apartamento</option><option>Chácara / Sítio</option><option>Terreno</option><option>Comercial</option></select></div>
+
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+
+                <div class="form-group" style="flex: 1;"><label>Valor (R$)</label><input type="number" id="imovPreco" class="form-control" placeholder="1500 (ou valor total)"></div>
+
+                <div class="form-group" style="flex: 1;"><label>Quartos</label><select id="imovQuartos" class="form-control"><option value="0">N/A</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+</option></select></div>
+
+            </div>
+
+            
+
+            <div class="form-group">
+
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+
+                    <input type="checkbox" id="imovGaragem" style="width: 18px; height: 18px; accent-color: var(--purple);">
+
+                    <span>Possui Garagem / Estacionamento</span>
+
+                </label>
+
+            </div>
+
+
+
+            <div style="display: flex; gap: 12px;">
+
+                <div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="imovCidade" class="form-control" placeholder="Paraisópolis"></div>
+
+                <div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="imovBairro" class="form-control" placeholder="Centro"></div>
+
+            </div>
+
+            <div class="form-group"><label>WhatsApp do Proprietário</label><input type="number" id="imovWpp" class="form-control" placeholder="35999999999"></div>
+
+            
+
+            <div class="form-group">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+
+                    <label style="margin:0;">Descrição Detalhada</label>
+
+                    <button type="button" onclick="gerarDescricaoImovelIA()" style="background: var(--purple); color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar com IA</button>
+
+                </div>
+
+                <textarea id="imovDesc" class="form-control" rows="3" placeholder="Clique em 'Gerar com IA' ou escreva os detalhes..."></textarea>
+
+            </div>
+
+
+
+            <button class="btn-submit" style="background: var(--purple); color: white;" onclick="salvarImovel()">Publicar Imóvel</button>
+
+        </div>
+
+    </div>
+
+
+
+    <div id="modalDetalhes" class="modal">
+
+        <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
+
+            <div style="padding: 24px;">
+
+                <span class="close" onclick="fecharDetalhes()" style="top: 16px; right: 16px; position: absolute;">&times;</span>
+
+                <h2 id="detDetalhesNome" style="margin-bottom: 4px; font-size: 22px;">Nome</h2>
+
+                <p style="color: var(--gray); font-size: 13px; margin-bottom: 12px;"><span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span></p>
+
+                <div id="detDetalhesConteudoExtra" style="margin: 16px 0; font-size: 14px; line-height: 1.6;"></div>
+
+                <button class="btn-card btn-wpp" id="btnDetWpp" style="width: 100%; padding: 12px;"><i class="fab fa-whatsapp"></i> Falar com Proprietário</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modais Auxiliares -->
+
+    <div id="modalCidade" class="modal"><div class="modal-content" style="text-align: center; max-width: 380px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><div id="listaCidadesDinamica" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div><button class="btn-outline btn-card" style="width: 100%; padding: 12px; border-radius: 12px; font-weight: 700;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar GPS</button></div></div>
+
+    <div id="modalAreaAcesso" class="modal"><div class="modal-content" style="max-width: 380px; text-align: center;"><span class="close" onclick="document.getElementById('modalAreaAcesso').style.display='none'">&times;</span><h2>Área de Acesso</h2><div class="form-group" style="text-align: left;"><label>E-mail</label><input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com"></div><div class="form-group" style="text-align: left;"><label>Palavra-passe</label><input type="password" id="acessoSenha" class="form-control" placeholder="Palavra-passe"></div><button class="btn-submit" onclick="executarLoginUnificado()">Entrar</button></div></div>
+
+    <div id="modalCadastro" class="modal"><div class="modal-content" style="max-width: 520px;"><span class="close" onclick="fecharModalCadastro()">&times;</span><h2>Anunciar Estabelecimento ou Serviço</h2><input type="hidden" id="cadId"><div class="form-group"><label>Nome</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central"></div><div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div><div style="display: flex; gap: 12px;"><div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div><div class="form-group"><label>WhatsApp</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div><button class="btn-submit" onclick="salvarLocalLojista()">Guardar Serviço</button></div></div>
+
+
+
+    <script>
+
+        function atualizarLogoTema(isDark) {
+
+            const logoImg = document.getElementById('logoImg');
+
+            if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
+
+        }
+
+        function carregarTemaSalvo() {
+
+            const temaSalvo = localStorage.getItem('folha_theme');
+
+            if (temaSalvo === 'dark') { document.body.classList.add('dark-mode'); document.getElementById('themeIcon').className = 'fas fa-sun'; atualizarLogoTema(true); }
+
+            else { atualizarLogoTema(false); }
+
+        }
+
+        function toggleTheme() {
+
+            document.body.classList.toggle('dark-mode');
+
+            const isDark = document.body.classList.contains('dark-mode');
+
+            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
+
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+
+            atualizarLogoTema(isDark);
+
+        }
+
+        carregarTemaSalvo();
+
+
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
+
+            authDomain: "folha-amarela-digital.firebaseapp.com",
+
+            projectId: "folha-amarela-digital",
+
+            storageBucket: "folha-amarela-digital.firebasestorage.app",
+
+            messagingSenderId: "377984429498",
+
+            appId: "1:377984429498:web:0ec71abadab20a93420183"
+
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth(); const db = firebase.firestore();
+
+
+
+        let cidadeAtual = 'Paraisópolis'; let categoriaAtual = ''; let bairroAtual = '';
+
+        let tabAtual = 'servicos'; let transacaoImovelAtual = '';
+
+        let listaLocaisCache = []; let listaImoveisCache = [];
+
+        let isAdminLogado = false; let usuarioLogado = null;
+
+        const ADMIN_EMAIL = "admin@folhaamarela.com";
+
+
+
+        auth.onAuthStateChanged((user) => {
+
+            usuarioLogado = user;
+
+            document.getElementById('txtBtnAcesso').textContent = user ? (user.email === ADMIN_EMAIL ? "Painel Admin" : "O Meu Painel") : "Área de acesso";
+
+        });
+
+
+
+        function mudarTabPrincipal(tab) {
+
+            tabAtual = tab;
+
+            document.getElementById('tabBtnServicos').classList.toggle('active', tab === 'servicos');
+
+            document.getElementById('tabBtnImoveis').classList.toggle('active', tab === 'imoveis');
+
+            document.getElementById('secaoTabServicos').style.display = tab === 'servicos' ? 'block' : 'none';
+
+            document.getElementById('secaoTabImoveis').style.display = tab === 'imoveis' ? 'block' : 'none';
+
+            atualizarListaBairros();
+
+            renderizarAtual();
+
+        }
+
+
+
+        function renderizarAtual() {
+
+            if(tabAtual === 'servicos') renderizarLocais();
+
+            else renderizarImoveis();
+
+        }
+
+
+
+        function abrirModalEscolhaAnuncio() { document.getElementById('modalEscolhaAnuncio').style.display = 'block'; }
+
+        function abrirModalCadastroServico() { document.getElementById('modalEscolhaAnuncio').style.display = 'none'; document.getElementById('modalCadastro').style.display = 'block'; }
+
+        function abrirModalCadastroImovel() {
+
+            document.getElementById('modalEscolhaAnuncio').style.display = 'none';
+
+            document.getElementById('imovCidade').value = cidadeAtual;
+
+            document.getElementById('imovGaragem').checked = false;
+
+            document.getElementById('imovDesc').value = '';
+
+            document.getElementById('modalCadastroImovel').style.display = 'block';
+
+        }
+
+        function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
+
+
+
+        // GERADOR DE TEXTO COM IA PARA IMÓVEIS
+
+        function gerarDescricaoImovelIA() {
+
+            let titulo = document.getElementById('imovTitulo').value.trim() || 'Ótimo Imóvel';
+
+            let transacao = document.getElementById('imovTransacao').value;
+
+            let tipo = document.getElementById('imovTipo').value;
+
+            let quartos = document.getElementById('imovQuartos').value;
+
+            let temGaragem = document.getElementById('imovGaragem').checked;
+
+            let cidade = document.getElementById('imovCidade').value.trim() || cidadeAtual;
+
+            let bairro = document.getElementById('imovBairro').value.trim() || 'Centro';
+
+
+
+            let textoGaragem = temGaragem ? 'com vaga de garagem' : 'sem garagem';
+
+            let descGerada = `🌟 ${titulo}! Excelente opção de ${tipo.toLowerCase()} para ${transacao.toLowerCase()} localizado(a) no bairro ${bairro} em ${cidade}. O imóvel possui ${quartos} quarto(s) e conta ${textoGaragem}. Negociação 100% direta com o proprietário, sem taxas abusivas de imobiliária. Entre em contacto agora mesmo pelo WhatsApp para mais informações e agende uma visita!`;
+
+
+
+            document.getElementById('imovDesc').value = descGerada;
+
+        }
+
+
+
+        function iniciarListeners() {
+
+            db.collection("locais").onSnapshot((snapshot) => {
+
+                listaLocaisCache = [];
+
+                snapshot.forEach((doc) => { listaLocaisCache.push({ idDoc: doc.id, ...doc.data() }); });
+
+                atualizarSeletorCidades(); atualizarListaBairros(); if(tabAtual === 'servicos') renderizarLocais();
+
+            });
+
+
+
+            db.collection("imoveis").onSnapshot((snapshot) => {
+
+                listaImoveisCache = [];
+
+                snapshot.forEach((doc) => { listaImoveisCache.push({ idDoc: doc.id, ...doc.data() }); });
+
+                if(tabAtual === 'imoveis') renderizarImoveis();
+
+            });
+
+        }
+
+
+
+        async function salvarImovel() {
+
+            let titulo = document.getElementById('imovTitulo').value;
+
+            let preco = document.getElementById('imovPreco').value;
+
+            let wpp = document.getElementById('imovWpp').value;
+
+            if(!titulo || !preco || !wpp) return alert("Preencha o título, o preço e o WhatsApp!");
+
+
+
+            let dadosImovel = {
+
+                titulo: titulo,
+
+                transacao: document.getElementById('imovTransacao').value,
+
+                tipo: document.getElementById('imovTipo').value,
+
+                preco: Number(preco),
+
+                quartos: document.getElementById('imovQuartos').value,
+
+                garagem: document.getElementById('imovGaragem').checked,
+
+                cidade: document.getElementById('imovCidade').value.trim() || 'Paraisópolis',
+
+                bairro: document.getElementById('imovBairro').value.trim() || 'Centro',
+
+                whatsapp: wpp,
+
+                descricao: document.getElementById('imovDesc').value,
+
+                userId: usuarioLogado ? usuarioLogado.uid : ''
+
+            };
+
+
+
+            await db.collection("imoveis").add(dadosImovel);
+
+            document.getElementById('modalCadastroImovel').style.display = 'none';
+
+            alert("Imóvel publicado com sucesso!");
+
+        }
+
+
+
+        function renderizarImoveis() {
+
+            let filtrados = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
+
+            if(transacaoImovelAtual) filtrados = filtrados.filter(i => i.transacao === transacaoImovelAtual);
+
+            if(bairroAtual) filtrados = filtrados.filter(i => i.bairro === bairroAtual);
+
+
+
+            let container = document.getElementById('listaImoveis');
+
+            container.innerHTML = '';
+
+
+
+            if(filtrados.length === 0) {
+
+                container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--gray);">Nenhum imóvel encontrado nesta região.</p>';
+
+                return;
+
+            }
+
+
+
+            filtrados.forEach(i => {
+
+                let precoFmt = Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                let badgeGaragem = i.garagem ? `<span class="status-badge badge-garagem"><i class="fas fa-car"></i> Com Garagem</span>` : '';
+
+                container.innerHTML += `
+
+                    <div class="card-local">
+
+                        <div class="card-body">
+
+                            <div class="badges-container-inline">
+
+                                <span class="status-badge badge-imovel-tipo">${i.transacao} &bull; ${i.tipo}</span>
+
+                                <span class="status-badge badge-imovel-preco">${precoFmt}</span>
+
+                                ${badgeGaragem}
+
+                            </div>
+
+                            <div class="card-title">${i.titulo}</div>
+
+                            <div class="card-subtitle"><i class="fas fa-bed"></i> ${i.quartos} Quartos &bull; <i class="fas fa-map-marker-alt"></i> ${i.bairro || 'Centro'}</div>
+
+                            <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${i.descricao || 'Negociação direta com o proprietário.'}</p>
+
+                            <div class="card-actions">
+
+                                <button class="btn-card btn-outline" onclick="abrirDetalhesImovel('${i.idDoc}')">Detalhes</button>
+
+                                <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${i.whatsapp}?text=Olá,%20vi%20seu%20imóvel%20${encodeURIComponent(i.titulo)}%20na%20Folha%20Amarela.', '_blank')"><i class="fab fa-whatsapp"></i> Falar com Dono</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+
+        function filtrarTransacaoImovel(trans, el) {
+
+            document.querySelectorAll('#secaoTabImoveis .cat-item').forEach(e => e.classList.remove('active'));
+
+            el.classList.add('active'); transacaoImovelAtual = trans; renderizarImoveis();
+
+        }
+
+
+
+        function abrirDetalhesImovel(id) {
+
+            let i = listaImoveisCache.find(x => x.idDoc === id);
+
+            if(!i) return;
+
+            document.getElementById('detDetalhesNome').textContent = i.titulo;
+
+            document.getElementById('detDetalhesCategoria').textContent = `${i.transacao} - ${i.tipo}`;
+
+            document.getElementById('detDetalhesLocal').textContent = `${i.bairro || 'Centro'}, ${i.cidade}`;
+
+            document.getElementById('detDetalhesConteudoExtra').innerHTML = `
+
+                <p><b>Preço:</b> ${Number(i.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+
+                <p><b>Quartos:</b> ${i.quartos} &bull; <b>Garagem:</b> ${i.garagem ? 'Sim' : 'Não'}</p>
+
+                <p style="margin-top: 10px;">${i.descricao}</p>
+
+            `;
+
+            document.getElementById('btnDetWpp').onclick = () => window.open(`https://wa.me/55${i.whatsapp}`, '_blank');
+
+            document.getElementById('modalDetalhes').style.display = 'block';
+
+        }
+
+
+
+        function renderizarLocais() {
+
+            let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+
+            if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
+
+            if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+
+
+
+            let container = document.getElementById('listaLocais');
+
+            container.innerHTML = '';
+
+            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+
+            filtrados.forEach(l => {
+
+                container.innerHTML += `
+
+                    <div class="card-local">
+
+                        <div class="card-body">
+
+                            <div class="card-title">${l.nome}</div>
+
+                            <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
+
+                            <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+
+
+        function filtrarCategoria(cat, el) { document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e => e.classList.remove('active')); el.classList.add('active'); categoriaAtual = cat; renderizarLocais(); }
+
+        function filtrarBusca() { renderizarAtual(); }
+
+        function abrirModalCidade() { document.getElementById('modalCidade').style.display = 'block'; }
+
+        function fecharModalCidade() { document.getElementById('modalCidade').style.display = 'none'; }
+
+        function mudarCidade(cidade) { cidadeAtual = cidade; document.getElementById('cidadeAtivaHeader').textContent = cidade; fecharModalCidade(); atualizarListaBairros(); renderizarAtual(); }
+
+
+
+        function atualizarSeletorCidades() {
+
+            let cidades = [...new Set(listaLocaisCache.map(l => (l.cidade || 'Paraisópolis').trim()))].sort();
+
+            if(cidades.length === 0) cidades = ['Paraisópolis'];
+
+            let container = document.getElementById('listaCidadesDinamica');
+
+            container.innerHTML = '';
+
+            cidades.forEach(c => { container.innerHTML += `<button class="btn-submit" style="margin:0;" onclick="mudarCidade('${c}')">${c}, MG</button>`; });
+
+        }
+
+
+
+        function atualizarListaBairros() {
+
+            const sb = document.getElementById('filtroBairro');
+
+            let base = tabAtual === 'servicos' ? listaLocaisCache : listaImoveisCache;
+
+            let bs = [...new Set(base.filter(l => (l.cidade||'Paraisópolis')===cidadeAtual && l.bairro).map(l => l.bairro.trim()))].sort();
+
+            let v = sb.value;
+
+            sb.innerHTML = '<option value="">Todos os Bairros</option>';
+
+            bs.forEach(b => { sb.innerHTML += `<option value="${b}">${b}</option>`; });
+
+            if (bs.includes(v)) { sb.value = v; bairroAtual = v; } else { sb.value = ""; bairroAtual = ""; }
+
+        }
+
+
+
+        function filtrarBairro() { bairroAtual = document.getElementById('filtroBairro').value; renderizarAtual(); }
+
+        function fecharDetalhes() { document.getElementById('modalDetalhes').style.display = 'none'; }
+
+        function abrirAreaAcessoClick() { document.getElementById('modalAreaAcesso').style.display = 'block'; }
+
+        function executarLoginUnificado() { alert("Login efetuado"); document.getElementById('modalAreaAcesso').style.display = 'none'; }
+
+
+
+        // ASSISTENTE IA INTELIGENTE
+
+        function abrirChatIA() {
+
+            document.getElementById('modalChatIA').style.display = 'block';
+
+            document.getElementById('inputChatUser').focus();
+
+        }
+
+
+
+        function enviarMensagemChat() {
+
+            let input = document.getElementById('inputChatUser');
+
+            let texto = input.value.trim();
+
+            if(!texto) return;
+
+
+
+            let container = document.getElementById('chatMensagens');
+
+            container.innerHTML += `<div style="background: var(--purple); color: white; padding: 10px 14px; border-radius: 16px; max-width: 85%; align-self: flex-end; font-size: 13px;">${texto}</div>`;
+
+            input.value = '';
+
+            container.scrollTop = container.scrollHeight;
+
+
+
+            setTimeout(() => {
+
+                let p = texto.toLowerCase();
+
+                let locaisCidade = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+
+                let imoveisCidade = listaImoveisCache.filter(i => (i.cidade || 'Paraisópolis') === cidadeAtual);
+
+                let respostaIA = "Não encontrei essa informação.";
+
+
+
+                let termoImovel = p.includes('casa') || p.includes('apartamento') || p.includes('terreno') || p.includes('imóvel') || p.includes('temporada') || p.includes('aluguel') || p.includes('venda') || p.includes('garagem');
+
+
+
+                if (termoImovel && imoveisCidade.length > 0) {
+
+                    let imoveisFiltrados = imoveisCidade.filter(i => 
+
+                        i.titulo.toLowerCase().includes(p) || 
+
+                        i.tipo.toLowerCase().includes(p) || 
+
+                        i.transacao.toLowerCase().includes(p) ||
+
+                        (p.includes('garagem') && i.garagem) ||
+
+                        (i.bairro && i.bairro.toLowerCase().includes(p)) ||
+
+                        (i.descricao && i.descricao.toLowerCase().includes(p))
+
+                    );
+
+                    
+
+                    if (imoveisFiltrados.length === 0) imoveisFiltrados = imoveisCidade;
+
+
+
+                    respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => 
+
+                        `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 R$ ${Number(i.preco).toLocaleString('pt-BR')} | 🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}<br>📱 <a href="https://wa.me/55${i.whatsapp}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar com proprietário</a>`
+
+                    ).join('<br><br>');
+
+                } else {
+
+                    let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
+
+                    if (encontrado) {
+
+                        respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 WhatsApp: ${encontrado.whatsapp}`;
+
+                    } else {
+
+                        respostaIA = `Não encontrei registos para "${texto}". Pode tentar pesquisar por imóveis para temporada ou serviços.`;
+
+                    }
+
+                }
+
+
+
+                container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
+
+                container.scrollTop = container.scrollHeight;
+
+            }, 600);
+
+        }
+
+
+
+        iniciarListeners();
+
+    </script>
+
 </body>
-</html>
+
+</html> 
+
