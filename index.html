@@ -173,12 +173,13 @@
         .hero-discovery{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 24px;margin:22px 0 18px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(245,158,11,.03));}
         .hero-kicker{display:inline-flex;gap:7px;align-items:center;font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
         .hero-discovery h1{font-size:28px;margin:0 0 5px}.hero-discovery p{margin:0;color:var(--gray);font-size:14px;line-height:1.5;max-width:680px}
-        .hero-indicar{border:1px solid var(--primary);background:transparent;color:var(--text);padding:11px 14px;border-radius:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+        .hero-indicar{border:1px solid var(--primary);background:transparent;color:var(--dark);padding:11px 14px;border-radius:12px;font-weight:800;cursor:pointer;white-space:nowrap}
         .search-meta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:8px 2px 14px;color:var(--gray);font-size:12px}
+        .section-heading-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-heading-row .secao-header{margin-bottom:0}.search-meta-count{font-size:12px;color:var(--gray);white-space:nowrap}
         .empty-state{padding:34px 20px;text-align:center;border:1px dashed var(--border);border-radius:16px;color:var(--gray)}
-        .empty-state h4{margin:0 0 7px;color:var(--text);font-size:16px}.empty-state p{margin:0 0 14px;line-height:1.5}
+        .empty-state h4{margin:0 0 7px;color:var(--dark);font-size:16px}.empty-state p{margin:0 0 14px;line-height:1.5}
         .btn-small{border:0;border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:700;font-size:12px}
-        .btn-secondary{background:var(--input-bg);color:var(--text);border:1px solid var(--border)}
+        .btn-secondary{background:var(--input-bg);color:var(--dark);border:1px solid var(--border)}
         .owner-badge{font-size:10px;padding:3px 7px;border-radius:999px;background:rgba(34,197,94,.12);color:#16a34a;font-weight:800}
         .status-pendente{background:rgba(245,158,11,.14);color:#b45309}.status-rejeitado{background:rgba(239,68,68,.12);color:#dc2626}
         .form-help{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.4}
@@ -287,7 +288,7 @@
 
             </div>
 
-            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
+            <div class="section-heading-row"><h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3><span id="metaResultados" class="search-meta-count"></span></div>
 
             <div id="listaLocais" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais...</p></div>
 
@@ -509,9 +510,24 @@
             <div class="form-group"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" placeholder="35999999999" inputmode="numeric"><div class="form-help">Seu WhatsApp será usado para que pessoas interessadas possam entrar em contato.</div></div>
             <button class="btn-submit" onclick="salvarLocalLojista()" id="btnSalvarServico">Publicar meu serviço</button>
         </div>
-    </div><div class="form-group"><label>WhatsApp</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div><button class="btn-submit" onclick="salvarLocalLojista()">Guardar Serviço</button></div></div>
+    </div>
 
-    <script>
+    
+    <!-- Modal Indicação de profissional -->
+    <div id="modalIndicacao" class="modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <span class="close" onclick="document.getElementById('modalIndicacao').style.display='none'">&times;</span>
+            <h2 style="margin-bottom:8px;"><i class="fas fa-user-plus" style="color:var(--primary);"></i> Indicar alguém</h2>
+            <p style="color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:18px;">Conhece alguém que oferece um serviço e ainda não está na Folha Amarela? Ajude essa pessoa a ser encontrada.</p>
+            <div class="form-group"><label>Nome da pessoa ou negócio</label><input type="text" id="indNome" class="form-control" placeholder="Ex.: Maria Costura"></div>
+            <div class="form-group"><label>O que ela faz?</label><input type="text" id="indServico" class="form-control" placeholder="Ex.: costura e ajustes de roupas"></div>
+            <div class="form-group"><label>WhatsApp (opcional)</label><input type="tel" id="indWpp" class="form-control" placeholder="35999999999" inputmode="numeric"></div>
+            <div class="form-group"><label>Observação (opcional)</label><textarea id="indObs" class="form-control" rows="3" placeholder="Alguma informação que ajude a identificar o serviço?"></textarea></div>
+            <button class="btn-submit" onclick="salvarIndicacao()">Enviar indicação</button>
+        </div>
+    </div>
+
+<script>
     // ============================================================
     // FOLHA AMARELA DIGITAL — MVP v2
     // Busca + cadastro + autenticação + moderação + indicação
