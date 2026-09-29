@@ -151,8 +151,20 @@
                 <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
                 <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
             </div>
+            
             <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
             <div id="listaLocais" class="lista-locais"><p style="text-align:center; color:var(--gray); padding:30px;">A carregar locais...</p></div>
+
+            <!-- NOVA SEÇÃO: Resultados Gemini (Web) -->
+            <div id="secaoResultadosWeb" style="display: none; margin-top: 24px;">
+                <h3 class="secao-header" style="color: var(--purple);">
+                    <i class="fas fa-globe"></i> Encontrados na Web (via Google)
+                </h3>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 16px;">
+                    Não encontramos anunciantes oficiais, mas a IA buscou estas opções para você:
+                </p>
+                <div id="listaLocaisWeb" class="lista-locais"></div>
+            </div>
         </div>
 
         <!-- ABA IMÓVEIS -->
@@ -201,7 +213,7 @@
         </div>
     </div>
 
-    <!-- MODAL CADASTRO DE IMÓVEL (Com Temporada, Garagem e IA de Texto) -->
+    <!-- MODAL CADASTRO DE IMÓVEL -->
     <div id="modalCadastroImovel" class="modal">
         <div class="modal-content" style="max-width: 520px;">
             <span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span>
@@ -242,6 +254,7 @@
         </div>
     </div>
 
+    <!-- Modal Detalhes -->
     <div id="modalDetalhes" class="modal">
         <div class="modal-content" style="padding: 0; overflow: hidden; max-width: 520px;">
             <div style="padding: 24px;">
@@ -260,6 +273,9 @@
     <div id="modalCadastro" class="modal"><div class="modal-content" style="max-width: 520px;"><span class="close" onclick="fecharModalCadastro()">&times;</span><h2>Anunciar Estabelecimento ou Serviço</h2><input type="hidden" id="cadId"><div class="form-group"><label>Nome</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria Central"></div><div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div><div style="display: flex; gap: 12px;"><div class="form-group" style="flex: 1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex: 1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div><div class="form-group"><label>WhatsApp</label><input type="number" id="cadWpp" class="form-control" placeholder="35999999999"></div><button class="btn-submit" onclick="salvarLocalLojista()">Guardar Serviço</button></div></div>
 
     <script>
+        // CONFIGURAÇÕES GEMINI (Atenção: Use Cloud Functions para ocultar chaves em produção)
+        const GEMINI_API_KEY = 'SUA_CHAVE_GEMINI_AQUI'; 
+
         function atualizarLogoTema(isDark) {
             const logoImg = document.getElementById('logoImg');
             if (logoImg) logoImg.src = isDark ? 'header_dark.png' : 'header_light.png';
@@ -326,7 +342,6 @@
         }
         function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
 
-        // GERADOR DE TEXTO COM IA PARA IMÓVEIS
         function gerarDescricaoImovelIA() {
             let titulo = document.getElementById('imovTitulo').value.trim() || 'Ótimo Imóvel';
             let transacao = document.getElementById('imovTransacao').value;
@@ -438,14 +453,96 @@
             document.getElementById('modalDetalhes').style.display = 'block';
         }
 
+        // INTEGRAÇÃO DE BUSCA HÍBRIDA (WEB/GEMINI)
+        async function buscarComGemini(termo) {
+            let secaoWeb = document.getElementById('secaoResultadosWeb');
+            let containerWeb = document.getElementById('listaLocaisWeb');
+            
+            if(!secaoWeb || !containerWeb) return;
+            
+            secaoWeb.style.display = 'block';
+            containerWeb.innerHTML = '<p style="text-align:center; padding:20px; color:var(--purple);"><i class="fas fa-spinner fa-spin"></i> A procurar na web com IA...</p>';
+
+            const prompt = `Aja como um assistente de diretório local. Busque estabelecimentos comerciais na cidade de ${cidadeAtual}, Minas Gerais, correspondentes a "${termo}". Retorne APENAS um array JSON válido, sem formatação markdown, com até 3 resultados. Estrutura exigida: [{"n": "Nome do Local", "c": "Categoria sugerida", "e": "Endereço ou Bairro resumido"}].`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                
+                const data = await response.json();
+                let textoIA = data.candidates[0].content.parts[0].text;
+                
+                textoIA = textoIA.replace(/```json|```/g, '').trim();
+                const resultados = JSON.parse(textoIA);
+
+                if (resultados && resultados.length > 0) {
+                    containerWeb.innerHTML = '';
+                    resultados.forEach(res => {
+                        containerWeb.innerHTML += `
+                            <div class="card-local" style="border-left: 4px solid var(--purple);">
+                                <div class="card-body">
+                                    <div class="card-title">${res.n}</div>
+                                    <div class="card-subtitle"><i class="fas fa-globe"></i> ${res.c} &bull; <i class="fas fa-map-marker-alt"></i> ${res.e}</div>
+                                    <div class="card-actions" style="margin-top: 14px;">
+                                        <button class="btn-card" style="background: var(--purple); color: white;" onclick="reivindicarLocal('${res.n}', '${res.c}')">
+                                            <i class="fas fa-bullhorn"></i> É dono? Anuncie Grátis!
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    containerWeb.innerHTML = '<p style="text-align:center; color:var(--gray);">Nenhum resultado externo encontrado.</p>';
+                }
+            } catch (error) {
+                console.error("Erro no Gemini:", error);
+                containerWeb.innerHTML = '<p style="text-align:center; color:var(--danger);">Não foi possível conectar à pesquisa da web.</p>';
+            }
+        }
+
+        function reivindicarLocal(nome, categoria) {
+            document.getElementById('cadNome').value = nome;
+            let selectCat = document.getElementById('cadCategoria');
+            if(selectCat) {
+                let opcaoExiste = Array.from(selectCat.options).some(opt => opt.value === categoria);
+                if(opcaoExiste) selectCat.value = categoria;
+            }
+            abrirModalCadastroServico(); 
+        }
+
         function renderizarLocais() {
             let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
             if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
             if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
 
+            let termoDigitado = document.getElementById('inputBusca').value.trim().toLowerCase();
+            if (termoDigitado) {
+                filtrados = filtrados.filter(l => l.nome.toLowerCase().includes(termoDigitado) || (l.categoria && l.categoria.toLowerCase().includes(termoDigitado)));
+            }
+
             let container = document.getElementById('listaLocais');
+            let secaoWeb = document.getElementById('secaoResultadosWeb');
+
             container.innerHTML = '';
-            if(filtrados.length === 0) { container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; return; }
+            
+            // GATILHO DA BUSCA HÍBRIDA
+            if(filtrados.length === 0) { 
+                container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--gray);">Nenhum estabelecimento local cadastrado para esta pesquisa.</p>'; 
+                
+                if (termoDigitado.length > 2) {
+                    buscarComGemini(termoDigitado);
+                } else {
+                    if(secaoWeb) secaoWeb.style.display = 'none';
+                }
+                return; 
+            } else {
+                if(secaoWeb) secaoWeb.style.display = 'none';
+            }
+            
             filtrados.forEach(l => {
                 container.innerHTML += `
                     <div class="card-local">
@@ -488,7 +585,7 @@
         function abrirAreaAcessoClick() { document.getElementById('modalAreaAcesso').style.display = 'block'; }
         function executarLoginUnificado() { alert("Login efetuado"); document.getElementById('modalAreaAcesso').style.display = 'none'; }
 
-        // ASSISTENTE IA INTELIGENTE
+        // ASSISTENTE IA INTELIGENTE ATUALIZADO
         function abrirChatIA() {
             document.getElementById('modalChatIA').style.display = 'block';
             document.getElementById('inputChatUser').focus();
@@ -527,17 +624,38 @@
                     respostaIA = `🏠 <b>Imóveis encontrados em ${cidadeAtual}:</b><br>` + imoveisFiltrados.slice(0, 3).map(i => 
                         `&bull; <b>${i.titulo}</b> (${i.transacao})<br>💰 R$ ${Number(i.preco).toLocaleString('pt-BR')} | 🛏️ ${i.quartos} Quartos | 🚗 ${i.garagem ? 'Com Garagem' : 'Sem Garagem'}<br>📱 <a href="https://wa.me/55${i.whatsapp}" target="_blank" style="color:var(--purple); font-weight:bold;">Falar com proprietário</a>`
                     ).join('<br><br>');
+                    
+                    container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
+                    container.scrollTop = container.scrollHeight;
+
                 } else {
                     let encontrado = locaisCidade.find(l => p.includes(l.nome.toLowerCase()));
                     if (encontrado) {
                         respostaIA = `📍 <b>${encontrado.nome}</b> (${encontrado.categoria} - ${encontrado.bairro || 'Centro'})<br>📱 WhatsApp: ${encontrado.whatsapp}`;
+                        container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
+                        container.scrollTop = container.scrollHeight;
                     } else {
-                        respostaIA = `Não encontrei registos para "${texto}". Pode tentar pesquisar por imóveis para temporada ou serviços.`;
+                        // REQUISIÇÃO GEMINI (FALLBACK CHAT)
+                        let idMsgEspera = 'msgEspera-' + Date.now();
+                        container.innerHTML += `<div id="${idMsgEspera}" style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; border: 1px solid var(--purple);"><i class="fas fa-spinner fa-spin"></i> A pesquisar "${texto}" no Google...</div>`;
+                        container.scrollTop = container.scrollHeight;
+
+                        fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${'AQ.Ab8RN6KkHM6fsytpSg4Y7TKVtjhP-jwkvyyVKHsOuXJyK5t5yA'}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: `O usuário pesquisou "${texto}" em ${cidadeAtual}. Responda em português, de forma amigável, listando no máximo 3 opções reais que você encontrou na web para essa cidade. Diga que não temos na base oficial, mas encontrou na internet.` }] }] })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            let textoIA = data.candidates[0].content.parts[0].text;
+                            document.getElementById(idMsgEspera).innerHTML = textoIA.replace(/\n/g, '<br>');
+                            container.scrollTop = container.scrollHeight;
+                        })
+                        .catch(err => {
+                            document.getElementById(idMsgEspera).innerHTML = `Não encontrei registos na base oficial e falhei ao buscar na internet.`;
+                        });
                     }
                 }
-
-                container.innerHTML += `<div style="background: var(--surface); padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 13px; line-height: 1.5; border: 1px solid var(--border);">${respostaIA}</div>`;
-                container.scrollTop = container.scrollHeight;
             }, 600);
         }
 
