@@ -212,13 +212,24 @@
 
         .panel-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}.panel-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px}.panel-card h3{font-size:14px;margin-bottom:6px}.panel-card p{font-size:12px;color:var(--gray);line-height:1.5}.panel-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.panel-stat{display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:12px;margin-top:8px}.panel-stat strong{font-size:18px}.panel-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}.panel-item{padding:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface)}.panel-item-title{font-weight:800;font-size:13px;color:var(--dark)}.panel-item-meta{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.45}.panel-tabs{display:flex;gap:7px;overflow:auto;margin:0 -2px 12px}.panel-tab{white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--gray);padding:8px 11px;border-radius:10px;font-size:11px;font-weight:800;cursor:pointer}.panel-tab.active{background:var(--primary);color:#1E293B;border-color:var(--primary)}.verified-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:var(--success);font-size:10px;font-weight:900}.pending-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:var(--primary-hover);font-size:10px;font-weight:900}.admin-note{font-size:11px;color:var(--gray);line-height:1.5;background:var(--input-bg);border-radius:12px;padding:10px;margin-top:10px}.profile-share{display:flex;gap:8px;align-items:center;margin-top:10px}.profile-share input{flex:1;min-width:0}.tiny-btn{border:1px solid var(--border);background:var(--input-bg);color:var(--dark);border-radius:9px;padding:9px 10px;font-size:11px;font-weight:800;cursor:pointer}.danger-btn{color:var(--danger);border-color:rgba(239,68,68,.25)}
 
+
+        /* HOME REDESIGN */
+        .site-header{padding:12px 24px;background:var(--surface);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);box-shadow:0 3px 18px rgba(15,23,42,.05)}
+        .header-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.header-inner .logo{flex-shrink:0}.header-inner .logo img{max-height:42px;max-width:235px}.header-actions{display:flex;align-items:center;gap:8px}
+        .home-main{min-height:calc(100vh - 70px)}
+        .home-hero{background:radial-gradient(circle at 85% 20%,rgba(245,158,11,.20),transparent 34%),linear-gradient(135deg,var(--surface) 0%,var(--light) 72%);border-bottom:1px solid var(--border);overflow:hidden}
+        .hero-content{max-width:1040px;margin:0 auto;padding:66px 24px 42px;text-align:center}.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid rgba(245,158,11,.25);background:rgba(245,158,11,.09);border-radius:999px;color:var(--primary-hover);font-size:11px;font-weight:800;letter-spacing:.02em}.hero-content h1{font-size:clamp(38px,5.3vw,64px);line-height:1.03;letter-spacing:-.045em;margin:18px 0 14px;color:var(--dark);font-weight:900}.hero-content h1 span{color:var(--primary-hover)}.hero-copy{font-size:17px;color:var(--gray);margin-bottom:28px}.hero-search-card{max-width:850px;margin:0 auto;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 18px 50px rgba(15,23,42,.10);text-align:left}.hero-location-row{display:flex;gap:8px;margin-bottom:8px}.hero-location{flex:1;display:flex;align-items:center;gap:10px;border:1px solid var(--border);background:var(--input-bg);border-radius:12px;padding:9px 12px;color:var(--dark);cursor:pointer;text-align:left}.hero-location>i:first-child{color:var(--primary);font-size:15px}.hero-location span{display:flex;flex-direction:column;min-width:0}.hero-location small{font-size:9px;text-transform:uppercase;color:var(--gray);font-weight:800;letter-spacing:.06em}.hero-location strong{font-size:13px;line-height:1.3}.hero-chevron{margin-left:auto;color:var(--gray);font-size:10px}.hero-bairro{display:flex;align-items:center;gap:7px;min-width:190px;border:1px solid var(--border);background:var(--input-bg);border-radius:12px;padding:0 11px;color:var(--gray)}.hero-bairro select{border:0;background:transparent;color:var(--dark);outline:none;font-size:12px;width:100%;padding:11px 0}.hero-search-row{display:flex;align-items:center;position:relative}.hero-search-row .search-icon{left:15px}.hero-search-row .search-bar{height:54px;border:1px solid var(--border);background:var(--surface);padding-left:46px;padding-right:150px;font-size:15px}.hero-search-row .search-bar:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(245,158,11,.10)}.hero-ia{position:absolute;right:7px;height:40px;padding:0 13px;display:flex;align-items:center;gap:7px;border-radius:10px}.hero-hint{font-size:10px;color:var(--gray);padding:8px 4px 2px}.hero-hint i{color:var(--primary);margin-right:3px}.hero-actions{display:flex;justify-content:center;gap:9px;margin-top:15px;flex-wrap:wrap}.hero-secondary-action{border:1px solid var(--border);background:var(--surface);color:var(--dark);border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer}.hero-secondary-action:hover{border-color:var(--primary);color:var(--primary-hover)}
+        .home-explore{padding-top:34px}.home-section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:15px}.section-kicker{font-size:9px;font-weight:900;letter-spacing:.15em;color:var(--primary-hover)}.home-section-heading h2{font-size:23px;letter-spacing:-.02em;margin-top:3px}.home-section-heading .search-meta{margin:0}.home-categorias{margin-bottom:24px;gap:10px}.home-categorias .cat-item{min-width:145px;flex:1;padding:16px 10px 13px}.home-categorias .cat-item small{display:block;color:var(--gray);font-size:9px;margin-top:4px}.home-categorias .cat-icon{margin-bottom:8px}.property-intro{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:15px 18px;margin-bottom:20px}.property-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--primary);color:#1E293B;flex-shrink:0}.property-intro strong{font-size:14px}.property-intro p{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.45}.community-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 19px}.community-copy{min-width:0}.community-copy strong{display:block}.community-copy p{margin:5px 0 0}.community-actions{flex-shrink:0}.community-actions .secondary{background:var(--surface)}
+        body.dark-mode .home-hero{background:radial-gradient(circle at 85% 20%,rgba(245,158,11,.13),transparent 34%),linear-gradient(135deg,var(--surface),var(--light))}.dark-mode .hero-search-card{box-shadow:0 18px 50px rgba(0,0,0,.25)}
+        @media(max-width:720px){.site-header{padding:10px 14px}.header-inner .logo img{max-width:175px;max-height:36px}.header-actions .btn-lojista-nav span,.header-actions .btn-anunciar span{display:none}.header-actions{gap:5px}.hero-content{padding:42px 15px 30px}.hero-content h1{font-size:40px}.hero-copy{font-size:14px}.hero-location-row{flex-direction:column}.hero-bairro{min-width:0}.hero-search-row .search-bar{padding-right:105px;font-size:13px}.hero-ia span{display:none}.hero-ia{width:42px;justify-content:center;padding:0}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-secondary-action{height:42px}.home-explore{padding:26px 15px 0}.home-section-heading{align-items:start;flex-direction:column;gap:5px}.home-section-heading h2{font-size:20px}.home-categorias{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible}.home-categorias .cat-item{min-width:0}.community-banner{flex-direction:column;align-items:stretch}.community-actions{display:grid;grid-template-columns:1fr}.community-actions button{width:100%}.property-intro{align-items:flex-start}.main-tabs{overflow-x:auto}.tab-btn{white-space:nowrap}}
+
     </style>
 </head>
 <body>
     <button class="chat-float-btn" onclick="abrirChatIA()" title="Assistente da Folha Amarela"><i class="fas fa-wand-magic-sparkles"></i></button>
 
-    <header>
-        <div class="header-top-row">
+    <header class="site-header">
+        <div class="header-inner">
             <a href="#" class="logo logo-wrap" onclick="event.preventDefault(); voltarInicio()">
                 <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital" onerror="mostrarLogoFallback()">
                 <span id="logoFallback" class="logo-fallback">
@@ -229,59 +240,84 @@
             <div class="header-actions">
                 <button class="btn-lojista-nav" onclick="abrirAreaAcessoClick()"><i class="fas fa-user-circle"></i> <span id="txtBtnAcesso">Área de acesso</span></button>
                 <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Modo Escuro/Claro"><i class="fas fa-moon" id="themeIcon"></i></button>
-                <button class="btn-anunciar" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-plus"></i> Adicionar</button>
+                <button class="btn-anunciar" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-plus"></i> <span>Adicionar negócio</span></button>
             </div>
         </div>
-        <div class="header-filters-row">
-            <div class="seletor-cidade" onclick="abrirModalCidade()"><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> <span id="cidadeAtivaHeader">Paraisópolis</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i></div>
-            <div class="bairro-container"><i class="fas fa-map-signs" style="color:var(--gray);font-size:12px;"></i><select id="filtroBairro" onchange="filtrarBairro()"><option value="">Todos os Bairros</option></select></div>
-        </div>
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="search" class="search-bar" id="inputBusca" autocomplete="off" placeholder="Pesquisar comércio, imóvel, casa, serviço..." oninput="filtrarBusca()" aria-label="Pesquisar no diretório">
-            <button class="btn-ia" onclick="abrirChatIA()" title="Assistente"><i class="fas fa-wand-magic-sparkles"></i></button>
-        </div>
-        <div class="header-hint">Procure por nome, categoria, serviço, palavra-chave, bairro ou tipo de imóvel.</div>
-        <div id="searchMeta" class="search-meta" aria-live="polite"></div>
     </header>
 
-    <main class="container">
-        <div class="main-tabs">
-            <button class="tab-btn active" id="tabBtnServicos" onclick="mudarTabPrincipal('servicos')"><i class="fas fa-store"></i> Estabelecimentos & Serviços</button>
-            <button class="tab-btn" id="tabBtnImoveis" onclick="mudarTabPrincipal('imoveis')"><i class="fas fa-home"></i> Imóveis (Direto s/ Taxa)</button>
-        </div>
+    <main class="home-main">
+        <section class="home-hero">
+            <div class="hero-content">
+                <div class="hero-eyebrow"><i class="fas fa-location-dot"></i> Sua cidade, seus serviços, tudo em um só lugar</div>
+                <h1>Encontre <span>quem faz</span><br>o que você precisa.</h1>
+                <p class="hero-copy">Comércio, profissionais, serviços e imóveis perto de você.</p>
 
-        <div id="secaoTabServicos">
-            <div class="categorias">
-                <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Serviços', this)"><div class="cat-icon"><i class="fas fa-tools"></i></div><div class="cat-name">Serviços</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div></div>
-                <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div></div>
-                <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div></div>
-            </div>
-            <div class="community-banner">
-                <strong><i class="fas fa-city" style="color:var(--primary);margin-right:6px;"></i> Ajude a construir a Folha da sua cidade</strong>
-                <p>Conhece uma padaria, salão, oficina ou profissional que ainda não está aqui? Você pode adicionar gratuitamente. Se for o responsável pelo negócio, depois poderá reivindicar o perfil e pedir destaque.</p>
-                <div class="community-actions">
-                    <button class="btn-community primary" type="button" onclick="abrirModalCadastroServico()"><i class="fas fa-plus"></i> Adicionar gratuitamente</button>
-                    <button class="btn-community secondary" type="button" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-store"></i> Sou responsável por um negócio</button>
+                <div class="hero-search-card">
+                    <div class="hero-location-row">
+                        <button class="hero-location" type="button" onclick="abrirModalCidade()">
+                            <i class="fas fa-location-dot"></i>
+                            <span><small>Você está em</small><strong id="cidadeAtivaHeader">Paraisópolis</strong></span>
+                            <i class="fas fa-chevron-down hero-chevron"></i>
+                        </button>
+                        <div class="hero-bairro">
+                            <i class="fas fa-map-signs"></i>
+                            <select id="filtroBairro" onchange="filtrarBairro()"><option value="">Todos os Bairros</option></select>
+                        </div>
+                    </div>
+                    <div class="hero-search-row">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="search" class="search-bar" id="inputBusca" autocomplete="off" placeholder="O que você está procurando? Ex.: eletricista, padaria, aluguel..." oninput="filtrarBusca()" aria-label="Pesquisar no diretório">
+                        <button class="btn-ia hero-ia" onclick="abrirChatIA()" title="Assistente da Folha Amarela"><i class="fas fa-wand-magic-sparkles"></i><span>Assistente</span></button>
+                    </div>
+                    <div class="hero-hint"><i class="fas fa-lightbulb"></i> Você pode buscar pelo nome, serviço, categoria, bairro ou tipo de imóvel.</div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="hero-secondary-action" onclick="abrirModalCadastroServico()"><i class="fas fa-plus"></i> Adicionar gratuitamente</button>
+                    <button class="hero-secondary-action" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-store"></i> Sou responsável por um negócio</button>
                 </div>
             </div>
-            <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
-            <div id="listaLocais" class="lista-locais"><p style="text-align:center;color:var(--gray);padding:30px;">A carregar locais...</p></div>
-        </div>
+        </section>
 
-        <div id="secaoTabImoveis" style="display:none;">
-            <div style="background:rgba(245,158,11,.1);border:1px solid var(--primary);padding:14px 18px;border-radius:16px;margin-bottom:20px;font-size:13px;line-height:1.5;">🏠 <b>Negociação Direta:</b> Compre, alugue ou reserve por temporada sem taxas de imobiliária. Fale direto com o proprietário!</div>
-            <div class="categorias">
-                <div class="cat-item active" onclick="filtrarTransacaoImovel('', this)"><div class="cat-icon"><i class="fas fa-building"></i></div><div class="cat-name">Todos</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Venda', this)"><div class="cat-icon"><i class="fas fa-tag"></i></div><div class="cat-name">Venda</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Aluguel', this)"><div class="cat-icon"><i class="fas fa-key"></i></div><div class="cat-name">Aluguel</div></div>
-                <div class="cat-item" onclick="filtrarTransacaoImovel('Temporada', this)"><div class="cat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="cat-name">Temporada</div></div>
+        <section class="home-explore container">
+            <div class="home-section-heading">
+                <div><span class="section-kicker">EXPLORE</span><h2>O que você procura hoje?</h2></div>
+                <div id="searchMeta" class="search-meta" aria-live="polite"></div>
             </div>
-            <h3 class="secao-header"><i class="fas fa-home"></i> Imóveis Disponíveis</h3>
-            <div id="listaImoveis" class="lista-locais"><p style="text-align:center;color:var(--gray);padding:30px;">A carregar imóveis...</p></div>
-        </div>
+
+            <div class="main-tabs">
+                <button class="tab-btn active" id="tabBtnServicos" onclick="mudarTabPrincipal('servicos')"><i class="fas fa-store"></i> Estabelecimentos & Serviços</button>
+                <button class="tab-btn" id="tabBtnImoveis" onclick="mudarTabPrincipal('imoveis')"><i class="fas fa-home"></i> Imóveis</button>
+            </div>
+
+            <div id="secaoTabServicos">
+                <div class="categorias home-categorias">
+                    <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div><small>Comida & bebidas</small></div>
+                    <div class="cat-item" onclick="filtrarCategoria('Serviços', this)"><div class="cat-icon"><i class="fas fa-tools"></i></div><div class="cat-name">Serviços</div><small>Profissionais & reparos</small></div>
+                    <div class="cat-item" onclick="filtrarCategoria('Pet Shop', this)"><div class="cat-icon"><i class="fas fa-paw"></i></div><div class="cat-name">Pets</div><small>Cuidados & produtos</small></div>
+                    <div class="cat-item" onclick="filtrarCategoria('Saúde', this)"><div class="cat-icon"><i class="fas fa-pills"></i></div><div class="cat-name">Saúde</div><small>Clínicas & profissionais</small></div>
+                    <div class="cat-item active" onclick="filtrarCategoria('', this)"><div class="cat-icon"><i class="fas fa-border-all"></i></div><div class="cat-name">Todos</div><small>Ver tudo</small></div>
+                </div>
+                <div class="community-banner">
+                    <div class="community-copy"><strong><i class="fas fa-city"></i> Ajude a construir a Folha da sua cidade</strong><p>Conhece uma padaria, salão, oficina ou profissional que ainda não está aqui? Adicione gratuitamente e ajude outras pessoas a encontrá-lo.</p></div>
+                    <div class="community-actions"><button class="btn-community primary" type="button" onclick="abrirModalCadastroServico()"><i class="fas fa-plus"></i> Adicionar gratuitamente</button><button class="btn-community secondary" type="button" onclick="abrirModalIndicacao()"><i class="fas fa-user-plus"></i> Indicar alguém</button></div>
+                </div>
+                <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos & Prestadores</h3>
+                <div id="listaLocais" class="lista-locais"><p style="text-align:center;color:var(--gray);padding:30px;">A carregar locais...</p></div>
+            </div>
+
+            <div id="secaoTabImoveis" style="display:none;">
+                <div class="property-intro"><div class="property-icon"><i class="fas fa-house-chimney"></i></div><div><strong>Imóveis direto com o proprietário</strong><p>Compre, alugue ou reserve por temporada sem taxa de imobiliária. Fale diretamente com quem anunciou.</p></div></div>
+                <div class="categorias home-categorias property-categories">
+                    <div class="cat-item active" onclick="filtrarTransacaoImovel('', this)"><div class="cat-icon"><i class="fas fa-building"></i></div><div class="cat-name">Todos</div><small>Todos os imóveis</small></div>
+                    <div class="cat-item" onclick="filtrarTransacaoImovel('Venda', this)"><div class="cat-icon"><i class="fas fa-tag"></i></div><div class="cat-name">Venda</div><small>Comprar</small></div>
+                    <div class="cat-item" onclick="filtrarTransacaoImovel('Aluguel', this)"><div class="cat-icon"><i class="fas fa-key"></i></div><div class="cat-name">Aluguel</div><small>Alugar</small></div>
+                    <div class="cat-item" onclick="filtrarTransacaoImovel('Temporada', this)"><div class="cat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="cat-name">Temporada</div><small>Por período</small></div>
+                </div>
+                <h3 class="secao-header"><i class="fas fa-home"></i> Imóveis Disponíveis</h3>
+                <div id="listaImoveis" class="lista-locais"><p style="text-align:center;color:var(--gray);padding:30px;">A carregar imóveis...</p></div>
+            </div>
+        </section>
     </main>
 
     <div id="modalChatIA" class="modal">
