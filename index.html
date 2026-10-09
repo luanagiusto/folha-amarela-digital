@@ -391,7 +391,10 @@
         <div class="modal-content" style="max-width:620px;">
             <span class="close" onclick="fecharPainel()">&times;</span>
             <h2 id="painelTitulo" style="font-size:21px;"><i class="fas fa-user-circle" style="color:var(--primary);"></i> Meu painel</h2>
-            <p id="painelSubtitulo" class="modal-lead">Gerencie os perfis vinculados à sua conta.</p>
+            <div class="panel-account-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                <p id="painelSubtitulo" class="modal-lead" style="margin:0;">Gerencie os perfis vinculados à sua conta.</p>
+                <button type="button" class="btn-outline btn-card" onclick="sairDaConta()" style="padding:9px 13px;border-radius:10px;font-weight:800;white-space:nowrap;"><i class="fas fa-right-from-bracket"></i> Sair da conta</button>
+            </div>
             <div id="painelConteudo"></div>
         </div>
     </div>
@@ -600,6 +603,12 @@
 
         function isOwner(l){return !!usuarioLogado && (l.proprietarioUid===usuarioLogado.uid || l.userId===usuarioLogado.uid);}
         function fecharPainel(){document.getElementById('modalPainel').style.display='none';unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];}
+        async function sairDaConta(){
+            const botao=document.querySelector('#modalPainel button[onclick="sairDaConta()"]');
+            if(botao){botao.disabled=true;botao.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saindo...';}
+            try{fecharPainel();await auth.signOut();}
+            catch(e){console.error('Erro ao sair da conta:',e);alert('Não foi possível sair da conta. Tente novamente.');if(botao){botao.disabled=false;botao.innerHTML='<i class="fas fa-right-from-bracket"></i> Sair da conta';}}
+        }
         function abrirPainel(){if(!usuarioLogado)return;document.getElementById('modalPainel').style.display='block';painelAba=isAdminLogado?'admin':'meus';renderizarPainel();carregarDadosPainel();}
         function trocarAbaPainel(a){painelAba=a;renderizarPainel();}
         function carregarDadosPainel(){unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];if(!usuarioLogado)return;
