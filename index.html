@@ -405,48 +405,53 @@
             abrirModalCadastroServico(true); 
         }
 
-        // Renderização Híbrida Principal Atualizada
-        function renderizarLocais(){
-            const a=filtrarLocaisCache(),c=document.getElementById('listaLocais');
-            c.replaceChildren();
-            
-            // SE NÃO ENCONTRAR NA BASE LOCAL: Ativa o Fallback do Gemini
-            if(!a.length){
-                const query=document.getElementById('inputBusca').value.trim();
-                // Apenas chama a IA se o utilizador digitou pelo menos 3 letras
-                if(query && query.length >= 3) {
-                    buscarComGemini(query);
-                } else {
-                    c.appendChild(criarVazio(false));
-                }
-                atualizarMetaBusca(0);
-                return;
-            }
-            
-            // Renderiza Locais Oficiais normalmente se existir
-            a.forEach(l=>{
-                const card=criarEl('article','card-local');
-                if(registroDestaque(l))card.classList.add('is-featured');
-                const body=criarEl('div','card-body');
-                if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
-                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',l.nome||'Prestador local');
-                top.appendChild(title);
-                const profile=criarEl('button','profile-link','Ver perfil');
-                profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                top.appendChild(profile);body.appendChild(top);
-                const meta=criarEl('div','card-subtitle');
-                meta.innerHTML='<span><i class="fas fa-tag"></i> '+(l.categoria||'Serviço')+'</span><span><i class="fas fa-location-dot"></i> '+(l.bairro||'Centro')+'</span>';
-                body.appendChild(meta);
-                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',l.descricao||l.servicos));
-                if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
-                const acts=criarEl('div','card-actions');
-                acts.appendChild(botaoWpp(l.whatsapp,'Conversar no WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
-                const detail=criarEl('button','btn-card btn-outline','Ver detalhes');
-                detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
-            });
-            atualizarMetaBusca(a.length);
-        }
+     function renderizarLocais() {
+    let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
+    if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
+    if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
+
+    let container = document.getElementById('listaLocais');
+    container.innerHTML = '';
+    if(filtrados.length === 0) { 
+        container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; 
+        return; 
+    }
+    
+    filtrados.forEach(l => {
+        container.innerHTML +=
+            `<div class="card-local">
+                <div class="card-body">
+                    <div class="card-title">${l.nome}</div>
+                    <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
+                    <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${l.descricao || 'Serviço local.'}</p>
+                    <div class="card-actions">
+                        <button class="btn-card btn-outline" onclick="abrirDetalhesLocal('${l.idDoc}')">Ver Perfil</button>
+                        <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    </div>
+                </div>
+            </div>`;
+    });
+    }
+
+// Nova função para abrir os detalhes de SERVIÇOS/LOJAS no mesmo modal
+    function abrirDetalhesLocal(id) {
+    let l = listaLocaisCache.find(x => x.idDoc === id);
+    if(!l) return;
+    
+    document.getElementById('detDetalhesNome').textContent = l.nome;
+    document.getElementById('detDetalhesCategoria').textContent = l.categoria;
+    document.getElementById('detDetalhesLocal').textContent = `${l.bairro || 'Centro'}, ${l.cidade || cidadeAtual}`;
+    
+    document.getElementById('detDetalhesConteudoExtra').innerHTML = `
+        <p style="margin-top: 10px;">${l.descricao || 'Nenhuma descrição detalhada disponível.'}</p>
+    `;
+    
+    let btnWpp = document.getElementById('btnDetWpp');
+    btnWpp.innerHTML = '<i class="fab fa-whatsapp"></i> Falar com o Negócio';
+    btnWpp.onclick = () => window.open(`https://wa.me/55${l.whatsapp}`, '_blank');
+    
+    document.getElementById('modalDetalhes').style.display = 'block';
+    }
 
         // Chatbot Híbrido IA Atualizado
         function enviarMensagemChat(){
