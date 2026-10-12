@@ -11,78 +11,149 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
+
+
         :root {
+
             --primary: #F59E0B; --primary-hover: #D97706; --dark: #1E293B; --light: #F8FAFC;
+
             --surface: #FFFFFF; --gray: #64748B; --border: #E2E8F0; --success: #10B981;
+
             --danger: #EF4444; --purple: #8B5CF6; --warning: #F59E0B;
+
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
             --input-bg: #F1F5F9;
+
         }
 
         body.dark-mode {
+
             --primary: #FBBF24; --primary-hover: #F59E0B; --dark: #F1F5F9; --light: #0B0F17;
+
             --surface: #131C2E; --gray: #94A3B8; --border: #1E293B; --success: #34D399;
+
             --danger: #F87171; --purple: #A78BFA; --warning: #FBBF24;
+
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); --input-bg: #1A263E;
+
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+
         header { background: var(--surface); padding: 16px 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+
         .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+
         .logo { text-decoration: none; display: flex; align-items: center; }
+
         .logo img { height: 40px; width: auto; object-fit: contain; }
+
         .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
         .seletor-cidade, .btn-theme-toggle, .btn-lojista-nav, .bairro-container { background: var(--input-bg); color: var(--dark); border: 1px solid var(--border); border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; }
+
         .seletor-cidade { padding: 7px 14px; font-size: 13px; gap: 6px; }
+
         .btn-theme-toggle { width: 36px; height: 36px; justify-content: center; font-size: 14px; border-radius: 50%; }
+
         .btn-lojista-nav { padding: 8px 14px; font-size: 13px; gap: 6px; }
+
         .btn-anunciar { background-color: var(--primary); color: #1E293B; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(245,158,11,0.2); }
+
         .header-filters-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+
         .bairro-container { padding: 5px 12px; gap: 6px; }
+
         .bairro-container select { border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--dark); outline: none; cursor: pointer; max-width: 140px; }
+
         .bairro-container select option { background-color: var(--surface); color: var(--dark); }
+
         .search-container { position: relative; display: flex; gap: 8px; }
+
         .search-bar { flex: 1; padding: 12px 16px 12px 42px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 15px; outline: none; color: var(--dark); }
+
         .search-bar:focus { border-color: var(--primary); background: var(--surface); }
+
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
+
         .btn-ia { background: var(--purple); color: white; border: none; width: 46px; border-radius: 12px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+
         .chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--purple); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); z-index: 1500; border: none; }
+
         .container { padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+
         .main-tabs { display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+
         .tab-btn { flex: 1; padding: 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--gray); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow); }
+
         .tab-btn.active { background: var(--primary); color: #1E293B; border-color: var(--primary); }
+
         .categorias { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scroll-snap-type: x mandatory; }
+
         .categorias::-webkit-scrollbar { display: none; }
+
         .cat-item { min-width: 76px; text-align: center; scroll-snap-align: start; cursor: pointer; }
+
         .cat-icon { width: 54px; height: 54px; background-color: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center; margin: 0 auto 6px; font-size: 18px; color: var(--gray); box-shadow: var(--shadow); }
+
         .cat-item.active .cat-icon { border-color: var(--primary); background-color: rgba(245, 158, 11, 0.15); color: var(--primary); transform: translateY(-2px); }
+
         .cat-name { font-size: 12px; font-weight: 600; color: var(--gray); }
+
         .cat-item.active .cat-name { color: var(--dark); font-weight: 700; }
+
         .secao-header { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; }
+
         .lista-locais { display: flex; flex-direction: column; gap: 16px; }
+
         .card-local { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+
         .card-local:hover { transform: translateY(-2px); border-color: var(--primary); }
+
         .badges-container-inline { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; }
+
         .badge-imovel-tipo { background-color: var(--purple); color: white; }
+
         .badge-imovel-preco { background-color: var(--success); color: white; font-size: 13px; font-weight: 800; }
+
         .badge-garagem { background-color: #0EA5E9; color: white; }
+
         .card-body { padding: 18px; }
+
         .card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--dark); letter-spacing: -0.3px; }
+
         .card-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-weight: 500; }
+
         .card-actions { display: flex; gap: 10px; }
+
         .btn-card { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px; }
+
         .btn-outline { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--dark); }
+
         .btn-wpp { background-color: var(--success); color: white !important; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 3000; overflow-y: auto; }
+
         .modal-content { background: var(--surface); color: var(--dark); padding: 24px; width: 90%; max-width: 520px; margin: 40px auto; border-radius: 24px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); border: 1px solid var(--border); }
+
         .close { position: absolute; right: 20px; top: 20px; font-size: 20px; cursor: pointer; color: var(--gray); background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
         .form-group { margin-bottom: 16px; }
+
         .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--dark); }
+
         .form-control { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--input-bg); color: var(--dark); }
+
         .btn-submit { width: 100%; background-color: var(--primary); color: #1E293B; border: none; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 8px; }
+
         footer { text-align: center; padding: 30px 20px; color: var(--gray); font-size: 13px; margin-top: 30px; border-top: 1px solid var(--border); }
+
+    
         .logo-wrap { display:flex; align-items:center; gap:10px; min-width:0; }
         .logo-fallback { display:none; align-items:center; gap:8px; text-decoration:none; color:var(--dark); font-weight:900; }
         .logo-fallback-mark { width:38px; height:38px; border-radius:12px; display:grid; place-items:center; background:var(--primary); color:#1E293B; }
@@ -110,6 +181,8 @@
             .tab-btn { font-size:12px; padding:10px 7px; }
             .card-actions { flex-direction:column; }
         }
+
+
         .community-banner { background: linear-gradient(135deg, rgba(245,158,11,.13), rgba(245,158,11,.04)); border:1px solid rgba(245,158,11,.35); border-radius:18px; padding:16px; margin:0 0 22px; }
         .community-banner strong { display:block; font-size:15px; color:var(--dark); margin-bottom:5px; }
         .community-banner p { color:var(--gray); font-size:12px; line-height:1.5; margin-bottom:12px; }
@@ -135,7 +208,11 @@
         .check-row label { font-size:12px; line-height:1.45; color:var(--dark); cursor:pointer; }
         .mini-label { font-size:10px; color:var(--gray); margin-top:5px; }
         @media (max-width:560px) { .community-actions { flex-direction:column; } .btn-community { justify-content:center; width:100%; } }
+
+
         .panel-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}.panel-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px}.panel-card h3{font-size:14px;margin-bottom:6px}.panel-card p{font-size:12px;color:var(--gray);line-height:1.5}.panel-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.panel-stat{display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--input-bg);border-radius:12px;margin-top:8px}.panel-stat strong{font-size:18px}.panel-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}.panel-item{padding:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface)}.panel-item-title{font-weight:800;font-size:13px;color:var(--dark)}.panel-item-meta{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.45}.panel-tabs{display:flex;gap:7px;overflow:auto;margin:0 -2px 12px}.panel-tab{white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--gray);padding:8px 11px;border-radius:10px;font-size:11px;font-weight:800;cursor:pointer}.panel-tab.active{background:var(--primary);color:#1E293B;border-color:var(--primary)}.verified-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:var(--success);font-size:10px;font-weight:900}.pending-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:20px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:var(--primary-hover);font-size:10px;font-weight:900}.admin-note{font-size:11px;color:var(--gray);line-height:1.5;background:var(--input-bg);border-radius:12px;padding:10px;margin-top:10px}.profile-share{display:flex;gap:8px;align-items:center;margin-top:10px}.profile-share input{flex:1;min-width:0}.tiny-btn{border:1px solid var(--border);background:var(--input-bg);color:var(--dark);border-radius:9px;padding:9px 10px;font-size:11px;font-weight:800;cursor:pointer}.danger-btn{color:var(--danger);border-color:rgba(239,68,68,.25)}
+
+
         /* HOME REDESIGN */
         .site-header{padding:12px 24px;background:var(--surface);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);box-shadow:0 3px 18px rgba(15,23,42,.05)}
         .header-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.header-inner .logo{flex-shrink:0}.header-inner .logo img{max-height:42px;max-width:235px}.header-actions{display:flex;align-items:center;gap:8px}
@@ -145,6 +222,7 @@
         .home-explore{padding-top:34px}.home-section-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:15px}.section-kicker{font-size:9px;font-weight:900;letter-spacing:.15em;color:var(--primary-hover)}.home-section-heading h2{font-size:23px;letter-spacing:-.02em;margin-top:3px}.home-section-heading .search-meta{margin:0}.home-categorias{margin-bottom:24px;gap:10px}.home-categorias .cat-item{min-width:145px;flex:1;padding:16px 10px 13px}.home-categorias .cat-item small{display:block;color:var(--gray);font-size:9px;margin-top:4px}.home-categorias .cat-icon{margin-bottom:8px}.property-intro{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:15px 18px;margin-bottom:20px}.property-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--primary);color:#1E293B;flex-shrink:0}.property-intro strong{font-size:14px}.property-intro p{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.45}.community-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 19px}.community-copy{min-width:0}.community-copy strong{display:block}.community-copy p{margin:5px 0 0}.community-actions{flex-shrink:0}.community-actions .secondary{background:var(--surface)}
         body.dark-mode .home-hero{background:radial-gradient(circle at 85% 20%,rgba(245,158,11,.13),transparent 34%),linear-gradient(135deg,var(--surface),var(--light))}.dark-mode .hero-search-card{box-shadow:0 18px 50px rgba(0,0,0,.25)}
         @media(max-width:720px){.site-header{padding:10px 14px}.header-inner .logo img{max-width:175px;max-height:36px}.header-actions .btn-lojista-nav span,.header-actions .btn-anunciar span{display:none}.header-actions{gap:5px}.hero-content{padding:42px 15px 30px}.hero-content h1{font-size:40px}.hero-copy{font-size:14px}.hero-location-row{flex-direction:column}.hero-bairro{min-width:0}.hero-search-row .search-bar{padding-right:105px;font-size:13px}.hero-ia span{display:none}.hero-ia{width:42px;justify-content:center;padding:0}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-secondary-action{height:42px}.home-explore{padding:26px 15px 0}.home-section-heading{align-items:start;flex-direction:column;gap:5px}.home-section-heading h2{font-size:20px}.home-categorias{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible}.home-categorias .cat-item{min-width:0}.community-banner{flex-direction:column;align-items:stretch}.community-actions{display:grid;grid-template-columns:1fr}.community-actions button{width:100%}.property-intro{align-items:flex-start}.main-tabs{overflow-x:auto}.tab-btn{white-space:nowrap}}
+
         /* Resultados v6 */
         #listaLocais{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
         .card-local{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
@@ -275,12 +353,129 @@
         </div>
     </div>
 
-    <!-- O resto dos modais foi preservado igual ao original V6 (modalEscolhaAnuncio, modalCadastroImovel, modalDetalhes, modalCidade, modalPainel, modalEditarPerfil, modalAreaAcesso, modalCadastro, modalDetalhesLocal, modalDestaque, modalIndicacao) -->
-    
-    <script>
-        // CONFIGURAÇÃO GEMINI - SUBSTITUA PELA SUA CHAVE REAL AQUI
-        const GEMINI_API_KEY = 'SUA_CHAVE_AQUI'; 
+    <div id="modalEscolhaAnuncio" class="modal">
+        <div class="modal-content" style="max-width:440px;">
+            <span class="close" onclick="document.getElementById('modalEscolhaAnuncio').style.display='none'">&times;</span>
+            <div style="font-size:30px;color:var(--primary);margin-bottom:8px;"><i class="fas fa-book-open"></i></div>
+            <h2 style="font-size:20px;">Coloque um negócio na Folha</h2>
+            <p class="modal-lead">O cadastro básico é gratuito. Você pode cadastrar seu próprio negócio ou ajudar outra pessoa a ser encontrada.</p>
+            <div class="choice-grid">
+                <button class="choice-card" type="button" onclick="abrirModalCadastroServico(false)"><i class="fas fa-plus-circle"></i><strong>Adicionar gratuitamente</strong><span>Cadastre uma padaria, loja, profissional, serviço ou outro negócio local.</span></button>
+                <button class="choice-card" type="button" onclick="abrirFluxoReivindicacaoSemLocal()"><i class="fas fa-user-check"></i><strong>Sou responsável por um negócio</strong><span>Encontre um perfil existente e reivindique a gestão dele.</span></button>
+                <button class="choice-card" type="button" onclick="abrirModalCadastroImovel()"><i class="fas fa-house"></i><strong>Anunciar imóvel</strong><span>Venda, aluguel ou temporada continuam em uma área separada.</span></button>
+            </div>
+            <div class="mini-label" style="margin-top:13px;"><i class="fas fa-shield-halved"></i> Novos cadastros passam por revisão antes de aparecer publicamente.</div>
+        </div>
+    </div>
 
+    <div id="modalCadastroImovel" class="modal">
+        <div class="modal-content" style="max-width:520px;"><span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span><h2 style="margin-bottom:20px;font-size:20px;"><i class="fas fa-home" style="color:var(--purple);"></i> Anunciar Imóvel</h2><div class="status-pending"><i class="fas fa-shield-halved"></i> O anúncio será revisado antes de aparecer publicamente.</div>
+            <input type="hidden" id="imovId">
+            <div class="form-group"><label>Título do Anúncio</label><input type="text" id="imovTitulo" class="form-control" placeholder="Ex: Casa aconchegante para temporada"></div>
+            <div style="display:flex;gap:12px;"><div class="form-group" style="flex:1;"><label>Transação</label><select id="imovTransacao" class="form-control"><option value="Venda">Venda</option><option value="Aluguel">Aluguel Mensal</option><option value="Temporada">Aluguel por Temporada</option></select></div><div class="form-group" style="flex:1;"><label>Tipo</label><select id="imovTipo" class="form-control"><option>Casa</option><option>Apartamento</option><option>Chácara / Sítio</option><option>Terreno</option><option>Comercial</option></select></div></div>
+            <div style="display:flex;gap:12px;"><div class="form-group" style="flex:1;"><label>Valor (R$)</label><input type="number" id="imovPreco" class="form-control" placeholder="1500 (ou valor total)"></div><div class="form-group" style="flex:1;"><label>Quartos</label><select id="imovQuartos" class="form-control"><option value="0">N/A</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+</option></select></div></div>
+            <div class="form-group"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><input type="checkbox" id="imovGaragem" style="width:18px;height:18px;accent-color:var(--purple);"><span>Possui Garagem / Estacionamento</span></label></div>
+            <div style="display:flex;gap:12px;"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="imovCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="imovBairro" class="form-control" placeholder="Centro"></div></div>
+            <div class="form-group"><label>WhatsApp do Proprietário</label><input type="tel" id="imovWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div>
+            <div class="form-group"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><label style="margin:0;">Descrição Detalhada</label><button type="button" onclick="gerarDescricaoImovelIA()" style="background:var(--purple);color:white;border:none;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:4px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar texto</button></div><textarea id="imovDesc" class="form-control" rows="3" placeholder="Escreva os detalhes do imóvel..."></textarea></div>
+            <button class="btn-submit" style="background:var(--purple);color:white;" onclick="salvarImovel()">Enviar imóvel para revisão</button>
+        </div>
+    </div>
+
+    <div id="modalDetalhes" class="modal"><div class="modal-content" style="padding:0;overflow:hidden;max-width:520px;"><div style="padding:24px;"><span class="close" onclick="fecharDetalhes()" style="top:16px;right:16px;position:absolute;">&times;</span><h2 id="detDetalhesNome" style="margin-bottom:4px;font-size:22px;">Nome</h2><p style="color:var(--gray);font-size:13px;margin-bottom:12px;"><span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span></p><div id="detDetalhesConteudoExtra" style="margin:16px 0;font-size:14px;line-height:1.6;"></div><button class="btn-card btn-wpp" id="btnDetWpp" style="width:100%;padding:12px;"><i class="fab fa-whatsapp"></i> Falar com Proprietário</button></div></div></div>
+
+    <div id="modalCidade" class="modal"><div class="modal-content" style="text-align:center;max-width:380px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><div id="listaCidadesDinamica" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div><button class="btn-outline btn-card" style="width:100%;padding:12px;border-radius:12px;font-weight:700;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar GPS</button></div></div>
+
+
+    <div id="modalPainel" class="modal">
+        <div class="modal-content" style="max-width:620px;">
+            <span class="close" onclick="fecharPainel()">&times;</span>
+            <h2 id="painelTitulo" style="font-size:21px;"><i class="fas fa-user-circle" style="color:var(--primary);"></i> Meu painel</h2>
+            <div class="panel-account-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                <p id="painelSubtitulo" class="modal-lead" style="margin:0;">Gerencie os perfis vinculados à sua conta.</p>
+                <button type="button" class="btn-outline btn-card" onclick="sairDaConta()" style="padding:9px 13px;border-radius:10px;font-weight:800;white-space:nowrap;"><i class="fas fa-right-from-bracket"></i> Sair da conta</button>
+            </div>
+            <div id="painelConteudo"></div>
+        </div>
+    </div>
+
+    <div id="modalEditarPerfil" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <span class="close" onclick="fecharEditarPerfil()">&times;</span>
+            <h2 style="font-size:20px;"><i class="fas fa-pen" style="color:var(--primary);"></i> Editar perfil</h2>
+            <p class="modal-lead">As alterações serão salvas no perfil que você administra.</p>
+            <input type="hidden" id="editLocalId">
+            <div class="form-group"><label>Nome</label><input id="editNome" class="form-control"></div>
+            <div class="form-group"><label>Categoria</label><select id="editCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div>
+            <div class="form-group"><label>O que faz?</label><input id="editDescricao" class="form-control"></div>
+            <div class="form-group"><label>Palavras-chave</label><input id="editKeywords" class="form-control"></div>
+            <div style="display:flex;gap:12px"><div class="form-group" style="flex:1"><label>Cidade</label><input id="editCidade" class="form-control"></div><div class="form-group" style="flex:1"><label>Bairro</label><input id="editBairro" class="form-control"></div></div>
+            <div class="form-group"><label>WhatsApp</label><input id="editWpp" class="form-control" inputmode="numeric"></div>
+            <div id="editMensagem" class="helper-text" style="min-height:18px"></div>
+            <button class="btn-submit" onclick="salvarEdicaoPerfil()">Salvar alterações</button>
+        </div>
+    </div>
+
+    <div id="modalAreaAcesso" class="modal"><div class="modal-content" style="max-width:380px;text-align:center;"><span class="close" onclick="fecharAreaAcesso()">&times;</span><h2 id="tituloAcesso">Área de Acesso</h2><p id="subtituloAcesso" style="color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:16px;">Entre para acompanhar seus cadastros e reivindicações.</p><div class="form-group" style="text-align:left;"><label>E-mail</label><input type="email" id="acessoEmail" class="form-control" placeholder="seu@email.com" autocomplete="email"></div><div class="form-group" style="text-align:left;"><label>Palavra-passe</label><input type="password" id="acessoSenha" class="form-control" placeholder="Mínimo de 6 caracteres" autocomplete="current-password"></div><div id="acessoMensagem" class="helper-text" style="text-align:left;min-height:18px;"></div><button class="btn-submit" id="btnEntrarAcesso" onclick="executarLoginUnificado()">Entrar</button><button class="btn-card btn-secondary" id="btnCriarConta" onclick="alternarModoAcesso()" style="width:100%;margin-top:10px;">Criar meu acesso</button></div></div>
+
+    <div id="modalCadastro" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <span class="close" onclick="fecharModalCadastro()">&times;</span>
+            <h2><i class="fas fa-plus-circle" style="color:var(--primary);"></i> Adicionar à Folha Amarela</h2>
+            <p class="modal-lead">É gratuito. Você pode cadastrar seu próprio negócio ou indicar um estabelecimento/profissional que conhece.</p>
+            <div class="status-pending"><i class="fas fa-shield-halved"></i> O cadastro será revisado antes de aparecer no diretório.</div>
+            <input type="hidden" id="cadId">
+            <div class="form-group"><label>Nome do estabelecimento ou profissional</label><input type="text" id="cadNome" class="form-control" placeholder="Ex: Padaria do Zé ou João Eletricista"></div>
+            <div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div>
+            <div class="form-group"><label>O que faz?</label><input type="text" id="cadDescricao" class="form-control" placeholder="Ex: pães, bolos e salgados / instalação elétrica"><div class="helper-text">Use palavras que um morador realmente procuraria.</div></div>
+            <div class="form-group"><label>Palavras-chave</label><input type="text" id="cadKeywords" class="form-control" placeholder="padaria, pão, bolo, café"><div class="helper-text">Separe por vírgulas. Elas ajudam a encontrar o negócio mesmo sem saber o nome.</div></div>
+            <div style="display:flex;gap:12px;"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div>
+            <div class="form-group"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" inputmode="numeric" placeholder="35999999999"><div class="helper-text">Se você estiver apenas indicando alguém e não souber o número, pode deixar em branco.</div></div>
+            <div class="check-row"><input type="checkbox" id="cadSouResponsavel"><label for="cadSouResponsavel"><strong>Sou o responsável por este negócio.</strong><br>Isso registra que você deseja administrar o perfil. A confirmação da propriedade será feita separadamente.</label></div>
+            <button class="btn-submit" onclick="salvarLocalLojista()"><i class="fas fa-paper-plane"></i> Enviar para revisão</button>
+        </div>
+    </div>
+
+    <div id="modalDetalhesLocal" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <span class="close" onclick="fecharDetalhesLocal()">&times;</span>
+            <div id="detLocalBadge"></div>
+            <h2 id="detLocalNome" style="font-size:22px;margin-bottom:4px;">Nome</h2>
+            <p id="detLocalCategoria" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Categoria</p>
+            <p id="detLocalLocal" style="color:var(--gray);font-size:12px;margin-bottom:15px;">Local</p>
+            <p id="detLocalDescricao" class="card-description" style="font-size:14px;"></p>
+            <div id="detLocalKeywords" class="card-keywords"></div>
+            <div class="claim-box">
+                <strong><i class="fas fa-user-check"></i> Este negócio é seu?</strong>
+                <span>Reivindique o perfil para solicitar a gestão do anúncio e, depois, pedir destaque.</span>
+                <button class="btn-community secondary" type="button" style="margin-top:9px;" onclick="reivindicarLocalAtual()"><i class="fas fa-hand-pointer"></i> Reivindicar este perfil</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:15px;">
+                <button class="btn-card btn-wpp" id="btnDetLocalWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-card btn-outline" type="button" onclick="abrirDestaqueLocalAtual()"><i class="fas fa-star"></i> Quero destaque</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDestaque" class="modal">
+        <div class="modal-content" style="max-width:460px;">
+            <span class="close" onclick="fecharModalDestaque()">&times;</span>
+            <div style="font-size:28px;color:var(--primary);margin-bottom:8px;"><i class="fas fa-star"></i></div>
+            <h2>Colocar negócio em destaque</h2>
+            <p class="modal-lead">O perfil gratuito continua aparecendo normalmente. O destaque é uma opção paga para dar mais visibilidade ao negócio.</p>
+            <div class="claim-box"><strong id="destaqueNomeLocal">Negócio</strong><span>Quando a modalidade estiver ativa, o destaque poderá aparecer em uma área identificada como patrocinada.</span></div>
+            <div class="form-group" style="margin-top:16px;"><label>E-mail para contato</label><input type="email" id="destaqueEmail" class="form-control" placeholder="seu@email.com" autocomplete="email"></div>
+            <div class="form-group"><label>WhatsApp para contato</label><input type="tel" id="destaqueWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div>
+            <button class="btn-submit" onclick="enviarInteresseDestaque()"><i class="fas fa-paper-plane"></i> Quero receber informações</button>
+            <div id="destaqueMensagem" class="helper-text" style="min-height:18px;"></div>
+        </div>
+    </div>
+
+    <div id="modalIndicacao" class="modal"><div class="modal-content" style="max-width:520px;"><span class="close" onclick="fecharModalIndicacao()">&times;</span><h2><i class="fas fa-user-plus" style="color:var(--primary);"></i> Indicar alguém</h2><p style="color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:18px;">Conhece alguém que faz o que você procurou? Indique. A pessoa pode ser autônoma, trabalhar de casa ou simplesmente ainda não ter divulgado o serviço.</p><div class="form-group"><label>Nome da pessoa ou negócio</label><input type="text" id="indNome" class="form-control" placeholder="Ex: Maria da Costura"></div><div class="form-group"><label>O que ela faz?</label><input type="text" id="indServico" class="form-control" placeholder="Ex: costura e ajustes de roupas"></div><div style="display:flex;gap:12px;"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="indCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro (opcional)</label><input type="text" id="indBairro" class="form-control" placeholder="Centro"></div></div><div class="form-group"><label>WhatsApp (opcional)</label><input type="tel" id="indWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div><button class="btn-submit" onclick="enviarIndicacao()"><i class="fas fa-paper-plane"></i> Enviar indicação</button></div></div>
+
+    <footer> <strong>Folha Amarela Digital</strong><br>Encontre quem faz. Conecte sua cidade.<br><span style="display:inline-block;margin-top:6px;">v5 • Diretório colaborativo de estabelecimentos, serviços e imóveis</span></footer>
+
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
             authDomain: "folha-amarela-digital.firebaseapp.com",
@@ -293,7 +488,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variáveis e Helpers preservados...
         let cidadeAtual = 'Paraisópolis', categoriaAtual = '', bairroAtual = '';
         let tabAtual = 'servicos', transacaoImovelAtual = '';
         let listaLocaisCache = [], listaImoveisCache = [];
@@ -301,6 +495,7 @@
         let meusLocaisCache = [], reivindicacoesCache = [], interessesCache = [], painelAba = 'meus';
         let unsubPainel = [];
         let isAdminLogado = false;
+        // O frontend usa este valor apenas para exibir o painel. A autorização real deve ser feita pelas Rules via Custom Claim.
         const ADMIN_EMAIL = 'admin@folhaamarela.com';
 
         const RELATED_TERMS = {
@@ -334,192 +529,19 @@
         function toggleTheme(){document.body.classList.toggle('dark-mode');const d=document.body.classList.contains('dark-mode');localStorage.setItem('folha_theme',d?'dark':'light');document.getElementById('themeIcon').className=d?'fas fa-sun':'fas fa-moon';atualizarLogoTema(d);}
         carregarTemaSalvo();
 
-        // Integração Real do Gemini (Opção 1)
-        async function buscarComGemini(termo) {
-            const container = document.getElementById('listaLocais');
-            
-            // Adiciona UI de carregamento
-            const loading = document.createElement('div');
-            loading.style.cssText = 'grid-column: 1 / -1; text-align:center; padding:30px; color:var(--purple);';
-            loading.innerHTML = `<i class="fas fa-spinner fa-spin" style="font-size:24px; margin-bottom:10px;"></i><br>A buscar "${termo}" na web através de Inteligência Artificial...`;
-            container.appendChild(loading);
-
-            // Prompt otimizado para extrair formato JSON do Google via Gemini
-            const prompt = `Aja como um assistente de diretório local. Busque estabelecimentos comerciais ou autônomos na cidade de ${cidadeAtual}, Minas Gerais, correspondentes a "${termo}". Retorne APENAS um array JSON válido, sem formatação markdown, com até 3 resultados reais que você encontre na internet. Estrutura exigida: [{"n": "Nome do Local", "c": "Categoria sugerida", "e": "Endereço ou Bairro resumido"}].`;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                
-                const data = await response.json();
-                let textoIA = data.candidates[0].content.parts[0].text;
-                textoIA = textoIA.replace(/```json|```/g, '').trim();
-                const resultados = JSON.parse(textoIA);
-
-                container.replaceChildren(); // Remove o loading
-
-                if (resultados.length > 0) {
-                    const header = document.createElement('div');
-                    header.style.cssText = 'grid-column: 1 / -1; margin-bottom: 8px;';
-                    header.innerHTML = '<h3 class="secao-header" style="color:var(--purple);"><i class="fas fa-globe"></i> Encontrados na Web (via Google)</h3><p style="font-size:13px;color:var(--gray);">Não encontramos anunciantes oficiais, mas a IA sugere estas opções:</p>';
-                    container.appendChild(header);
-
-                    resultados.forEach(res => {
-                        const card = document.createElement('div');
-                        card.className = 'card-local';
-                        card.style.borderLeft = '4px solid var(--purple)'; // Destaca visualmente
-                        card.innerHTML = `
-                            <div class="card-body">
-                                <div class="card-title">${res.n}</div>
-                                <div class="card-subtitle">
-                                    <span><i class="fas fa-tag"></i> ${res.c}</span> 
-                                    <span><i class="fas fa-map-marker-alt"></i> ${res.e}</span>
-                                </div>
-                                <div class="card-actions" style="margin-top:16px;">
-                                    <button class="btn-card" style="background:var(--purple); color:white; font-weight:800;" onclick="reivindicarLocalWeb('${res.n}', '${res.c}')">
-                                        <i class="fas fa-bullhorn"></i> É dono? Anuncie Grátis!
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    });
-                } else {
-                    container.appendChild(criarVazio(false));
-                }
-            } catch (error) {
-                console.error("Erro no Gemini:", error);
-                container.replaceChildren(criarVazio(false));
-            }
-        }
-
-        // Growth Hacking: Gatilho do botão "É dono?"
-        function reivindicarLocalWeb(nome, categoria) {
-            document.getElementById('cadNome').value = nome;
-            const selectCat = document.getElementById('cadCategoria');
-            const matchOpt = Array.from(selectCat.options).find(opt => opt.value.toLowerCase().includes(categoria.toLowerCase()));
-            if(matchOpt) selectCat.value = matchOpt.value;
-            abrirModalCadastroServico(true); 
-        }
-
-     function renderizarLocais() {
-    let filtrados = listaLocaisCache.filter(l => (l.cidade || 'Paraisópolis') === cidadeAtual);
-    if(categoriaAtual) filtrados = filtrados.filter(l => l.categoria === categoriaAtual);
-    if(bairroAtual) filtrados = filtrados.filter(l => l.bairro === bairroAtual);
-
-    let container = document.getElementById('listaLocais');
-    container.innerHTML = '';
-    if(filtrados.length === 0) { 
-        container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum estabelecimento encontrado.</p>'; 
-        return; 
-    }
-    
-    filtrados.forEach(l => {
-        container.innerHTML +=
-            `<div class="card-local">
-                <div class="card-body">
-                    <div class="card-title">${l.nome}</div>
-                    <div class="card-subtitle">${l.categoria} &bull; ${l.bairro || 'Centro'}</div>
-                    <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.4;">${l.descricao || 'Serviço local.'}</p>
-                    <div class="card-actions">
-                        <button class="btn-card btn-outline" onclick="abrirDetalhesLocal('${l.idDoc}')">Ver Perfil</button>
-                        <button class="btn-card btn-wpp" onclick="window.open('https://wa.me/55${l.whatsapp}','_blank')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    </div>
-                </div>
-            </div>`;
-    });
-    }
-
-// Nova função para abrir os detalhes de SERVIÇOS/LOJAS no mesmo modal
-    function abrirDetalhesLocal(id) {
-    let l = listaLocaisCache.find(x => x.idDoc === id);
-    if(!l) return;
-    
-    document.getElementById('detDetalhesNome').textContent = l.nome;
-    document.getElementById('detDetalhesCategoria').textContent = l.categoria;
-    document.getElementById('detDetalhesLocal').textContent = `${l.bairro || 'Centro'}, ${l.cidade || cidadeAtual}`;
-    
-    document.getElementById('detDetalhesConteudoExtra').innerHTML = `
-        <p style="margin-top: 10px;">${l.descricao || 'Nenhuma descrição detalhada disponível.'}</p>
-    `;
-    
-    let btnWpp = document.getElementById('btnDetWpp');
-    btnWpp.innerHTML = '<i class="fab fa-whatsapp"></i> Falar com o Negócio';
-    btnWpp.onclick = () => window.open(`https://wa.me/55${l.whatsapp}`, '_blank');
-    
-    document.getElementById('modalDetalhes').style.display = 'block';
-    }
-
-        // Chatbot Híbrido IA Atualizado
-        function enviarMensagemChat(){
-            const input=document.getElementById('inputChatUser'),texto=input.value.trim();
-            if(!texto)return;
-            adicionarMensagemChat(texto,'user');
-            input.value='';
-            
-            setTimeout(()=>{
-                const p=normalizarTexto(texto),imovelIntent=['casa','apartamento','terreno','imovel','temporada','aluguel','venda','garagem','chacara','sitio'].some(x=>p.includes(x));
-                
-                // Pesquisa de Imóveis (Base Oficial)
-                if(imovelIntent){
-                    const a=listaImoveisCache.filter(registroAprovado).filter(i=>normalizarTexto(i.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)).filter(i=>combina(i,true,texto));
-                    if(a.length){
-                        const i=a[0];
-                        adicionarMensagemChat(`Encontrei ${a.length} imóvel(is) relacionado(s). Um deles é ${i.titulo||'este anúncio'}, ${i.transacao||''}, por ${Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}.`,'bot',limparWhatsApp(i.whatsapp)?`https://wa.me/55${limparWhatsApp(i.whatsapp)}`:null);
-                        return;
-                    }
-                }
-                
-                // Pesquisa de Serviços (Base Oficial)
-                const a=listaLocaisCache.filter(registroAprovado).filter(l=>normalizarTexto(l.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)).filter(l=>combina(l,false,texto));
-                if(a.length){
-                    const l=a[0];
-                    adicionarMensagemChat(`Encontrei ${a.length} serviço(s) relacionado(s). Um deles é ${l.nome||'um prestador local'} (${l.categoria||'serviço'}), no bairro ${l.bairro||'Centro'}.`,'bot',limparWhatsApp(l.whatsapp)?`https://wa.me/55${limparWhatsApp(l.whatsapp)}`:null);
-                } else {
-                    // FALLBACK CHAT GEMINI: Busca Externa no Chat
-                    const msgId = 'msgEspera-' + Date.now();
-                    const c = document.getElementById('chatMensagens');
-                    
-                    const tempDiv = document.createElement('div');
-                    tempDiv.id = msgId;
-                    tempDiv.style.cssText = 'background:var(--surface);padding:10px 14px;border-radius:16px;max-width:85%;align-self:flex-start;font-size:13px;line-height:1.5;border:1px solid var(--purple);';
-                    tempDiv.innerHTML = `<i class="fas fa-spinner fa-spin"></i> A pesquisar "${texto}" no Google...`;
-                    c.appendChild(tempDiv);
-                    c.scrollTop = c.scrollHeight;
-                    
-                    const promptBot = `O usuário pesquisou "${texto}" em ${cidadeAtual}. Responda em português, de forma amigável, listando no máximo 3 opções reais que você encontrou na web para essa cidade. Diga que não temos na base oficial, mas encontrou na internet.`;
-                    
-                    fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: promptBot }] }] })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        let textoIA = data.candidates[0].content.parts[0].text;
-                        document.getElementById(msgId).innerHTML = textoIA.replace(/\n/g, '<br>');
-                        c.scrollTop = c.scrollHeight;
-                    })
-                    .catch(err => {
-                        document.getElementById(msgId).innerHTML = `Não encontrei registos oficiais e a pesquisa na web falhou momentaneamente. Pode indicar alguém que faça este serviço?`;
-                        console.error(err);
-                    });
-                }
-            }, 250);
-        }
-
-        // Funções vitais do layout mantidas inalteradas abaixo
         auth.onAuthStateChanged(async user=>{usuarioLogado=user;isAdminLogado=false;if(user){try{const token=await user.getIdTokenResult();isAdminLogado=token.claims.admin===true;}catch(e){console.error(e);}}const b=document.getElementById('txtBtnAcesso');if(b)b.textContent=user?(isAdminLogado?'Painel Admin':'O Meu Painel'):'Área de acesso';if(document.getElementById('modalPainel').style.display==='block')abrirPainel();});
+
         function voltarInicio(){cidadeAtual=document.getElementById('cidadeAtivaHeader').textContent||'Paraisópolis';categoriaAtual='';transacaoImovelAtual='';bairroAtual='';document.getElementById('inputBusca').value='';document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));const t=document.querySelector('#secaoTabServicos .cat-item:last-child');if(t)t.classList.add('active');mudarTabPrincipal('servicos');window.scrollTo({top:0,behavior:'smooth'});}
         function mudarTabPrincipal(tab){tabAtual=tab;document.getElementById('tabBtnServicos').classList.toggle('active',tab==='servicos');document.getElementById('tabBtnImoveis').classList.toggle('active',tab==='imoveis');document.getElementById('secaoTabServicos').style.display=tab==='servicos'?'block':'none';document.getElementById('secaoTabImoveis').style.display=tab==='imoveis'?'block':'none';atualizarListaBairros();renderizarAtual();}
         function renderizarAtual(){tabAtual==='servicos'?renderizarLocais():renderizarImoveis();}
+
         function abrirModalEscolhaAnuncio(){document.getElementById('modalEscolhaAnuncio').style.display='block';}
         function abrirModalCadastroServico(fecharEscolha=true){if(fecharEscolha)document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('cadCidade').value=cidadeAtual;document.getElementById('cadSouResponsavel').checked=!!usuarioLogado;document.getElementById('modalCadastro').style.display='block';}
         function abrirFluxoReivindicacaoSemLocal(){document.getElementById('modalEscolhaAnuncio').style.display='none';alert('Para reivindicar um perfil, primeiro pesquise o nome do negócio na Folha. Abra o perfil encontrado e toque em “Reivindicar este perfil”.');document.getElementById('inputBusca').focus();}
+        function abrirModalCadastroImovel(){document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('imovCidade').value=cidadeAtual;document.getElementById('imovGaragem').checked=false;document.getElementById('imovDesc').value='';document.getElementById('modalCadastroImovel').style.display='block';}
         function fecharModalCadastro(){document.getElementById('modalCadastro').style.display='none';}
+        function gerarDescricaoImovelIA(){const t=document.getElementById('imovTitulo').value.trim()||'Ótimo imóvel',tr=document.getElementById('imovTransacao').value,ty=document.getElementById('imovTipo').value,q=document.getElementById('imovQuartos').value,g=document.getElementById('imovGaragem').checked,c=document.getElementById('imovCidade').value.trim()||cidadeAtual,b=document.getElementById('imovBairro').value.trim()||'Centro';document.getElementById('imovDesc').value=`🌟 ${t}! Excelente opção de ${ty.toLowerCase()} para ${tr.toLowerCase()} em ${b}, ${c}. O imóvel possui ${q} quarto(s) e conta ${g?'com vaga de garagem':'sem garagem'}. Negociação direta com o proprietário. Entre em contato pelo WhatsApp para mais informações e agende uma visita!`;}
+
         function registroAprovado(x){return x.status==='aprovado'||x.status==='ativo';}
         function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
         function ordenarLocais(a){return [...a].sort((x,y)=>Number(registroDestaque(y))-Number(registroDestaque(x)));}
@@ -532,22 +554,122 @@
         function criarEl(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
         function icone(cls){const e=document.createElement('i');e.className=cls;return e;}
         function botaoWpp(n,label,msg){const b=criarEl('button','btn-card btn-wpp');b.type='button';b.append(icone('fab fa-whatsapp'),document.createTextNode(` ${label}`));b.addEventListener('click',()=>abrirWhatsApp(n,msg));return b;}
+
         function atualizarMetaBusca(n){const m=document.getElementById('searchMeta'),q=document.getElementById('inputBusca').value.trim();if(m)m.textContent=q?`${n} ${tabAtual==='servicos'?'resultado(s)':'imóvel(is)'} encontrado(s) para sua pesquisa.`:'';}
         function criarVazio(imovel){const box=criarEl('div','empty-state');box.appendChild(icone(imovel?'fas fa-house-circle-xmark':'fas fa-magnifying-glass'));const q=document.getElementById('inputBusca').value.trim();box.appendChild(criarEl('strong','',q?`Não encontramos "${q}"`:imovel?'Nenhum imóvel encontrado':'Nenhum serviço encontrado'));box.appendChild(criarEl('p','',q?'Talvez alguém faça isso na sua cidade, mas ainda não esteja cadastrado. Você pode adicionar ou indicar esse negócio.':'Tente outra categoria, bairro ou termo de pesquisa.'));const acts=criarEl('div','empty-actions');if(q){const b=criarEl('button','btn-card','Indicar alguém');b.type='button';b.style.background='var(--primary)';b.style.color='#1E293B';b.onclick=()=>abrirModalIndicacao(q);acts.appendChild(b);}const c=criarEl('button','btn-card btn-secondary',imovel?'Anunciar imóvel':'Cadastrar serviço');c.type='button';c.onclick=imovel?abrirModalCadastroImovel:abrirModalCadastroServico;acts.appendChild(c);box.appendChild(acts);return box;}
-        
-        // Mantenho o restante inalterado da sua V6 (Ações Lojista, Imóveis, Modais...)
+
+        function renderizarLocais(){const a=filtrarLocaisCache(),c=document.getElementById('listaLocais');c.replaceChildren();if(!a.length){c.appendChild(criarVazio(false));atualizarMetaBusca(0);return;}a.forEach(l=>{const card=criarEl('article','card-local');if(registroDestaque(l))card.classList.add('is-featured');const body=criarEl('div','card-body');if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}const top=criarEl('div','card-topline'),title=criarEl('div','card-title',l.nome||'Prestador local');top.appendChild(title);const profile=criarEl('button','profile-link','Ver perfil');profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);top.appendChild(profile);body.appendChild(top);const meta=criarEl('div','card-subtitle');meta.innerHTML='<span><i class="fas fa-tag"></i> '+(l.categoria||'Serviço')+'</span><span><i class="fas fa-location-dot"></i> '+(l.bairro||'Centro')+'</span>';body.appendChild(meta);if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',l.descricao||l.servicos));if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));const acts=criarEl('div','card-actions');acts.appendChild(botaoWpp(l.whatsapp,'Conversar no WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));const detail=criarEl('button','btn-card btn-outline','Ver detalhes');detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);});atualizarMetaBusca(a.length);}
+
+        function abrirDetalhesLocal(id){const l=listaLocaisCache.find(x=>x.idDoc===id);if(!l)return;localAtualDetalhes=l;const badge=document.getElementById('detLocalBadge');badge.replaceChildren();if(registroDestaque(l))badge.appendChild(criarEl('div','featured-badge','★ Em destaque'));document.getElementById('detLocalNome').textContent=l.nome||'Prestador local';document.getElementById('detLocalCategoria').textContent=l.categoria||'Serviço';document.getElementById('detLocalLocal').textContent=`📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';document.getElementById('detLocalKeywords').textContent=(l.keywords||l.palavrasChave)?`Encontre por: ${l.keywords||l.palavrasChave}`:'';document.getElementById('destaqueNomeLocal').textContent=l.nome||'Negócio';const claimBox=document.querySelector('#modalDetalhesLocal .claim-box');if(claimBox){claimBox.style.display=isOwner(l)?'none':'block';}const b=document.getElementById('btnDetLocalWpp');b.onclick=()=>abrirWhatsApp(l.whatsapp,`Olá, encontrei o ${l.nome||'seu negócio'} na Folha Amarela Digital.`);document.getElementById('modalDetalhesLocal').style.display='block';}
+        function fecharDetalhesLocal(){document.getElementById('modalDetalhesLocal').style.display='none';localAtualDetalhes=null;}
+        function reivindicarLocalAtual(){
+            if(!localAtualDetalhes)return;
+            if(localAtualDetalhes.proprietarioUid===usuarioLogado?.uid){alert('Este perfil já está vinculado à sua conta. Abra o Meu Painel para administrá-lo.');return;}
+            if(!usuarioLogado){fecharDetalhesLocal();modoCadastroAcesso=false;atualizarModalAcesso();document.getElementById('acessoMensagem').textContent='Entre ou crie uma conta para solicitar a gestão deste perfil.';document.getElementById('modalAreaAcesso').style.display='block';return;}
+            const l=localAtualDetalhes;
+            db.collection('reivindicacoes').where('localId','==',l.idDoc).where('userId','==',usuarioLogado.uid).where('status','==','pendente').limit(1).get().then(snap=>{
+                if(!snap.empty){alert('Você já enviou uma solicitação para este perfil.');return;}
+                return db.collection('reivindicacoes').add({localId:l.idDoc,nomeLocal:l.nome||'',userId:usuarioLogado.uid,email:usuarioLogado.email||'',status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+            }).then(v=>{if(v)alert('Solicitação enviada. A gestão do perfil será analisada antes da confirmação.');}).catch(e=>{console.error(e);alert('Não foi possível enviar a solicitação. Verifique as regras do Firebase para a coleção reivindicacoes.');});
+        }
+        function abrirDestaqueLocalAtual(){
+            if(!localAtualDetalhes)return;
+            if(!usuarioLogado){alert('Entre na sua conta para solicitar destaque.');fecharDetalhesLocal();modoCadastroAcesso=false;atualizarModalAcesso();document.getElementById('modalAreaAcesso').style.display='block';return;}
+            if(localAtualDetalhes.proprietarioUid!==usuarioLogado.uid){alert('Primeiro reivindique e tenha a gestão deste perfil aprovada. Depois você poderá solicitar o destaque.');return;}
+            document.getElementById('destaqueNomeLocal').textContent=localAtualDetalhes.nome||'Negócio';document.getElementById('destaqueEmail').value=usuarioLogado.email||'';document.getElementById('destaqueWpp').value='';document.getElementById('destaqueMensagem').textContent='';document.getElementById('modalDestaque').style.display='block';
+        }
+        function fecharModalDestaque(){document.getElementById('modalDestaque').style.display='none';}
+        async function enviarInteresseDestaque(){const msg=document.getElementById('destaqueMensagem'),email=document.getElementById('destaqueEmail').value.trim(),wpp=limparWhatsApp(document.getElementById('destaqueWpp').value);if(!email&&!wpp){msg.textContent='Informe pelo menos um e-mail ou WhatsApp para contato.';return;}if(!localAtualDetalhes){msg.textContent='Perfil não encontrado.';return;}msg.textContent='Enviando...';try{await db.collection('interessesDestaque').add({localId:localAtualDetalhes.idDoc,nomeLocal:localAtualDetalhes.nome||'',email,whatsapp:wpp,userId:usuarioLogado?usuarioLogado.uid:'',status:'novo',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent='Recebemos seu interesse. Em breve você poderá definir o plano e a forma de pagamento.';}catch(e){console.error(e);msg.textContent='A estrutura do pedido está pronta, mas a coleção interessesDestaque ainda precisa ser liberada nas regras do Firebase.';}}
+
+        function renderizarImoveis(){const a=filtrarImoveisCache(),c=document.getElementById('listaImoveis');c.replaceChildren();if(!a.length){c.appendChild(criarVazio(true));atualizarMetaBusca(0);return;}a.forEach(i=>{const card=criarEl('div','card-local'),body=criarEl('div','card-body'),badges=criarEl('div','badges-container-inline');badges.append(criarEl('span','status-badge badge-imovel-tipo',`${i.transacao||'Imóvel'} • ${i.tipo||'Propriedade'}`),criarEl('span','status-badge badge-imovel-preco',Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})));if(i.garagem){const g=criarEl('span','status-badge badge-garagem');g.append(icone('fas fa-car'),document.createTextNode(' Com Garagem'));badges.appendChild(g);}body.appendChild(badges);body.appendChild(criarEl('div','card-title',i.titulo||'Imóvel'));const sub=criarEl('div','card-subtitle');sub.append(icone('fas fa-bed'),document.createTextNode(` ${i.quartos||'N/A'} Quartos • `),icone('fas fa-map-marker-alt'),document.createTextNode(` ${i.bairro||'Centro'}`));body.appendChild(sub);body.appendChild(criarEl('p','card-description',i.descricao||'Negociação direta com o proprietário.'));const acts=criarEl('div','card-actions'),d=criarEl('button','btn-card btn-outline','Detalhes');d.type='button';d.onclick=()=>abrirDetalhesImovel(i.idDoc);acts.append(d,botaoWpp(i.whatsapp,'Falar com Dono',`Olá, vi seu imóvel "${i.titulo||'anúncio'}" na Folha Amarela Digital.`));body.appendChild(acts);card.appendChild(body);c.appendChild(card);});atualizarMetaBusca(a.length);}
+
         function filtrarCategoria(cat,el){document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');categoriaAtual=cat;renderizarLocais();}
+        function filtrarTransacaoImovel(t,el){document.querySelectorAll('#secaoTabImoveis .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');transacaoImovelAtual=t;renderizarImoveis();}
         function filtrarBusca(){renderizarAtual();}
+        function abrirModalCidade(){document.getElementById('modalCidade').style.display='block';}
+        function fecharModalCidade(){document.getElementById('modalCidade').style.display='none';}
+        function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros();renderizarAtual();}
+        function atualizarSeletorCidades(){const cidades=[...new Set([...listaLocaisCache.map(x=>(x.cidade||'Paraisópolis').trim()),...listaImoveisCache.map(x=>(x.cidade||'Paraisópolis').trim())].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));const box=document.getElementById('listaCidadesDinamica');box.replaceChildren();(cidades.length?cidades:['Paraisópolis']).forEach(c=>{const b=criarEl('button','btn-submit',`${c}, MG`);b.type='button';b.style.margin='0';b.onclick=()=>mudarCidade(c);box.appendChild(b);});}
+        function atualizarListaBairros(){const s=document.getElementById('filtroBairro'),base=tabAtual==='servicos'?listaLocaisCache:listaImoveisCache,bs=[...new Set(base.filter(x=>normalizarTexto(x.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)&&x.bairro).map(x=>String(x.bairro).trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),v=bairroAtual;s.replaceChildren(new Option('Todos os Bairros',''));bs.forEach(b=>s.appendChild(new Option(b,b)));if(bs.includes(v)){s.value=v;bairroAtual=v;}else{s.value='';bairroAtual='';}}
+        function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;renderizarAtual();}
+        function usarGPSLocalizacao(){if(!navigator.geolocation){return alert('Seu navegador não disponibiliza localização. Escolha a cidade manualmente.');}navigator.geolocation.getCurrentPosition(()=>alert('Localização obtida. Como o diretório ainda não possui geocodificação automática, escolha a cidade na lista.'),()=>alert('Não foi possível obter sua localização. Escolha a cidade manualmente.'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000});}
+        function fecharDetalhes(){document.getElementById('modalDetalhes').style.display='none';}
+
+        function abrirDetalhesImovel(id){const i=listaImoveisCache.find(x=>x.idDoc===id);if(!i)return;document.getElementById('detDetalhesNome').textContent=i.titulo||'Imóvel';document.getElementById('detDetalhesCategoria').textContent=`${i.transacao||'Imóvel'} - ${i.tipo||'Propriedade'}`;document.getElementById('detDetalhesLocal').textContent=`${i.bairro||'Centro'}, ${i.cidade||cidadeAtual}`;const e=document.getElementById('detDetalhesConteudoExtra');e.replaceChildren();const p1=criarEl('p');p1.append(criarEl('b','', 'Preço: '),document.createTextNode(Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})));const p2=criarEl('p');p2.append(criarEl('b','', 'Quartos: '),document.createTextNode(`${i.quartos||'N/A'} • `),criarEl('b','', 'Garagem: '),document.createTextNode(i.garagem?'Sim':'Não'));const p3=criarEl('p');p3.style.marginTop='10px';p3.textContent=i.descricao||'Negociação direta com o proprietário.';e.append(p1,p2,p3);document.getElementById('btnDetWpp').onclick=()=>abrirWhatsApp(i.whatsapp,`Olá, vi seu imóvel "${i.titulo||'anúncio'}" na Folha Amarela Digital.`);document.getElementById('modalDetalhes').style.display='block';}
+
+        async function salvarLocalLojista(){const nome=document.getElementById('cadNome').value.trim(),categoria=document.getElementById('cadCategoria').value,descricao=document.getElementById('cadDescricao').value.trim(),keywords=document.getElementById('cadKeywords').value.trim(),cidade=document.getElementById('cadCidade').value.trim()||cidadeAtual,bairro=document.getElementById('cadBairro').value.trim()||'Centro',whatsapp=limparWhatsApp(document.getElementById('cadWpp').value),souResponsavel=document.getElementById('cadSouResponsavel').checked;if(!nome||!descricao)return alert('Informe o nome e o que o negócio faz.');if(whatsapp&&(whatsapp.length<10||whatsapp.length>13))return alert('Confira o número de WhatsApp.');try{await db.collection('locais').add({nome,categoria,descricao,keywords,cidade,bairro,whatsapp,userId:usuarioLogado?usuarioLogado.uid:'',proprietarioDeclarado:souResponsavel&&!!usuarioLogado,proprietarioUid:souResponsavel&&usuarioLogado?usuarioLogado.uid:'',status:'pendente',destaque:false,plano:'gratuito',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});fecharModalCadastro();alert(souResponsavel?'Cadastro enviado. Depois da aprovação, o perfil aparecerá no diretório e ficará vinculado à sua conta. Você poderá então solicitar destaque.':'Cadastro enviado. Obrigado por ajudar a cidade a se encontrar!');['cadNome','cadDescricao','cadKeywords','cadWpp'].forEach(id=>document.getElementById(id).value='');document.getElementById('cadSouResponsavel').checked=false;}catch(e){console.error(e);alert('Não foi possível enviar o cadastro. Verifique sua conexão e as regras do Firebase.');}}
+        async function salvarImovel(){const titulo=document.getElementById('imovTitulo').value.trim(),preco=document.getElementById('imovPreco').value,wpp=limparWhatsApp(document.getElementById('imovWpp').value);if(!titulo||!preco||!wpp)return alert('Preencha o título, o preço e o WhatsApp!');if(wpp.length<10||wpp.length>13)return alert('Confira o número de WhatsApp.');try{await db.collection('imoveis').add({titulo,transacao:document.getElementById('imovTransacao').value,tipo:document.getElementById('imovTipo').value,preco:Number(preco),quartos:document.getElementById('imovQuartos').value,garagem:document.getElementById('imovGaragem').checked,cidade:document.getElementById('imovCidade').value.trim()||cidadeAtual,bairro:document.getElementById('imovBairro').value.trim()||'Centro',whatsapp:wpp,descricao:document.getElementById('imovDesc').value.trim(),userId:usuarioLogado?usuarioLogado.uid:'',status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('modalCadastroImovel').style.display='none';alert('Imóvel enviado para revisão. Ele aparecerá no diretório após a aprovação.');}catch(e){console.error(e);alert('Não foi possível enviar o imóvel. Verifique sua conexão e as regras do Firebase.');}}
+
+
+        function isOwner(l){return !!usuarioLogado && (l.proprietarioUid===usuarioLogado.uid || l.userId===usuarioLogado.uid);}
+        function fecharPainel(){document.getElementById('modalPainel').style.display='none';unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];}
+        async function sairDaConta(){
+            const botao=document.querySelector('#modalPainel button[onclick="sairDaConta()"]');
+            if(botao){botao.disabled=true;botao.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saindo...';}
+            try{fecharPainel();await auth.signOut();}
+            catch(e){console.error('Erro ao sair da conta:',e);alert('Não foi possível sair da conta. Tente novamente.');if(botao){botao.disabled=false;botao.innerHTML='<i class="fas fa-right-from-bracket"></i> Sair da conta';}}
+        }
+        function abrirPainel(){if(!usuarioLogado)return;document.getElementById('modalPainel').style.display='block';painelAba=isAdminLogado?'admin':'meus';renderizarPainel();carregarDadosPainel();}
+        function trocarAbaPainel(a){painelAba=a;renderizarPainel();}
+        function carregarDadosPainel(){unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];if(!usuarioLogado)return;
+            const q=db.collection('locais').where('proprietarioUid','==',usuarioLogado.uid);unsubPainel.push(q.onSnapshot(s=>{meusLocaisCache=[];s.forEach(d=>meusLocaisCache.push({idDoc:d.id,...d.data()}));renderizarPainel();},e=>console.error(e)));
+            const rq=db.collection('reivindicacoes').where('userId','==',usuarioLogado.uid);unsubPainel.push(rq.onSnapshot(s=>{reivindicacoesCache=[];s.forEach(d=>reivindicacoesCache.push({idDoc:d.id,...d.data()}));renderizarPainel();},e=>console.error(e)));
+            const iq=db.collection('interessesDestaque').where('userId','==',usuarioLogado.uid);unsubPainel.push(iq.onSnapshot(s=>{interessesCache=[];s.forEach(d=>interessesCache.push({idDoc:d.id,...d.data()}));renderizarPainel();},e=>console.error(e)));
+            if(isAdminLogado){
+                unsubPainel.push(db.collection('reivindicacoes').where('status','==','pendente').onSnapshot(s=>{reivindicacoesCache=[];s.forEach(d=>reivindicacoesCache.push({idDoc:d.id,...d.data()}));renderizarPainel();},e=>console.error(e)));
+                unsubPainel.push(db.collection('interessesDestaque').where('status','==','novo').onSnapshot(s=>{interessesCache=[];s.forEach(d=>interessesCache.push({idDoc:d.id,...d.data()}));renderizarPainel();},e=>console.error(e)));
+            }
+        }
+        function renderizarPainel(){const c=document.getElementById('painelConteudo');if(!c||!usuarioLogado)return;c.replaceChildren();
+            if(isAdminLogado){document.getElementById('painelTitulo').innerHTML='<i class="fas fa-shield-halved" style="color:var(--primary)"></i> Painel Admin';document.getElementById('painelSubtitulo').textContent='Aprove reivindicações e pedidos de destaque. A proteção real deve ser feita também nas regras do Firestore.';renderizarPainelAdmin(c);return;}
+            document.getElementById('painelTitulo').innerHTML='<i class="fas fa-user-circle" style="color:var(--primary)"></i> Meu painel';document.getElementById('painelSubtitulo').textContent=`Conta: ${usuarioLogado.email||''}`;
+            const tabs=criarEl('div','panel-tabs');[['meus','Meus perfis'],['pedidos','Minhas solicitações']].forEach(([id,t])=>{const b=criarEl('button','panel-tab',t);if(painelAba===id)b.classList.add('active');b.onclick=()=>trocarAbaPainel(id);tabs.appendChild(b);});c.appendChild(tabs);
+            if(painelAba==='pedidos'){renderizarMinhasSolicitacoes(c);return;}
+            if(!meusLocaisCache.length){c.appendChild(criarEl('div','empty-state','<span></span>'));c.lastChild.innerHTML='';const i=icone('fas fa-store');c.lastChild.append(i,criarEl('strong','', 'Você ainda não administra nenhum perfil.'),criarEl('p','', 'Quando uma reivindicação for aprovada, o perfil aparecerá aqui para edição e gestão.'));const b=criarEl('button','btn-community primary','Adicionar um negócio');b.onclick=()=>{fecharPainel();abrirModalEscolhaAnuncio()};c.lastChild.appendChild(b);return;}
+            const lista=criarEl('div','panel-list');meusLocaisCache.forEach(l=>{const item=criarEl('div','panel-item');const title=criarEl('div','panel-item-title',l.nome||'Perfil');item.appendChild(title);const meta=criarEl('div','panel-item-meta',`${l.categoria||'Serviço'} • ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`);item.appendChild(meta);const badges=criarEl('div','badges-container-inline');if(l.verificado)badges.appendChild(criarEl('span','verified-badge','✓ Verificado'));else badges.appendChild(criarEl('span','pending-badge',l.status==='pendente'?'Aguardando revisão':'Gestão pendente'));if(registroDestaque(l))badges.appendChild(criarEl('span','featured-badge','★ Em destaque'));item.appendChild(badges);const actions=criarEl('div','panel-actions');const e=criarEl('button','tiny-btn','Editar perfil');e.onclick=()=>abrirEditarPerfil(l.idDoc);actions.appendChild(e);const d=criarEl('button','tiny-btn','Solicitar destaque');d.onclick=()=>{localAtualDetalhes=l;abrirDestaqueLocalAtual()};actions.appendChild(d);item.appendChild(actions);const share=criarEl('div','profile-share');const inp=document.createElement('input');inp.className='form-control';inp.value=gerarLinkPerfil(l);inp.readOnly=true;const cp=criarEl('button','tiny-btn','Copiar link');cp.onclick=()=>copiarTexto(inp.value);share.append(inp,cp);item.appendChild(share);lista.appendChild(item);});c.appendChild(lista);
+        }
+        function renderizarMinhasSolicitacoes(c){const wrap=criarEl('div','panel-list');const itens=[];reivindicacoesCache.filter(x=>x.userId===usuarioLogado.uid).forEach(x=>itens.push(['Reivindicação',x.nomeLocal,x.status]));interessesCache.filter(x=>x.userId===usuarioLogado.uid).forEach(x=>itens.push(['Destaque',x.nomeLocal,x.status]));if(!itens.length){c.appendChild(criarEl('div','empty-state',''));c.lastChild.append(icone('fas fa-inbox'),criarEl('strong','', 'Nenhuma solicitação registrada.'),criarEl('p','', 'Suas reivindicações e pedidos de destaque aparecerão aqui.'));return;}itens.forEach(x=>{const i=criarEl('div','panel-item');i.appendChild(criarEl('div','panel-item-title',`${x[0]} • ${x[1]||'Perfil'}`));i.appendChild(criarEl('div','panel-item-meta',`Status: ${x[2]||'pendente'}`));wrap.appendChild(i)});c.appendChild(wrap);}
+        function renderizarPainelAdmin(c){const stats=criarEl('div','panel-grid');[["Reivindicações pendentes",reivindicacoesCache.length],["Pedidos de destaque",interessesCache.length],["Perfis sob sua gestão",meusLocaisCache.length]].forEach(x=>{const d=criarEl('div','panel-stat');d.append(criarEl('span','',x[0]),criarEl('strong','',String(x[1])));stats.appendChild(d)});c.appendChild(stats);
+            const h1=criarEl('h3','', 'Reivindicações pendentes');h1.style.marginTop='18px';c.appendChild(h1);const list=criarEl('div','panel-list');if(!reivindicacoesCache.length)list.appendChild(criarEl('div','admin-note','Nenhuma reivindicação pendente.'));reivindicacoesCache.forEach(r=>{const i=criarEl('div','panel-item');i.appendChild(criarEl('div','panel-item-title',r.nomeLocal||'Perfil'));i.appendChild(criarEl('div','panel-item-meta',`${r.email||'Sem e-mail'} • usuário ${r.userId||'—'}`));const a=criarEl('div','panel-actions');const ok=criarEl('button','tiny-btn','Aprovar gestão');ok.onclick=()=>aprovarReivindicacao(r);const no=criarEl('button','tiny-btn danger-btn','Recusar');no.onclick=()=>recusarReivindicacao(r);a.append(ok,no);i.appendChild(a);list.appendChild(i)});c.appendChild(list);
+            const h2=criarEl('h3','', 'Pedidos de destaque');h2.style.marginTop='18px';c.appendChild(h2);const list2=criarEl('div','panel-list');if(!interessesCache.length)list2.appendChild(criarEl('div','admin-note','Nenhum pedido de destaque pendente.'));interessesCache.forEach(r=>{const i=criarEl('div','panel-item');i.appendChild(criarEl('div','panel-item-title',r.nomeLocal||'Perfil'));i.appendChild(criarEl('div','panel-item-meta',`${r.email||''} ${r.whatsapp?'• '+r.whatsapp:''}`));const a=criarEl('div','panel-actions');const ok=criarEl('button','tiny-btn','Ativar destaque');ok.onclick=()=>ativarDestaque(r);const no=criarEl('button','tiny-btn danger-btn','Recusar');no.onclick=()=>recusarDestaque(r);a.append(ok,no);i.appendChild(a);list2.appendChild(i)});c.appendChild(list2);c.appendChild(criarEl('div','admin-note','Importante: este painel é uma interface administrativa. As regras do Firestore precisam restringir aprovação/edição ao administrador real; esconder o botão por e-mail não é uma camada de segurança.'));
+        }
+        async function aprovarReivindicacao(r){if(!confirm(`Aprovar a gestão de ${r.nomeLocal||'este perfil'} para ${r.email||r.userId}?`))return;try{await db.collection('locais').doc(r.localId).update({proprietarioUid:r.userId,proprietarioDeclarado:true,verificado:true,status:'aprovado',atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});await db.collection('reivindicacoes').doc(r.idDoc).update({status:'aprovado',aprovadoEm:firebase.firestore.FieldValue.serverTimestamp()});alert('Gestão aprovada.');}catch(e){console.error(e);alert('Não foi possível aprovar. Revise as regras do Firestore.');}}
+        async function recusarReivindicacao(r){if(!confirm('Recusar esta reivindicação?'))return;try{await db.collection('reivindicacoes').doc(r.idDoc).update({status:'recusado',respondidoEm:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error(e);alert('Não foi possível recusar.');}}
+        async function ativarDestaque(r){if(!confirm(`Ativar destaque para ${r.nomeLocal||'este perfil'}?`))return;try{await db.collection('locais').doc(r.localId).update({destaque:true,plano:'destaque',destaqueAtivadoEm:firebase.firestore.FieldValue.serverTimestamp()});await db.collection('interessesDestaque').doc(r.idDoc).update({status:'aprovado',respondidoEm:firebase.firestore.FieldValue.serverTimestamp()});alert('Destaque ativado.');}catch(e){console.error(e);alert('Não foi possível ativar. Revise as regras do Firestore.');}}
+        async function recusarDestaque(r){if(!confirm('Recusar este pedido de destaque?'))return;try{await db.collection('interessesDestaque').doc(r.idDoc).update({status:'recusado',respondidoEm:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error(e);alert('Não foi possível recusar.');}}
+        function abrirEditarPerfil(id){const l=listaLocaisCache.find(x=>x.idDoc===id)||meusLocaisCache.find(x=>x.idDoc===id);if(!l||!isOwner(l)){alert('Você não possui permissão para editar este perfil.');return;}document.getElementById('editLocalId').value=l.idDoc;document.getElementById('editNome').value=l.nome||'';document.getElementById('editCategoria').value=l.categoria||'Serviços';document.getElementById('editDescricao').value=l.descricao||l.servicos||'';document.getElementById('editKeywords').value=l.keywords||l.palavrasChave||'';document.getElementById('editCidade').value=l.cidade||cidadeAtual;document.getElementById('editBairro').value=l.bairro||'Centro';document.getElementById('editWpp').value=l.whatsapp||'';document.getElementById('editMensagem').textContent='';document.getElementById('modalEditarPerfil').style.display='block';}
+        function fecharEditarPerfil(){document.getElementById('modalEditarPerfil').style.display='none';}
+        async function salvarEdicaoPerfil(){const id=document.getElementById('editLocalId').value,l=listaLocaisCache.find(x=>x.idDoc===id)||meusLocaisCache.find(x=>x.idDoc===id),msg=document.getElementById('editMensagem');if(!l||!isOwner(l))return;const w=limparWhatsApp(document.getElementById('editWpp').value);if(w&&(w.length<10||w.length>13)){msg.textContent='Confira o WhatsApp.';return;}msg.textContent='Salvando...';try{await db.collection('locais').doc(id).update({nome:document.getElementById('editNome').value.trim(),categoria:document.getElementById('editCategoria').value,descricao:document.getElementById('editDescricao').value.trim(),keywords:document.getElementById('editKeywords').value.trim(),cidade:document.getElementById('editCidade').value.trim(),bairro:document.getElementById('editBairro').value.trim()||'Centro',whatsapp:w,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent='Perfil atualizado.';setTimeout(fecharEditarPerfil,500);}catch(e){console.error(e);msg.textContent='Não foi possível salvar. Revise as regras do Firestore.';}}
+        function gerarLinkPerfil(l){return `${location.origin}${location.pathname}#perfil=${encodeURIComponent(l.idDoc)}`;}
+        async function copiarTexto(t){try{await navigator.clipboard.writeText(t);alert('Link copiado.');}catch(e){prompt('Copie o link:',t);}}
+        function abrirPerfilPorHash(){const m=location.hash.match(/^#perfil=(.+)$/);if(m){const id=decodeURIComponent(m[1]);setTimeout(()=>{const l=listaLocaisCache.find(x=>x.idDoc===id);if(l)abrirDetalhesLocal(id);},700);}}
+        function abrirAreaAcessoClick(){
+            if(usuarioLogado){abrirPainel();return;}
+            modoCadastroAcesso=false;atualizarModalAcesso();document.getElementById('modalAreaAcesso').style.display='block';
+        }
+        function alternarModoAcesso(){modoCadastroAcesso=!modoCadastroAcesso;atualizarModalAcesso();}
+        function atualizarModalAcesso(){document.getElementById('tituloAcesso').textContent=modoCadastroAcesso?'Criar acesso':'Área de Acesso';document.getElementById('subtituloAcesso').textContent=modoCadastroAcesso?'Crie uma conta para acompanhar seus cadastros e reivindicações.':'Entre para acompanhar seus cadastros e reivindicações.';document.getElementById('btnEntrarAcesso').textContent=modoCadastroAcesso?'Criar conta':'Entrar';document.getElementById('btnCriarConta').textContent=modoCadastroAcesso?'Já tenho uma conta':'Criar meu acesso';document.getElementById('acessoMensagem').textContent='';}
+        function fecharAreaAcesso(){document.getElementById('modalAreaAcesso').style.display='none';}
+        async function executarLoginUnificado(){const email=document.getElementById('acessoEmail').value.trim(),senha=document.getElementById('acessoSenha').value,msg=document.getElementById('acessoMensagem');if(!email||!senha){msg.textContent='Informe e-mail e palavra-passe.';return;}if(modoCadastroAcesso&&senha.length<6){msg.textContent='A palavra-passe precisa ter pelo menos 6 caracteres.';return;}msg.textContent='A processar...';try{if(modoCadastroAcesso)await auth.createUserWithEmailAndPassword(email,senha);else await auth.signInWithEmailAndPassword(email,senha);msg.textContent='Acesso efetuado com sucesso.';setTimeout(fecharAreaAcesso,400);}catch(e){console.error(e);const m={'auth/invalid-email':'O e-mail informado não é válido.','auth/user-not-found':'Não existe uma conta com esse e-mail.','auth/wrong-password':'E-mail ou palavra-passe incorretos.','auth/invalid-credential':'E-mail ou palavra-passe incorretos.','auth/email-already-in-use':'Este e-mail já possui uma conta.','auth/weak-password':'A palavra-passe é muito fraca.'};msg.textContent=m[e.code]||'Não foi possível concluir o acesso. Verifique se o método de login está habilitado no Firebase.';}}
+
+        function abrirModalIndicacao(termo=''){document.getElementById('modalIndicacao').style.display='block';document.getElementById('indCidade').value=cidadeAtual;if(termo)document.getElementById('indServico').value=termo;setTimeout(()=>document.getElementById('indNome').focus(),50);}
+        function fecharModalIndicacao(){document.getElementById('modalIndicacao').style.display='none';}
+        async function enviarIndicacao(){const nome=document.getElementById('indNome').value.trim(),servico=document.getElementById('indServico').value.trim(),cidade=document.getElementById('indCidade').value.trim()||cidadeAtual,bairro=document.getElementById('indBairro').value.trim(),whatsapp=limparWhatsApp(document.getElementById('indWpp').value);if(!nome||!servico)return alert('Informe pelo menos o nome e o serviço.');try{await db.collection('indicacoes').add({nome,servico,cidade,bairro,whatsapp,origem:'busca-sem-resultado',userId:usuarioLogado?usuarioLogado.uid:'',status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});fecharModalIndicacao();alert('Indicação enviada. Ela será analisada antes de entrar no diretório.');['indNome','indServico','indBairro','indWpp'].forEach(id=>document.getElementById(id).value='');}catch(e){console.error(e);alert('Não foi possível enviar a indicação agora.');}}
+
         function abrirChatIA(){document.getElementById('modalChatIA').style.display='block';document.getElementById('inputChatUser').focus();}
         function adicionarMensagemChat(texto,tipo='bot',link=null){const c=document.getElementById('chatMensagens'),d=criarEl('div');d.style.background=tipo==='user'?'var(--purple)':'var(--surface)';d.style.color=tipo==='user'?'white':'var(--dark)';d.style.padding='10px 14px';d.style.borderRadius='16px';d.style.maxWidth='85%';d.style.alignSelf=tipo==='user'?'flex-end':'flex-start';d.style.fontSize='13px';d.style.lineHeight='1.5';if(tipo!=='user')d.style.border='1px solid var(--border)';d.textContent=texto;if(link){const a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.textContent=' Falar pelo WhatsApp';a.style.fontWeight='800';a.style.display='inline-block';a.style.marginTop='7px';d.append(document.createElement('br'),a);}c.appendChild(d);c.scrollTop=c.scrollHeight;}
-        
+        function enviarMensagemChat(){const input=document.getElementById('inputChatUser'),texto=input.value.trim();if(!texto)return;adicionarMensagemChat(texto,'user');input.value='';setTimeout(()=>{const p=normalizarTexto(texto),imovelIntent=['casa','apartamento','terreno','imovel','temporada','aluguel','venda','garagem','chacara','sitio'].some(x=>p.includes(x));if(imovelIntent){const a=listaImoveisCache.filter(registroAprovado).filter(i=>normalizarTexto(i.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)).filter(i=>combina(i,true,texto));if(a.length){const i=a[0];adicionarMensagemChat(`Encontrei ${a.length} imóvel(is) relacionado(s). Um deles é ${i.titulo||'este anúncio'}, ${i.transacao||''}, por ${Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}.`,'bot',limparWhatsApp(i.whatsapp)?`https://wa.me/55${limparWhatsApp(i.whatsapp)}`:null);return;}}const a=listaLocaisCache.filter(registroAprovado).filter(l=>normalizarTexto(l.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)).filter(l=>combina(l,false,texto));if(a.length){const l=a[0];adicionarMensagemChat(`Encontrei ${a.length} serviço(s) relacionado(s). Um deles é ${l.nome||'um prestador local'} (${l.categoria||'serviço'}), no bairro ${l.bairro||'Centro'}.`,'bot',limparWhatsApp(l.whatsapp)?`https://wa.me/55${limparWhatsApp(l.whatsapp)}`:null);}else adicionarMensagemChat(`Ainda não encontrei "${texto}" em ${cidadeAtual}. Você pode pesquisar outro termo ou indicar alguém que faça esse serviço.`,'bot');},250);}
+
         function iniciarListeners(){
-            db.collection('locais').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaLocaisCache=[];s.forEach(d=>listaLocaisCache.push({idDoc:d.id,...d.data()}));if(tabAtual==='servicos')renderizarLocais();},e=>{console.error(e);});
-            db.collection('imoveis').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaImoveisCache=[];s.forEach(d=>listaImoveisCache.push({idDoc:d.id,...d.data()}));},e=>{console.error(e);});
+            db.collection('locais').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaLocaisCache=[];s.forEach(d=>listaLocaisCache.push({idDoc:d.id,...d.data()}));atualizarSeletorCidades();atualizarListaBairros();if(tabAtual==='servicos')renderizarLocais();abrirPerfilPorHash();},e=>{console.error(e);document.getElementById('searchMeta').textContent='Não foi possível carregar os estabelecimentos aprovados.';});
+            db.collection('imoveis').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaImoveisCache=[];s.forEach(d=>listaImoveisCache.push({idDoc:d.id,...d.data()}));atualizarSeletorCidades();atualizarListaBairros();if(tabAtual==='imoveis')renderizarImoveis();},e=>{console.error(e);document.getElementById('searchMeta').textContent='Não foi possível carregar os imóveis aprovados.';});
         }
 
         document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.style.display='none';}));
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal').forEach(m=>m.style.display='none');});
         iniciarListeners();
+        window.addEventListener('hashchange',abrirPerfilPorHash);
+        setTimeout(abrirPerfilPorHash,1200);
 
     </script>
 </body>
