@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos - Folha Amarela Digital</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Variáveis de cores baseadas no seu tema existente */
+        :root {
+            --primary: #F59E0B;
+            --primary-hover: #D97706;
+            --dark: #1E293B;
+            --light: #F8FAFC;
+            --surface: #FFFFFF;
+            --gray: #64748B;
+            --border: #E2E8F0;
+            --success: #10B981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --input-bg: #F1F5F9;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pricing-header h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .pricing-header p {
+            color: var(--gray);
+            font-size: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .pricing-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 280px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .pricing-card.destaque {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+        }
+
+        .pricing-card.destaque:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        .badge-recomendado {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #1E293B;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .plan-price {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .plan-price span {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .plan-desc {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 24px;
+            min-height: 40px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 32px 0;
+            flex-grow: 1;
+        }
+
+        .plan-features li {
+            font-size: 13px;
+            color: var(--dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .plan-features li i {
+            color: var(--success);
+            margin-top: 2px;
+        }
+
+        .btn-assinar {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-outline {
+            background-color: var(--input-bg);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #1E293B;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-dark {
+            background-color: var(--dark);
+            color: var(--surface);
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .pricing-card.destaque {
+                transform: scale(1);
+            }
+            .pricing-card.destaque:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pricing-header">
+        <h1>Escolha o plano ideal para o seu negócio</h1>
+        <p>Aumente a sua visibilidade na cidade e conecte-se diretamente com os seus clientes sem intermediários.</p>
+    </div>
+
+    <div class="pricing-container">
+        
+        <!-- Plano Gratuito -->
+        <div class="pricing-card">
+            <h3 class="plan-name">Gratuito</h3>
+            <div class="plan-price">R$ 0<span>/mês</span></div>
+            <p class="plan-desc">Presença básica no diretório da cidade.</p>
+            <ul class="plan-features">
+                <li><i class="fas fa-check"></i> Cadastro no diretório</li>
+                <li><i class="fas fa-check"></i> Nome, Categoria e Bairro</li>
+                <li><i class="fas fa-check"></i> Botão direto de WhatsApp</li>
+            </ul>
+            <button class="btn-assinar btn-outline">Começar Grátis</button>
+        </div>
+
+        <!-- Plano Essencial -->
+        <div class="pricing-card">
+            <h3 class="plan-name">Essencial</h3>
+            <div class="plan-price">R$ 19,90<span>/mês</span></div>
+            <p class="plan-desc">Destaque básico + kit financeiro.</p>
+            <ul class="plan-features">
+                <li><i class="fas fa-check"></i> Tudo do plano Grátis</li>
+                <li><i class="fas fa-check"></i> Prioridade básica nas buscas</li>
+                <li><i class="fas fa-check"></i> Kit Financeiro integrado</li>
+                <li><i class="fas fa-check"></i> Endereço com mapa</li>
+            </ul>
+            <button class="btn-assinar btn-outline">Assinar Essencial</button>
+        </div>
+
+        <!-- Plano Profissional -->
+        <div class="pricing-card destaque">
+            <div class="badge-recomendado">Mais Escolhido</div>
+            <h3 class="plan-name">Profissional</h3>
+            <div class="plan-price">R$ 39,90<span>/mês</span></div>
+            <p class="plan-desc">Mais destaque + kit completo de gestão.</p>
+            <ul class="plan-features">
+                <li><i class="fas fa-check"></i> Tudo do plano Essencial</li>
+                <li><i class="fas fa-check"></i> Alta prioridade nas categorias</li>
+                <li><i class="fas fa-check"></i> Kit completo de Gestão</li>
+                <li><i class="fas fa-check"></i> Galeria de fotos/portfólio</li>
+            </ul>
+            <button class="btn-assinar btn-primary">Assinar Profissional</button>
+        </div>
+
+        <!-- Plano Premium -->
+        <div class="pricing-card">
+            <h3 class="plan-name">Premium</h3>
+            <div class="plan-price">R$ 59,90<span>/mês</span></div>
+            <p class="plan-desc">Maior exposição + ferramentas e materiais extras.</p>
+            <ul class="plan-features">
+                <li><i class="fas fa-check"></i> Tudo do plano Profissional</li>
+                <li><i class="fas fa-check"></i> Destaque máximo na Home</li>
+                <li><i class="fas fa-check"></i> Ferramentas e materiais extras</li>
+                <li><i class="fas fa-check"></i> Spotlight Ads (Banner Sazonal)</li>
+            </ul>
+            <button class="btn-assinar btn-dark">Assinar Premium</button>
+        </div>
+
+    </div>
+
+</body>
+</html>
