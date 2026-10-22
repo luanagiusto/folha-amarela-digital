@@ -148,6 +148,8 @@
         function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
         function ordenarLocais(a){return [...a].sort((x,y)=>Number(registroDestaque(y))-Number(registroDestaque(x)));}
         function nomeExibicaoLocal(l){return String(l.nomeFantasia||l.nome_fantasia||l.fantasia||l.nomeComercial||l.nome||'Prestador local').trim();}
+        function cnpjFormatado(valor){const n=String(valor||'').replace(/\D/g,'');return n.length===14?n.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5'):String(valor||'').trim();}
+        function descricaoCurtaLocal(l){const texto=String(l.descricao||l.servicos||'').replace(/\s+/g,' ').trim();return texto.length>145?texto.slice(0,142).trimEnd()+'…':texto;}
         function textoLocal(l){return normalizarTexto([nomeExibicaoLocal(l),l.nome,l.categoria,l.subcategoria,l.descricao,l.servicos,l.keywords,l.palavrasChave,l.bairro,l.cidade,l.telefone].join(' '));}
         function textoImovel(i){return normalizarTexto([i.titulo,i.transacao,i.tipo,i.descricao,i.bairro,i.cidade,i.quartos,i.garagem?'garagem estacionamento vaga':''].join(' '));}
         function termosBusca(q){const p=normalizarTexto(q).split(/\s+/).filter(Boolean),e=[];p.forEach(x=>{if(RELATED_TERMS[x])e.push(...RELATED_TERMS[x]);});return [...new Set([...p,...e])];}
@@ -232,7 +234,7 @@
                 bairroMeta.append(icone('fas fa-location-dot'),document.createTextNode(' '+(l.bairro||'Centro')));
                 meta.append(catMeta,bairroMeta);body.appendChild(meta);
                 
-                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',l.descricao||l.servicos));
+                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',descricaoCurtaLocal(l)));
                 if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
                 
                 const acts=criarEl('div','card-actions');
@@ -309,6 +311,17 @@
             document.getElementById('detLocalCategoria').textContent=l.categoria||'Serviço';
             document.getElementById('detLocalLocal').textContent=`📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
             document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';
+            const dadosLegais=document.getElementById('detLocalDadosLegais');
+            if(dadosLegais){
+                dadosLegais.replaceChildren();
+                const cnpj=cnpjFormatado(l.cnpj||l.CNPJ||l.documentoCnpj||l.documento_cnpj);
+                const razao=String(l.razaoSocial||l.razao_social||l.nomeEmpresarial||'').trim();
+                if(cnpj||razao){
+                    if(razao) dadosLegais.appendChild(criarEl('div','legal-detail-row',`Razão social: ${razao}`));
+                    if(cnpj) dadosLegais.appendChild(criarEl('div','legal-detail-row',`CNPJ: ${cnpj}`));
+                    dadosLegais.hidden=false;
+                } else { dadosLegais.hidden=true; }
+            }
             document.getElementById('detLocalKeywords').textContent=(l.keywords||l.palavrasChave)?`Encontre por: ${l.keywords||l.palavrasChave}`:'';
             document.getElementById('destaqueNomeLocal').textContent=nomeExibicaoLocal(l);
             

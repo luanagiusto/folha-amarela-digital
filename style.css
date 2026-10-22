@@ -318,3 +318,56 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .tab-btn { flex: 1; white-space: normal; line-height: 1.3; }
   .card-actions { flex-direction: column; }
 }
+
+
+/* Refinamento dos cartões comerciais: nome legível, metadados discretos e dados legais somente no perfil. */
+.card-title {
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.card-subtitle {
+  gap: 8px 14px;
+  margin-top: 9px;
+  font-size: 12px;
+}
+.card-subtitle span { min-width: 0; }
+.card-description {
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  min-height: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.detail-description {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  min-height: 0;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.business-legal-details {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--gray);
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.business-legal-details[hidden] { display: none !important; }
+.legal-detail-row + .legal-detail-row { margin-top: 3px; }
+@media (max-width: 600px) {
+  .card-title { font-size: 17px; }
+  .card-body { padding: 16px; }
+  .card-subtitle { font-size: 11px; }
+}
