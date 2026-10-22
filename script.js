@@ -147,7 +147,8 @@
         function registroAprovado(x){return x.status==='aprovado'||x.status==='ativo';}
         function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
         function ordenarLocais(a){return [...a].sort((x,y)=>Number(registroDestaque(y))-Number(registroDestaque(x)));}
-        function textoLocal(l){return normalizarTexto([l.nome,l.categoria,l.subcategoria,l.descricao,l.servicos,l.keywords,l.palavrasChave,l.bairro,l.cidade,l.telefone].join(' '));}
+        function nomeExibicaoLocal(l){return String(l.nomeFantasia||l.nome_fantasia||l.fantasia||l.nomeComercial||l.nome||'Prestador local').trim();}
+        function textoLocal(l){return normalizarTexto([nomeExibicaoLocal(l),l.nome,l.categoria,l.subcategoria,l.descricao,l.servicos,l.keywords,l.palavrasChave,l.bairro,l.cidade,l.telefone].join(' '));}
         function textoImovel(i){return normalizarTexto([i.titulo,i.transacao,i.tipo,i.descricao,i.bairro,i.cidade,i.quartos,i.garagem?'garagem estacionamento vaga':''].join(' '));}
         function termosBusca(q){const p=normalizarTexto(q).split(/\s+/).filter(Boolean),e=[];p.forEach(x=>{if(RELATED_TERMS[x])e.push(...RELATED_TERMS[x]);});return [...new Set([...p,...e])];}
         function combina(item,imovel,q){const base=normalizarTexto(q);if(!base)return true;const h=imovel?textoImovel(item):textoLocal(item),p=base.split(/\s+/).filter(Boolean);if(p.every(x=>h.includes(x)))return true;return termosBusca(q).some(x=>x.length>=3&&h.includes(normalizarTexto(x)));}
@@ -220,9 +221,9 @@
                 const body=criarEl('div','card-body');
                 if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
                 
-                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',l.nome||'Prestador local');
+                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',nomeExibicaoLocal(l));
                 top.appendChild(title);
-                const profile=criarEl('button','profile-link','Ver perfil');
+                const profile=criarEl('button','profile-link','Ver detalhes');
                 profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
                 top.appendChild(profile);body.appendChild(top);
                 
@@ -235,7 +236,7 @@
                 if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
                 
                 const acts=criarEl('div','card-actions');
-                acts.appendChild(botaoWpp(l.whatsapp,'WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
+                if(l.whatsapp||l.telefone) acts.appendChild(botaoWpp(l.whatsapp||l.telefone,'WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
                 const detail=criarEl('button','btn-card btn-outline','Detalhes');
                 detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
                 acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
@@ -304,18 +305,19 @@
             const badge=document.getElementById('detLocalBadge');badge.replaceChildren();
             if(registroDestaque(l))badge.appendChild(criarEl('div','featured-badge','★ Em destaque'));
             
-            document.getElementById('detLocalNome').textContent=l.nome||'Prestador local';
+            document.getElementById('detLocalNome').textContent=nomeExibicaoLocal(l);
             document.getElementById('detLocalCategoria').textContent=l.categoria||'Serviço';
             document.getElementById('detLocalLocal').textContent=`📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
             document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';
             document.getElementById('detLocalKeywords').textContent=(l.keywords||l.palavrasChave)?`Encontre por: ${l.keywords||l.palavrasChave}`:'';
-            document.getElementById('destaqueNomeLocal').textContent=l.nome||'Negócio';
+            document.getElementById('destaqueNomeLocal').textContent=nomeExibicaoLocal(l);
             
             const claimBox=document.querySelector('#modalDetalhesLocal .claim-box');
             if(claimBox) claimBox.style.display=(isOwner(l)||isAdminLogado)?'none':'block';
             
             const b=document.getElementById('btnDetLocalWpp');
-            b.onclick=()=>abrirWhatsApp(l.whatsapp,`Olá, encontrei o ${l.nome||'seu negócio'} na Folha Amarela Digital.`);
+            b.style.display=(l.whatsapp||l.telefone)?'inline-flex':'none';
+            b.onclick=()=>abrirWhatsApp(l.whatsapp||l.telefone,`Olá, encontrei ${nomeExibicaoLocal(l)} na Folha Amarela Digital.`);
             document.getElementById('modalDetalhesLocal').style.display='block';
         }
         function fecharDetalhesLocal(){document.getElementById('modalDetalhesLocal').style.display='none';localAtualDetalhes=null;}
