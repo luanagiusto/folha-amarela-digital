@@ -315,7 +315,7 @@
             abrirModalCadastroServico();
         }
 
-       function abrirDetalhesLocal(id){
+function abrirDetalhesLocal(id){
             const l=listaLocaisCache.find(x=>x.idDoc===id);
             if(!l)return;
             
@@ -325,48 +325,58 @@
             document.getElementById('detLocalNome').textContent=nomeExibicaoLocal(l);
             document.getElementById('detLocalCategoria').textContent=l.categoria||'Serviço';
             
-            // Se tiver endereço completo, esconde o bairro simples e mostra a rua
             const elBairro = document.getElementById('detLocalLocal');
             const elEnd = document.getElementById('detLocalEnderecoCompleto');
+            
             if (l.endereco) {
                 elBairro.style.display = 'none';
-                elEnd.style.display = 'block';
+                elEnd.style.display = 'flex';
                 elEnd.querySelector('span').textContent = `${l.endereco} - ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
             } else {
                 elEnd.style.display = 'none';
-                elBairro.style.display = 'block';
-                elBairro.textContent = `📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
+                elBairro.style.display = 'flex';
+                elBairro.querySelector('span').textContent = `${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
             }
 
             const elHorario = document.getElementById('detLocalHorario');
-            if (l.horario) { elHorario.style.display = 'block'; elHorario.querySelector('span').textContent = l.horario; } 
-            else { elHorario.style.display = 'none'; }
+            if (l.horario) { 
+                elHorario.style.display = 'flex'; 
+                elHorario.querySelector('span').textContent = l.horario; 
+            } else { 
+                elHorario.style.display = 'none'; 
+            }
 
             document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';
-            document.getElementById('detLocalKeywords').textContent=(l.keywords||l.palavrasChave)?`Encontre por: ${l.keywords||l.palavrasChave}`:'';
+            
+            const elKeywords = document.getElementById('detLocalKeywords');
+            if(l.keywords||l.palavrasChave) {
+                elKeywords.style.display = 'block';
+                elKeywords.textContent = `Encontre por: ${l.keywords||l.palavrasChave}`;
+            } else {
+                elKeywords.style.display = 'none';
+            }
             
             // Botões de Ação
             const btnWpp = document.getElementById('btnDetLocalWpp');
-            btnWpp.style.display=(l.whatsapp||l.telefone)?'inline-flex':'none';
+            btnWpp.style.display=(l.whatsapp||l.telefone)?'flex':'none';
             btnWpp.onclick=()=>abrirWhatsApp(l.whatsapp||l.telefone,`Olá, encontrei ${nomeExibicaoLocal(l)} na Folha Amarela Digital.`);
             
             const btnTel = document.getElementById('btnDetLocalTel');
             if (l.telefoneExtra) {
-                btnTel.style.display='inline-flex';
+                btnTel.style.display='flex';
                 btnTel.onclick=()=>window.open(`tel:${l.telefoneExtra}`, '_self');
             } else { btnTel.style.display='none'; }
             
             const btnInsta = document.getElementById('btnDetLocalInsta');
             if (l.instagram) {
-                btnInsta.style.display='inline-flex';
+                btnInsta.style.display='flex';
                 const userInsta = l.instagram.replace('@', '').trim();
                 btnInsta.onclick=()=>window.open(`https://instagram.com/${userInsta}`, '_blank');
             } else { btnInsta.style.display='none'; }
 
             const btnMapa = document.getElementById('btnDetLocalMapa');
-            // Só mostra o mapa se tivermos rua ou pelo menos o bairro
             if (l.endereco || l.bairro) {
-                btnMapa.style.display='inline-flex';
+                btnMapa.style.display='flex';
                 const queryMapa = l.endereco ? `${l.endereco}, ${l.cidade||cidadeAtual}` : `${nomeExibicaoLocal(l)}, ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
                 btnMapa.onclick=()=>window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryMapa)}`, '_blank');
             } else { btnMapa.style.display='none'; }
