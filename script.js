@@ -185,7 +185,7 @@
         }
         
    
-        async function renderizarLocais(){
+       async function renderizarLocais(){
             const a=filtrarLocaisCache(),c=document.getElementById('listaLocais');
             const q = document.getElementById('inputBusca').value.trim();
             let secaoWeb = document.getElementById('secaoResultadosWeb');
@@ -194,6 +194,7 @@
             if(!a.length){
                 c.appendChild(criarVazio(false));
                 atualizarMetaBusca(0);
+                renderizarPaginacao(0);
                 if(q.length >= 3 && typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY) {
                     buscarComGemini(q);
                 } else if(secaoWeb) {
@@ -204,9 +205,9 @@
             
             if(secaoWeb) secaoWeb.style.display = 'none';      
 
-                const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-                const fim = inicio + ITENS_POR_PAGINA;
-                const itensPagina = a.slice(inicio, fim);
+            const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+            const fim = inicio + ITENS_POR_PAGINA;
+            const itensPagina = a.slice(inicio, fim);
             
             itensPagina.forEach(l=>{
                 const card=criarEl('article','card-local');
@@ -214,11 +215,11 @@
                 const body=criarEl('div','card-body');
                 if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
                 
-                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',nomeExibicaoLocal(l));
+                // RESTAURADO: Adiciona o título limpo no topo do cartão
+                const top = criarEl('div', 'card-topline');
+                const title = criarEl('div', 'card-title', nomeExibicaoLocal(l));
                 top.appendChild(title);
-                // const profile=criarEl('button','profile-link','Ver detalhes');
-                // profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                // top.appendChild(profile);body.appendChild(top);
+                body.appendChild(top);
                 
                 const meta=criarEl('div','card-subtitle'),catMeta=criarEl('span'),bairroMeta=criarEl('span');
                 catMeta.append(icone('fas fa-tag'),document.createTextNode(' '+(l.categoria||'Serviço')));
@@ -233,10 +234,9 @@
                 const detail=criarEl('button','btn-card btn-outline','Detalhes');
                 detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
                 acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
-                       
             });
             atualizarMetaBusca(a.length);
-            renderizarPaginacao(a.length); // Chama a renderização dos botões
+            renderizarPaginacao(a.length);
         }
 
          // NOVA FUNÇÃO
