@@ -130,7 +130,27 @@
         function registroAprovado(x){return x.status==='aprovado'||x.status==='ativo';}
         function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
         function ordenarLocais(a){return [...a].sort((x,y)=>Number(registroDestaque(y))-Number(registroDestaque(x)));}
-        function nomeExibicaoLocal(l){return String(l.nomeFantasia||l.nome_fantasia||l.fantasia||l.nomeComercial||l.nome||'Prestador local').trim();}
+         function formatarNomeExibicao(texto) {
+            if (!texto) return 'Prestador local';
+    
+            // 1. Remove números, pontos e traços do início (ex: "65.354.050 ")
+            let nomeLimpo = texto.replace(/^[\d.\-\s]+/, '').trim();
+            if (!nomeLimpo) return 'Prestador local';
+
+            // 2. Converte para Title Case, mantendo preposições em minúsculas
+            const excecoes = ['da', 'de', 'do', 'das', 'dos', 'e', 'em', 'na', 'no'];
+            return nomeLimpo.toLowerCase().split(/\s+/).map((palavra, index) => {
+                if (excecoes.includes(palavra) && index !== 0) {
+                    return palavra;
+                }
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            }).join(' ');
+                }
+
+        function nomeExibicaoLocal(l) {
+            const nomeBruto = String(l.nomeFantasia || l.nome_fantasia || l.fantasia || l.nomeComercial || l.nome || 'Prestador local').trim();
+            return formatarNomeExibicao(nomeBruto);
+        }
         function cnpjFormatado(valor){const n=String(valor||'').replace(/\D/g,'');return n.length===14?n.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5'):String(valor||'').trim();}
         function descricaoCurtaLocal(l){const texto=String(l.descricao||l.servicos||'').replace(/\s+/g,' ').trim();return texto.length>145?texto.slice(0,142).trimEnd()+'…':texto;}
         function textoLocal(l){return normalizarTexto([nomeExibicaoLocal(l),l.nome,l.categoria,l.subcategoria,l.descricao,l.servicos,l.keywords,l.palavrasChave,l.bairro,l.cidade,l.telefone].join(' '));}
@@ -196,9 +216,9 @@
                 
                 const top=criarEl('div','card-topline'),title=criarEl('div','card-title',nomeExibicaoLocal(l));
                 top.appendChild(title);
-                const profile=criarEl('button','profile-link','Ver detalhes');
-                profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                top.appendChild(profile);body.appendChild(top);
+                // const profile=criarEl('button','profile-link','Ver detalhes');
+                // profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
+                // top.appendChild(profile);body.appendChild(top);
                 
                 const meta=criarEl('div','card-subtitle'),catMeta=criarEl('span'),bairroMeta=criarEl('span');
                 catMeta.append(icone('fas fa-tag'),document.createTextNode(' '+(l.categoria||'Serviço')));
