@@ -202,6 +202,13 @@
                 }
                 return;
             }
+                if(l.whatsapp||l.telefone) {
+            const nomeLoc = nomeExibicaoLocal(l);
+            const bairroLoc = l.bairro || 'Centro';
+            const cidadeLoc = l.cidade || cidadeAtual;
+            const msgWpp = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
+            acts.appendChild(botaoWpp(l.whatsapp||l.telefone, 'WhatsApp', msgWpp));
+        }
             
             if(secaoWeb) secaoWeb.style.display = 'none';      
 
@@ -359,7 +366,11 @@ function abrirDetalhesLocal(id){
             // Botões de Ação
             const btnWpp = document.getElementById('btnDetLocalWpp');
             btnWpp.style.display=(l.whatsapp||l.telefone)?'flex':'none';
-            btnWpp.onclick=()=>abrirWhatsApp(l.whatsapp||l.telefone,`Olá, encontrei ${nomeExibicaoLocal(l)} na Folha Amarela Digital.`);
+           const nomeLoc = nomeExibicaoLocal(l);
+        const bairroLoc = l.bairro || 'Centro';
+        const cidadeLoc = l.cidade || cidadeAtual;
+        const msgWppModal = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
+        btnWpp.onclick = () => abrirWhatsApp(l.whatsapp||l.telefone, msgWppModal);
             
             const btnTel = document.getElementById('btnDetLocalTel');
             if (l.telefoneExtra) {
