@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Folha Amarela Digital: encontre estabelecimentos, serviços, profissionais e imóveis na sua cidade.">
+    <meta name="description" content="Folha Amarela Digital: encontre estabelecimentos, serviços e profissionais na sua cidade.">
     <title>Folha Amarela Digital</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -67,11 +67,7 @@
                     <i class="fas fa-store"></i> Adicionar Negócio
                 </button>
             </li>
-            <li>
-                <button class="link-style" onclick="toggleMenu(); abrirModalCadastroImovel();">
-                    <i class="fas fa-house"></i> Anunciar Imóvel
-                </button>
-            </li>
+           
             <li>
                 <button class="link-style" onclick="toggleMenu(); abrirAreaAcessoClick();">
                     <i class="fas fa-user-circle"></i> Área de Lojistas
@@ -112,12 +108,11 @@
                         <i class="fas fa-search search-icon"></i>
                         <input type="search" class="search-bar" id="inputBusca" name="busca-diretorio" autocomplete="new-password" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="Ex.: eletricista, padaria, aluguel..." oninput="filtrarBusca()">
                     </div>
-                    <div class="hero-hint"><i class="fas fa-lightbulb"></i> Busque por nome, serviço, categoria ou bairro. Para imóveis, selecione a aba correspondente.</div>
+                    <div class="hero-hint"><i class="fas fa-lightbulb"></i> Busque por nome, serviço, categoria ou bairro.</div>
                 </div>
 
                 <div class="hero-actions">
-                    <button class="hero-secondary-action" onclick="abrirModalCadastroServico()"><i class="fas fa-plus"></i> Adicionar gratuitamente</button>
-                    <button class="hero-secondary-action" onclick="abrirModalEscolhaAnuncio()"><i class="fas fa-store"></i> Sou responsável por um negócio</button>
+                    <button class="hero-secondary-action" onclick="abrirModalCadastroServico()"><i class="fas fa-plus"></i> Adicionar gratuitamente</button>                   
                 </div>
             </div>
         </section>
@@ -127,12 +122,7 @@
                 <div><span class="section-kicker">EXPLORE</span><h2>O que você procura hoje?</h2></div>
                 <div id="searchMeta" class="search-meta"></div>
             </div>
-
-            <div class="main-tabs">
-                <button class="tab-btn active" id="tabBtnServicos" onclick="mudarTabPrincipal('servicos')"><i class="fas fa-store"></i> Estabelecimentos & Serviços</button>
-                <button class="tab-btn" id="tabBtnImoveis" onclick="mudarTabPrincipal('imoveis')"><i class="fas fa-home"></i> Imóveis</button>
-            </div>
-
+           
             <div id="secaoTabServicos">
                 <div class="categorias home-categorias">
                     <div class="cat-item" onclick="filtrarCategoria('Alimentação', this)"><div class="cat-icon"><i class="fas fa-hamburger"></i></div><div class="cat-name">Alimentação</div><small>Comida & bebidas</small></div>
@@ -153,19 +143,12 @@
                     <p style="font-size: 13px; color: var(--gray); margin-bottom: 16px;">Não encontramos registos oficiais na nossa base, mas a IA encontrou estas opções:</p>
                     <div id="listaLocaisWeb" class="lista-locais"></div>
                 </div>
+
+                <div id="paginacaoLocais" class="pagination-container"></div>
+                
             </div>
 
-            <div id="secaoTabImoveis" style="display:none;">
-                <div class="property-intro"><div class="property-icon"><i class="fas fa-house-chimney"></i></div><div><strong>Imóveis direto com o proprietário</strong><p>Compre, alugue ou reserve por temporada sem taxa de imobiliária. Fale diretamente com quem anunciou.</p></div></div>
-                <div class="categorias home-categorias property-categories">
-                    <div class="cat-item active" onclick="filtrarTransacaoImovel('', this)"><div class="cat-icon"><i class="fas fa-building"></i></div><div class="cat-name">Todos</div><small>Todos os imóveis</small></div>
-                    <div class="cat-item" onclick="filtrarTransacaoImovel('Venda', this)"><div class="cat-icon"><i class="fas fa-tag"></i></div><div class="cat-name">Venda</div><small>Comprar</small></div>
-                    <div class="cat-item" onclick="filtrarTransacaoImovel('Aluguel', this)"><div class="cat-icon"><i class="fas fa-key"></i></div><div class="cat-name">Aluguel</div><small>Alugar</small></div>
-                    <div class="cat-item" onclick="filtrarTransacaoImovel('Temporada', this)"><div class="cat-icon"><i class="fas fa-umbrella-beach"></i></div><div class="cat-name">Temporada</div><small>Por período</small></div>
-                </div>
-                <h3 class="secao-header"><i class="fas fa-home"></i> Imóveis Disponíveis</h3>
-                <div id="listaImoveis" class="lista-locais"><p style="text-align:center;color:var(--gray);padding:30px;">A carregar imóveis...</p></div>
-            </div>
+          
         </section>
     </main>
 
@@ -174,7 +157,7 @@
         <div class="modal-content" style="max-width:450px;display:flex;flex-direction:column;height:500px;padding:0;">
             <div style="background:var(--purple);color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;"><h3 style="font-size:16px;"><i class="fas fa-wand-magic-sparkles"></i> Busca conversacional</h3><span class="close" onclick="document.getElementById('modalChatIA').style.display='none'" style="position:static;background:rgba(255,255,255,.2);color:white;">&times;</span></div>
             <div id="chatMensagens" style="flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;background:var(--input-bg);">
-                <div style="background:var(--surface);padding:12px 16px;border-radius:16px;max-width:85%;font-size:13px;line-height:1.5;border:1px solid var(--border);">Olá! Diga o que você procura. Eu posso procurar nos estabelecimentos, serviços e imóveis no diretório ou na web.</div>
+                <div style="background:var(--surface);padding:12px 16px;border-radius:16px;max-width:85%;font-size:13px;line-height:1.5;border:1px solid var(--border);">Olá! Diga o que você procura. Eu posso procurar nos estabelecimentos e serviços no diretório ou na web.</div>
             </div>
             <div style="padding:12px;background:var(--surface);display:flex;gap:8px;"><input type="search" id="inputChatUser" autocomplete="off" class="form-control" placeholder="Ex.: preciso de eletricista" onkeypress="if(event.key==='Enter') enviarMensagemChat()" style="margin:0;"><button class="btn-submit" onclick="enviarMensagemChat()" style="margin:0;width:50px;background:var(--purple);color:white;"><i class="fas fa-paper-plane"></i></button></div>
         </div>
@@ -189,30 +172,12 @@
             <p class="modal-lead">O cadastro básico é gratuito. Você pode cadastrar seu próprio negócio ou ajudar outra pessoa a ser encontrada.</p>
             <div class="choice-grid">
                 <button class="choice-card" type="button" onclick="abrirModalCadastroServico(false)"><i class="fas fa-plus-circle"></i><strong>Adicionar gratuitamente</strong><span>Cadastre uma padaria, loja, profissional, serviço ou outro negócio local.</span></button>
-                <button class="choice-card" type="button" onclick="abrirFluxoReivindicacaoSemLocal()"><i class="fas fa-user-check"></i><strong>Sou responsável por um negócio</strong><span>Encontre um perfil existente e reivindique a gestão dele.</span></button>
-                <button class="choice-card" type="button" onclick="abrirModalCadastroImovel()"><i class="fas fa-house"></i><strong>Anunciar imóvel</strong><span>Venda, aluguel ou temporada continuam em uma área separada.</span></button>
+              
             </div>
             <div class="mini-label" style="margin-top:13px;"><i class="fas fa-shield-halved"></i> Novos cadastros passam por revisão antes de aparecer publicamente.</div>
         </div>
     </div>
 
-    <!-- Modal Cadastro Imóvel -->
-    <div id="modalCadastroImovel" class="modal">
-        <div class="modal-content" style="max-width:520px;"><span class="close" onclick="document.getElementById('modalCadastroImovel').style.display='none'">&times;</span><h2 style="margin-bottom:20px;font-size:20px;"><i class="fas fa-home" style="color:var(--purple);"></i> Anunciar Imóvel</h2><div class="status-pending"><i class="fas fa-shield-halved"></i> O anúncio será revisado antes de aparecer publicamente.</div>
-            <input type="hidden" id="imovId">
-            <div class="form-group"><label>Título do Anúncio</label><input type="text" id="imovTitulo" class="form-control" placeholder="Ex: Casa aconchegante para temporada"></div>
-            <div class="form-row"><div class="form-group" style="flex:1;"><label>Transação</label><select id="imovTransacao" class="form-control"><option value="Venda">Venda</option><option value="Aluguel">Aluguel Mensal</option><option value="Temporada">Aluguel por Temporada</option></select></div><div class="form-group" style="flex:1;"><label>Tipo</label><select id="imovTipo" class="form-control"><option>Casa</option><option>Apartamento</option><option>Chácara / Sítio</option><option>Terreno</option><option>Comercial</option></select></div></div>
-            <div class="form-row"><div class="form-group" style="flex:1;"><label>Valor (R$)</label><input type="number" id="imovPreco" class="form-control" placeholder="1500 (ou valor total)"></div><div class="form-group" style="flex:1;"><label>Quartos</label><select id="imovQuartos" class="form-control"><option value="0">N/A</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+</option></select></div></div>
-            <div class="form-group"><label style="display:flex;align-items:center;gap:10px;cursor:pointer;"><input type="checkbox" id="imovGaragem" style="width:18px;height:18px;accent-color:var(--purple);"><span>Possui Garagem / Estacionamento</span></label></div>
-            <div class="form-row"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="imovCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="imovBairro" class="form-control" placeholder="Centro"></div></div>
-            <div class="form-group"><label>WhatsApp do Proprietário</label><input type="tel" id="imovWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div>
-            <div class="form-group"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><label style="margin:0;">Descrição Detalhada</label><button type="button" onclick="gerarDescricaoImovelIA()" style="background:var(--purple);color:white;border:none;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:4px;"><i class="fas fa-wand-magic-sparkles"></i> Gerar texto</button></div><textarea id="imovDesc" class="form-control" rows="3" placeholder="Escreva os detalhes do imóvel..."></textarea></div>
-            <button class="btn-submit" style="background:var(--purple);color:white;" onclick="salvarImovel()">Enviar imóvel para revisão</button>
-        </div>
-    </div>
-
-    <!-- Modal Detalhes Genérico -->
-    <div id="modalDetalhes" class="modal"><div class="modal-content" style="padding:0;overflow:hidden;max-width:520px;"><div style="padding:24px;"><span class="close" onclick="fecharDetalhes()" style="top:16px;right:16px;position:absolute;">&times;</span><h2 id="detDetalhesNome" style="margin-bottom:4px;font-size:22px;">Nome</h2><p style="color:var(--gray);font-size:13px;margin-bottom:12px;"><span id="detDetalhesCategoria">Categoria</span> &bull; <span id="detDetalhesLocal">Bairro</span></p><div id="detDetalhesConteudoExtra" style="margin:16px 0;font-size:14px;line-height:1.6;"></div><button class="btn-card btn-wpp" id="btnDetWpp" style="width:100%;padding:12px;"><i class="fab fa-whatsapp"></i> Falar com Proprietário</button></div></div></div>
 
     <!-- Modal Cidade -->
     <div id="modalCidade" class="modal"><div class="modal-content" style="text-align:center;max-width:380px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><div id="listaCidadesDinamica" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div><button class="btn-outline btn-card" style="width:100%;padding:12px;border-radius:12px;font-weight:700;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar GPS</button></div></div>
@@ -264,8 +229,7 @@
             <div class="form-group"><label>O que faz?</label><input type="text" id="cadDescricao" class="form-control" placeholder="Ex: pães, bolos e salgados / instalação elétrica"><div class="helper-text">Use palavras que um morador realmente procuraria.</div></div>
             <div class="form-group"><label>Palavras-chave</label><input type="text" id="cadKeywords" class="form-control" placeholder="padaria, pão, bolo, café"><div class="helper-text">Separe por vírgulas. Elas ajudam a encontrar o negócio mesmo sem saber o nome.</div></div>
             <div class="form-row"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div>
-            <div class="form-group"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" inputmode="numeric" placeholder="35999999999"><div class="helper-text">Se você estiver apenas indicando alguém e não souber o número, pode deixar em branco.</div></div>
-            <div class="check-row"><input type="checkbox" id="cadSouResponsavel"><label for="cadSouResponsavel"><strong>Sou o responsável por este negócio.</strong><br>Isso registra que você deseja administrar o perfil. A confirmação da propriedade será feita separadamente.</label></div>
+            <div class="form-group"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" inputmode="numeric" placeholder="35999999999"><div class="helper-text">Se você estiver apenas indicando alguém e não souber o número, pode deixar em branco.</div></div>         
             <button class="btn-submit" onclick="salvarLocalLojista()"><i class="fas fa-paper-plane"></i> Enviar para revisão</button>
         </div>
     </div>
@@ -281,11 +245,7 @@
             <div id="detLocalDadosLegais" class="business-legal-details" hidden></div>
             <p id="detLocalDescricao" class="card-description detail-description" style="font-size:14px;"></p>
             <div id="detLocalKeywords" class="card-keywords"></div>
-            <div class="claim-box">
-                <strong><i class="fas fa-user-check"></i> Este negócio é seu?</strong>
-                <span>Reivindique o perfil para solicitar a gestão do anúncio e, depois, pedir destaque.</span>
-                <button class="btn-community secondary" type="button" style="margin-top:9px;" onclick="reivindicarLocalAtual()"><i class="fas fa-hand-pointer"></i> Reivindicar este perfil</button>
-            </div>
+           
             <div style="display:flex;gap:8px;margin-top:15px;">
                 <button class="btn-card btn-wpp" id="btnDetLocalWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                 <button class="btn-card btn-outline" type="button" onclick="abrirDestaqueLocalAtual()"><i class="fas fa-star"></i> Quero destaque</button>
@@ -311,7 +271,7 @@
     <!-- Modal Indicação -->
     <div id="modalIndicacao" class="modal"><div class="modal-content" style="max-width:520px;"><span class="close" onclick="fecharModalIndicacao()">&times;</span><h2><i class="fas fa-user-plus" style="color:var(--primary);"></i> Indicar alguém</h2><p style="color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:18px;">Conhece alguém que faz o que você procurou? Indique. A pessoa pode ser autônoma, trabalhar de casa ou simplesmente ainda não ter divulgado o serviço.</p><div class="form-group"><label>Nome da pessoa ou negócio</label><input type="text" id="indNome" class="form-control" placeholder="Ex: Maria da Costura"></div><div class="form-group"><label>O que ela faz?</label><input type="text" id="indServico" class="form-control" placeholder="Ex: costura e ajustes de roupas"></div><div class="form-row"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="indCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro (opcional)</label><input type="text" id="indBairro" class="form-control" placeholder="Centro"></div></div><div class="form-group"><label>WhatsApp (opcional)</label><input type="tel" id="indWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div><button class="btn-submit" onclick="enviarIndicacao()"><i class="fas fa-paper-plane"></i> Enviar indicação</button></div></div>
 
-    <footer> <strong>Folha Amarela Digital</strong><br>Encontre quem faz. Conecte sua cidade.<br><span style="display:inline-block;margin-top:6px;">v5.2 • Diretório colaborativo de estabelecimentos, serviços e imóveis</span></footer>
+    <footer> <strong>Folha Amarela Digital</strong><br>Encontre quem faz. Conecte sua cidade.<br><span style="display:inline-block;margin-top:6px;">v5.2 • Diretório colaborativo de estabelecimentos e serviços</span></footer>
 
     <script src="script.js"></script>
 </body>
