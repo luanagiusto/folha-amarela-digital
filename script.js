@@ -400,9 +400,58 @@
         }
        function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;paginaAtual = 1; renderizarLocais();}
         
-        function usarGPSLocalizacao(){
-            if(!navigator.geolocation) return alert('Seu navegador não disponibiliza localização.');
-            navigator.geolocation.getCurrentPosition(()=>alert('Localização autorizada. Escolha a cidade na lista (funcionalidade GPS em desenvolvimento).'),()=>alert('Não foi possível acessar a localização.'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
+       function usarGPSLocalizacao(){
+            if(!navigator.geolocation) return alert('O seu navegador não disponibiliza localização.');
+            
+            const btn = document.querySelector('button[onclick="usarGPSLocalizacao()"]');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A procurar...';
+            btn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                
+                try {
+                    // Consulta gratuita ao OpenStreetMap para obter a cidade via coordenadas
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const data = await res.json();
+                    
+                    const cidadeEncontrada = data.address.city || data.address.town || data.address.village;
+                    
+                    if (cidadeEncontrada) {
+                        const cidadeNormalizada = normalizarTexto(cidadeEncontrada);
+                        
+                        // Verifica se a cidade encontrada já existe na nossa base (ignorando acentos)
+                        const cidadeExistente = [...new Set(listaLocaisCache.map(x => (x.cidade || 'Paraisópolis').trim()))]
+                            .find(c => normalizarTexto(c) === cidadeNormalizada);
+
+                        if (cidadeExistente) {
+                            mudarCidade(cidadeExistente);
+                        } else {
+                            mudarCidade(cidadeEncontrada);
+                            alert(`Localização encontrada: ${cidadeEncontrada}. Ainda pode não haver locais registados aqui.`);
+                        }
+                    } else {
+                        alert('Não foi possível identificar a cidade através destas coordenadas.');
+                    }
+                } catch (e) {
+                    console.error("Erro na geocodificação:", e);
+                    alert('Erro ao consultar o serviço de mapas.');
+                } finally {
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                }
+            }, (err) => {
+                let msg = 'Não foi possível aceder à localização.';
+                if (err.code === 1) msg = 'Permissão de GPS negada. Autorize o acesso à localização nas definições do navegador.';
+                if (err.code === 2) msg = 'Sinal de GPS indisponível neste momento.';
+                if (err.code === 3) msg = 'Tempo limite excedido ao tentar obter a localização.';
+                alert(msg);
+                
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
         }
         
         function fecharDetalhes(){document.getElementById('modalDetalhes').style.display='none';}
