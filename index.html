@@ -206,8 +206,19 @@
             <div class="form-group"><label>Categoria</label><select id="editCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div>
             <div class="form-group"><label>O que faz?</label><input id="editDescricao" class="form-control"></div>
             <div class="form-group"><label>Palavras-chave</label><input id="editKeywords" class="form-control"></div>
-            <div class="form-row"><div class="form-group" style="flex:1"><label>Cidade</label><input id="editCidade" class="form-control"></div><div class="form-group" style="flex:1"><label>Bairro</label><input id="editBairro" class="form-control"></div></div>
-            <div class="form-group"><label>WhatsApp</label><input id="editWpp" class="form-control" inputmode="numeric"></div>
+           <div class="form-row">
+                <div class="form-group" style="flex:1"><label>Cidade</label><input id="editCidade" class="form-control"></div>
+                <div class="form-group" style="flex:1"><label>Bairro</label><input id="editBairro" class="form-control"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:2;"><label>Rua e Número</label><input id="editEndereco" class="form-control"></div>
+                <div class="form-group" style="flex:1;"><label>Horário</label><input id="editHorario" class="form-control"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1;"><label>WhatsApp</label><input id="editWpp" class="form-control" inputmode="numeric"></div>
+                <div class="form-group" style="flex:1;"><label>Outro Telefone</label><input id="editTelefone" class="form-control"></div>
+            </div>
+            <div class="form-group"><label>Instagram</label><input id="editInstagram" class="form-control"></div>
             <div id="editMensagem" class="helper-text" style="min-height:18px"></div>
             <button class="btn-submit" onclick="salvarEdicaoPerfil()">Salvar alterações</button>
         </div>
@@ -228,8 +239,19 @@
             <div class="form-group"><label>Categoria</label><select id="cadCategoria" class="form-control"><option>Alimentação</option><option>Serviços</option><option>Pet Shop</option><option>Saúde</option></select></div>
             <div class="form-group"><label>O que faz?</label><input type="text" id="cadDescricao" class="form-control" placeholder="Ex: pães, bolos e salgados / instalação elétrica"><div class="helper-text">Use palavras que um morador realmente procuraria.</div></div>
             <div class="form-group"><label>Palavras-chave</label><input type="text" id="cadKeywords" class="form-control" placeholder="padaria, pão, bolo, café"><div class="helper-text">Separe por vírgulas. Elas ajudam a encontrar o negócio mesmo sem saber o nome.</div></div>
-            <div class="form-row"><div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Paraisópolis"></div><div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Centro"></div></div>
-            <div class="form-group"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" inputmode="numeric" placeholder="35999999999"><div class="helper-text">Se você estiver apenas indicando alguém e não souber o número, pode deixar em branco.</div></div>         
+           <div class="form-row">
+                <div class="form-group" style="flex:1;"><label>Cidade</label><input type="text" id="cadCidade" class="form-control" placeholder="Nome da cidade"></div>
+                <div class="form-group" style="flex:1;"><label>Bairro</label><input type="text" id="cadBairro" class="form-control" placeholder="Nome do bairro"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:2;"><label>Rua e Número</label><input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Direita, 123"></div>
+                <div class="form-group" style="flex:1;"><label>Horário</label><input type="text" id="cadHorario" class="form-control" placeholder="Ex: Seg-Sex, 08h-18h"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:1;"><label>WhatsApp</label><input type="tel" id="cadWpp" class="form-control" inputmode="numeric" placeholder="35999999999"></div>
+                <div class="form-group" style="flex:1;"><label>Outro Telefone</label><input type="tel" id="cadTelefone" class="form-control" placeholder="Fixo ou celular"></div>
+            </div>
+            <div class="form-group"><label>Instagram (opcional)</label><input type="text" id="cadInstagram" class="form-control" placeholder="Ex: @padariadoze"></div>
             <button class="btn-submit" onclick="salvarLocalLojista()"><i class="fas fa-paper-plane"></i> Enviar para revisão</button>
         </div>
     </div>
@@ -242,9 +264,22 @@
             <h2 id="detLocalNome" style="font-size:22px;margin-bottom:4px;">Nome</h2>
             <p id="detLocalCategoria" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Categoria</p>
             <p id="detLocalLocal" style="color:var(--gray);font-size:13px;margin-bottom:15px;">Local</p>
+          
+          <p id="detLocalCategoria" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Categoria</p>
+            <p id="detLocalLocal" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Local</p>
+            <p id="detLocalEnderecoCompleto" style="color:var(--gray);font-size:13px;margin-bottom:4px;display:none;"><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> <span></span></p>
+            <p id="detLocalHorario" style="color:var(--gray);font-size:13px;margin-bottom:15px;display:none;"><i class="fas fa-clock" style="color:var(--primary);"></i> <span></span></p>
+            
             <div id="detLocalDadosLegais" class="business-legal-details" hidden></div>
             <p id="detLocalDescricao" class="card-description detail-description" style="font-size:14px;"></p>
             <div id="detLocalKeywords" class="card-keywords"></div>
+            
+            <div style="display:flex;gap:8px;margin-top:15px;flex-wrap:wrap;">
+                <button class="btn-card btn-wpp" id="btnDetLocalWpp" style="flex:1;min-width:120px;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-card" id="btnDetLocalTel" style="flex:1;min-width:120px;background:var(--input-bg);color:var(--dark);border:1px solid var(--border);display:none;"><i class="fas fa-phone"></i> Ligar</button>
+                <button class="btn-card" id="btnDetLocalInsta" style="flex:1;min-width:120px;background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);color:white;display:none;border:none;"><i class="fab fa-instagram"></i> Instagram</button>
+                <button class="btn-card" id="btnDetLocalMapa" style="width:100%;background:#4285F4;color:white;display:none;border:none;margin-top:4px;"><i class="fas fa-map-location-dot"></i> Como chegar</button>
+            </div>
            
             <div style="display:flex;gap:8px;margin-top:15px;">
                 <button class="btn-card btn-wpp" id="btnDetLocalWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
