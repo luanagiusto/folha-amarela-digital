@@ -207,7 +207,7 @@
             <div class="form-group"><label>O que faz?</label><input id="editDescricao" class="form-control"></div>
             <div class="form-group"><label>Palavras-chave</label><input id="editKeywords" class="form-control"></div>
            <div class="form-row">
-               <div class="form-group" style="flex:1;"><label>CEP</label><input id="editCep" class="form-control" placeholder="00000-000" oninput="mascaraCepEBuscar(this, 'edit')" maxlength="9"></div>
+              <div class="form-group" style="flex:1;"><label>CEP</label><input id="editCep" class="form-control" placeholder="00000-000" oninput="mascaraCep(this)" onblur="buscarCepBlur(this, 'edit')" maxlength="9"></div>
                 <div class="form-group" style="flex:2;"><label>Rua e Número</label><input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Direita, 123"></div>
             </div>
             <div class="form-row">
@@ -241,7 +241,7 @@
             <div class="form-group"><label>O que faz?</label><input type="text" id="cadDescricao" class="form-control" placeholder="Ex: pães, bolos e salgados / instalação elétrica"><div class="helper-text">Use palavras que um morador realmente procuraria.</div></div>
             <div class="form-group"><label>Palavras-chave</label><input type="text" id="cadKeywords" class="form-control" placeholder="padaria, pão, bolo, café"><div class="helper-text">Separe por vírgulas. Elas ajudam a encontrar o negócio mesmo sem saber o nome.</div></div>
             <div class="form-row">
-            <div class="form-group" style="flex:1;"><label>CEP</label><input type="text" id="cadCep" class="form-control" placeholder="00000-000" oninput="mascaraCepEBuscar(this, 'cad')" maxlength="9"></div>
+            <div class="form-group" style="flex:1;"><label>CEP</label><input id="editCep" class="form-control" placeholder="00000-000" oninput="mascaraCep(this)" onblur="buscarCepBlur(this, 'edit')" maxlength="9"></div>
             <div class="form-group" style="flex:2;"><label>Rua e Número</label><input type="text" id="cadEndereco" class="form-control" placeholder="Ex: Rua Direita, 123"></div>
             </div>
             <div class="form-row">
