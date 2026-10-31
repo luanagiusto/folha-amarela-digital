@@ -483,10 +483,10 @@
         function fecharDetalhes(){document.getElementById('modalDetalhes').style.display='none';}
 
       
-       async function salvarLocalLojista(){
+      async function salvarLocalLojista(){
             const nome=document.getElementById('cadNome').value.trim(),categoria=document.getElementById('cadCategoria').value,descricao=document.getElementById('cadDescricao').value.trim(),keywords=document.getElementById('cadKeywords').value.trim(),cidade=document.getElementById('cadCidade').value.trim()||cidadeAtual,bairro=document.getElementById('cadBairro').value.trim()||'Centro',whatsapp=limparWhatsApp(document.getElementById('cadWpp').value);
             
-            // Novos campos
+            const cep=document.getElementById('cadCep').value.replace(/\D/g, ''); // Adicionado
             const endereco=document.getElementById('cadEndereco').value.trim();
             const horario=document.getElementById('cadHorario').value.trim();
             const telefoneExtra=limparWhatsApp(document.getElementById('cadTelefone').value);
@@ -497,13 +497,13 @@
             try{
                 await db.collection('locais').add({
                     nome, categoria, descricao, keywords, cidade, bairro, whatsapp, 
-                    endereco, horario, telefoneExtra, instagram, // Incluído aqui
+                    cep, endereco, horario, telefoneExtra, instagram, // cep incluído aqui
                     userId:usuarioLogado?usuarioLogado.uid:'', status:'pendente', destaque:false, plano:'gratuito', criadoEm:firebase.firestore.FieldValue.serverTimestamp()
                 });
                 fecharModalCadastro();
                 alert('Cadastro enviado. Obrigado por ajudar a cidade!');
-                ['cadNome','cadDescricao','cadKeywords','cadWpp','cadEndereco','cadHorario','cadTelefone','cadInstagram'].forEach(id=>document.getElementById(id).value='');
-            }catch(e){console.error(e);alert('Não foi possível enviar o cadastro. Verifique a conexão e o Firebase.');}
+                ['cadNome','cadDescricao','cadKeywords','cadWpp','cadCep','cadEndereco','cadHorario','cadTelefone','cadInstagram'].forEach(id=>document.getElementById(id).value='');
+            }catch(e){console.error(e);alert('Não foi possível enviar o cadastro.');}
         }
       
         function isOwner(l){return !!usuarioLogado && (l.proprietarioUid===usuarioLogado.uid || l.userId===usuarioLogado.uid);}
@@ -629,6 +629,7 @@
             document.getElementById('editCategoria').value=l.categoria||'Serviços';
             document.getElementById('editDescricao').value=l.descricao||l.servicos||'';
             document.getElementById('editKeywords').value=l.keywords||l.palavrasChave||'';
+            document.getElementById('editCep').value=l.cep||'';
             document.getElementById('editCidade').value=l.cidade||cidadeAtual;
             document.getElementById('editBairro').value=l.bairro||'Centro';
             document.getElementById('editWpp').value=l.whatsapp||'';
@@ -646,7 +647,7 @@
             if(w&&(w.length<10||w.length>13)){msg.textContent='Confira o WhatsApp.';return;}
             msg.textContent='Salvando...';
             try{
-               await db.collection('locais').doc(id).update({
+              await db.collection('locais').doc(id).update({
                     nome:document.getElementById('editNome').value.trim(),
                     categoria:document.getElementById('editCategoria').value,
                     descricao:document.getElementById('editDescricao').value.trim(),
@@ -654,6 +655,7 @@
                     cidade:document.getElementById('editCidade').value.trim(),
                     bairro:document.getElementById('editBairro').value.trim()||'Centro',
                     whatsapp:w,
+                    cep:document.getElementById('editCep').value.replace(/\D/g, ''), // Adicionado
                     endereco:document.getElementById('editEndereco').value.trim(),
                     horario:document.getElementById('editHorario').value.trim(),
                     telefoneExtra:limparWhatsApp(document.getElementById('editTelefone').value),
@@ -697,6 +699,29 @@
                 fecharModalIndicacao();alert('Indicação enviada!');['indNome','indServico','indBairro','indWpp'].forEach(id=>document.getElementById(id).value='');
             }catch(e){console.error(e);alert('Erro ao enviar.');}
         }
+
+        async function buscarCep(cep, prefixo) {
+                    const cepLimpo = cep.replace(/\D/g, '');
+                    if (cepLimpo.length !== 8) return;
+                    
+                    try {
+                        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                        const data = await res.json();
+                        
+                        if (!data.erro) {
+                            document.getElementById(`${prefixo}Endereco`).value = data.logradouro ? data.logradouro + ', ' : '';
+                            document.getElementById(`${prefixo}Bairro`).value = data.bairro || '';
+                            document.getElementById(`${prefixo}Cidade`).value = data.localidade || '';
+                            
+                            // Coloca o foco no campo de endereço para a pessoa apenas adicionar o número
+                            document.getElementById(`${prefixo}Endereco`).focus();
+                        } else {
+                            alert('CEP não encontrado.');
+                        }
+                    } catch (e) {
+                        console.error("Erro ao buscar CEP:", e);
+                    }
+                }
 
         function abrirChatIA(){document.getElementById('modalChatIA').style.display='block';const c=document.getElementById('chatMensagens');if(c&&!c.dataset.intro){adicionarMensagemChat('Descreva o que procura. Posso buscar nos anúncios ou na web.','bot');c.dataset.intro='true';}document.getElementById('inputChatUser').focus();}
         function adicionarMensagemChat(texto,tipo='bot',link=null){
