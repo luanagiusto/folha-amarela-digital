@@ -14,9 +14,9 @@
         const db = firebase.firestore();
 
         let cidadeAtual = 'Paraisópolis', categoriaAtual = '', bairroAtual = '';
-        let listaLocaisCache = [], 
+        let listaLocaisCache = [];
         let usuarioLogado = null, modoCadastroAcesso = false, localAtualDetalhes = null;
-        let meusLocaisCache = [],, interessesCache = [], painelAba = 'meus';
+        let meusLocaisCache = [], interessesCache = [], painelAba = 'meus';
         let unsubPainel = [];
         let isAdminLogado = false;
         let paginaAtual = 1;
@@ -107,29 +107,19 @@
             if(!user){fecharPainel();} else if(document.getElementById('modalPainel').style.display==='block'){abrirPainel();}
         });
 
-        function voltarInicio(){
+       function voltarInicio(){
             cidadeAtual=document.getElementById('cidadeAtivaHeader').textContent||'Paraisópolis';
-            categoriaAtual='';transacaoImovelAtual='';bairroAtual='';
+            categoriaAtual='';bairroAtual='';
             document.getElementById('inputBusca').value='';
             document.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
             const t=document.querySelector('#secaoTabServicos .cat-item:last-child');
             if(t)t.classList.add('active');
-            mudarTabPrincipal('servicos');
             paginaAtual = 1;
             renderizarLocais();
             window.scrollTo({top:0,behavior:'smooth'});
         }
-        
-        function mudarTabPrincipal(tab){
-            tabAtual=tab;
-            document.getElementById('tabBtnServicos').classList.toggle('active',tab==='servicos');
-            document.getElementById('tabBtnImoveis').classList.toggle('active',tab==='imoveis');
-            document.getElementById('secaoTabServicos').style.display=tab==='servicos'?'block':'none';
-            document.getElementById('secaoTabImoveis').style.display=tab==='imoveis'?'block':'none';
-            atualizarListaBairros();renderizarAtual();
-        }
-        function renderizarAtual(){tabAtual==='servicos'?renderizarLocais():renderizarImoveis();}
-
+              
+     
         function abrirModalEscolhaAnuncio(){document.getElementById('modalEscolhaAnuncio').style.display='block';}
         function abrirModalCadastroServico(fecharEscolha=true){if(fecharEscolha)document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('cadCidade').value=cidadeAtual;document.getElementById('cadSouResponsavel').checked=!!usuarioLogado;document.getElementById('modalCadastro').style.display='block';}
         
@@ -169,9 +159,9 @@
         function icone(cls){const e=document.createElement('i');e.className=cls;return e;}
         function botaoWpp(n,label,msg){const b=criarEl('button','btn-card btn-wpp');b.type='button';b.append(icone('fab fa-whatsapp'),document.createTextNode(` ${label}`));b.addEventListener('click',()=>abrirWhatsApp(n,msg));return b;}
 
-        function atualizarMetaBusca(n){
+       function atualizarMetaBusca(n){
             const m=document.getElementById('searchMeta'),q=document.getElementById('inputBusca').value.trim();
-            if(m)m.textContent=q?`${n} ${tabAtual==='servicos'?'resultado(s)':'imóvel(is)'} encontrado(s).`:'';
+            if(m)m.textContent=q?`${n} resultado(s) encontrado(s).`:'';
         }
         
    
@@ -223,32 +213,7 @@
                 const detail=criarEl('button','btn-card btn-outline','Detalhes');
                 detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
                 acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
-            
-            a.forEach(l=>{
-                const card=criarEl('article','card-local');
-                if(registroDestaque(l))card.classList.add('is-featured');
-                const body=criarEl('div','card-body');
-                if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
-                
-                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',nomeExibicaoLocal(l));
-                top.appendChild(title);
-                const profile=criarEl('button','profile-link','Ver detalhes');
-                profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                top.appendChild(profile);body.appendChild(top);
-                
-                const meta=criarEl('div','card-subtitle'),catMeta=criarEl('span'),bairroMeta=criarEl('span');
-                catMeta.append(icone('fas fa-tag'),document.createTextNode(' '+(l.categoria||'Serviço')));
-                bairroMeta.append(icone('fas fa-location-dot'),document.createTextNode(' '+(l.bairro||'Centro')));
-                meta.append(catMeta,bairroMeta);body.appendChild(meta);
-                
-                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',descricaoCurtaLocal(l)));
-                if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
-                
-                const acts=criarEl('div','card-actions');
-                if(l.whatsapp||l.telefone) acts.appendChild(botaoWpp(l.whatsapp||l.telefone,'WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
-                const detail=criarEl('button','btn-card btn-outline','Detalhes');
-                detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
+                       
             });
             atualizarMetaBusca(a.length);
             renderizarPaginacao(a.length); // Chama a renderização dos botões
@@ -391,29 +356,29 @@
      
 
         function filtrarCategoria(cat,el){document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');categoriaAtual=cat; paginaAtual = 1; renderizarLocais();}
-        function filtrarTransacaoImovel(t,el){document.querySelectorAll('#secaoTabImoveis .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');transacaoImovelAtual=t;renderizarImoveis();}
-        function filtrarBusca(){paginaAtual = 1; renderizarAtual();}
+
+      function filtrarBusca(){paginaAtual = 1; renderizarLocais();}
         
         function abrirModalCidade(){document.getElementById('modalCidade').style.display='block';}
         function fecharModalCidade(){document.getElementById('modalCidade').style.display='none';}
-        function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros(); paginaAtual = 1; renderizarAtual();}
+    function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros(); paginaAtual = 1; renderizarLocais();}
         
         function atualizarSeletorCidades(){
-            const cidades=[...new Set([...listaLocaisCache.map(x=>(x.cidade||'Paraisópolis').trim()),...listaImoveisCache.map(x=>(x.cidade||'Paraisópolis').trim())].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+            const cidades=[...new Set([...listaLocaisCache.map(x=>(x.cidade||'Paraisópolis').trim())].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
             const box=document.getElementById('listaCidadesDinamica');box.replaceChildren();
             (cidades.length?cidades:['Paraisópolis']).forEach(c=>{
                 const b=criarEl('button','btn-submit',`${c}, MG`);b.type='button';b.style.margin='0';b.onclick=()=>mudarCidade(c);box.appendChild(b);
             });
         }
         
-        function atualizarListaBairros(){
-            const s=document.getElementById('filtroBairro'),base=tabAtual==='servicos'?listaLocaisCache:listaImoveisCache;
-            const bs=[...new Set(base.filter(x=>normalizarTexto(x.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)&&x.bairro).map(x=>String(x.bairro).trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+       function atualizarListaBairros(){
+            const s=document.getElementById('filtroBairro');
+            const bs=[...new Set(listaLocaisCache.filter(x=>normalizarTexto(x.cidade||'Paraisópolis')===normalizarTexto(cidadeAtual)&&x.bairro).map(x=>String(x.bairro).trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
             const v=bairroAtual;s.replaceChildren(new Option('Todos os Bairros',''));
             bs.forEach(b=>s.appendChild(new Option(b,b)));
             if(bs.includes(v)){s.value=v;bairroAtual=v;}else{s.value='';bairroAtual='';}
         }
-        function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;paginaAtual = 1; renderizarAtual();}
+       function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;paginaAtual = 1; renderizarLocais();}
         
         function usarGPSLocalizacao(){
             if(!navigator.geolocation) return alert('Seu navegador não disponibiliza localização.');
@@ -659,11 +624,9 @@
              }
         }
 
-        function iniciarListeners(){
-            db.collection('locais').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaLocaisCache=[];s.forEach(d=>listaLocaisCache.push({idDoc:d.id,...d.data()}));atualizarSeletorCidades();atualizarListaBairros();if(tabAtual==='servicos')renderizarLocais();abrirPerfilPorHash();},e=>{console.error(e);});
-            db.collection('imoveis').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaImoveisCache=[];s.forEach(d=>listaImoveisCache.push({idDoc:d.id,...d.data()}));atualizarSeletorCidades();atualizarListaBairros();if(tabAtual==='imoveis')renderizarImoveis();},e=>{console.error(e);});
+       function iniciarListeners(){
+            db.collection('locais').where('status','in',['aprovado','ativo']).onSnapshot(s=>{listaLocaisCache=[];s.forEach(d=>listaLocaisCache.push({idDoc:d.id,...d.data()}));atualizarSeletorCidades();atualizarListaBairros();renderizarLocais();abrirPerfilPorHash();},e=>{console.error(e);});
         }
-
         document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.style.display='none';}));
         document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal').forEach(m=>m.style.display='none');});
         
