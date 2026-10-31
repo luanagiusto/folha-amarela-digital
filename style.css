@@ -319,6 +319,38 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .card-actions { flex-direction: column; }
 }
 
+/* --- PAGINAÇÃO --- */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.btn-page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--dark);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.btn-page:hover {
+    border-color: var(--primary);
+    color: var(--primary-hover);
+}
+.btn-page.active {
+    background: var(--primary);
+    color: #1E293B;
+    border-color: var(--primary);
+}
 
 /* Refinamento dos cartões comerciais: nome legível, metadados discretos e dados legais somente no perfil. */
 .card-title {
