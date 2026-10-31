@@ -700,40 +700,36 @@
             }catch(e){console.error(e);alert('Erro ao enviar.');}
         }
 
-    async function mascaraCepEBuscar(input, prefixo) {
-            // 1. Aplica a máscara 00000-000
+function mascaraCep(input) {
             let valor = input.value.replace(/\D/g, '');
             if (valor.length > 5) {
                 valor = valor.slice(0, 5) + '-' + valor.slice(5, 8);
             }
             input.value = valor;
+        }
 
-            // 2. Faz a busca automática
-            const cepLimpo = valor.replace(/\D/g, '');
+        async function buscarCepBlur(input, prefixo) {
+            const cepLimpo = input.value.replace(/\D/g, '');
             if (cepLimpo.length === 8) {
                 const endInput = document.getElementById(`${prefixo}Endereco`);
                 const bairroInput = document.getElementById(`${prefixo}Bairro`);
                 const cidadeInput = document.getElementById(`${prefixo}Cidade`);
                 
-                // Feedback visual de carregamento
                 const placeholderAntigo = endInput.placeholder;
                 endInput.value = "A procurar endereço...";
                 
                 try {
-                    // Consulta à BrasilAPI
-                    const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${cepLimpo}`);
+                    // Consulta via ViaCEP
+                    const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                    const data = await res.json();
                     
-                    if (res.ok) {
-                        const data = await res.json();
-                        endInput.value = data.street ? data.street + ', ' : '';
-                        bairroInput.value = data.neighborhood || '';
-                        cidadeInput.value = data.city || '';
-                        
-                        // Foca no campo de endereço para introduzir o número
-                        if (data.street) endInput.focus();
+                    if (!data.erro) {
+                        endInput.value = data.logradouro ? data.logradouro + ', ' : '';
+                        bairroInput.value = data.bairro || '';
+                        cidadeInput.value = data.localidade || '';
                     } else {
                         endInput.value = '';
-                        alert('Não foi possível encontrar a rua para este CEP. Pode preencher os dados manualmente.');
+                        alert('CEP não encontrado. Pode preencher os dados manualmente.');
                     }
                 } catch (e) {
                     console.error("Erro na busca de CEP:", e);
