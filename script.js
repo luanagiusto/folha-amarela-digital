@@ -235,7 +235,7 @@ async function renderizarLocais(){
                     const nomeLoc = nomeExibicaoLocal(l);
                     const bairroLoc = l.bairro || 'Centro';
                     const cidadeLoc = l.cidade || cidadeAtual;
-                    const msgWpp = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
+                    const msgWpp = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${location.origin}/perfil.html?id=${l.idDoc}`;
                     acts.appendChild(botaoWpp(l.whatsapp || l.telefone, 'WhatsApp', msgWpp));
                 }
 
@@ -377,7 +377,7 @@ function abrirDetalhesLocal(id){
           const nomeLoc = nomeExibicaoLocal(l);
         const bairroLoc = l.bairro || 'Centro';
         const cidadeLoc = l.cidade || cidadeAtual;
-        const msgWppModal = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
+        const msgWppModal = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${location.origin}/perfil.html?id=${l.idDoc}`;
 btnWpp.onclick = () => abrirWhatsApp(l.whatsapp||l.telefone, msgWppModal);
             
             const btnTel = document.getElementById('btnDetLocalTel');
@@ -695,7 +695,9 @@ btnWpp.onclick = () => abrirWhatsApp(l.whatsapp||l.telefone, msgWppModal);
             }catch(e){console.error(e);msg.textContent='Erro ao salvar.';}
         }
         
-        function gerarLinkPerfil(l){return `${location.origin}${location.pathname}#perfil=${encodeURIComponent(l.idDoc)}`;}
+       function gerarLinkPerfil(l) {
+            return `${location.origin}/perfil.html?id=${l.idDoc}`;
+        }
         async function copiarTexto(t){try{await navigator.clipboard.writeText(t);alert('Link copiado.');}catch(e){prompt('Copie o link:',t);}}
         function abrirPerfilPorHash(){const m=location.hash.match(/^#perfil=(.+)$/);if(m){const id=decodeURIComponent(m[1]);setTimeout(()=>{const l=listaLocaisCache.find(x=>x.idDoc===id);if(l)abrirDetalhesLocal(id);},700);}}
         
