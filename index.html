@@ -255,33 +255,35 @@
     </div>
 
     <!-- Modal Detalhes Local -->
-    <div id="modalDetalhesLocal" class="modal">
-        <div class="modal-content" style="max-width:520px;">
-            <span class="close" onclick="fecharDetalhesLocal()">&times;</span>
+     <div id="modalDetalhesLocal" class="modal">
+        <div class="modal-content" style="max-width:480px; position: relative; padding: 28px 24px;">
+            <!-- Botão de Fechar com posição absoluta para não ser engolido pelo título -->
+            <span class="close" onclick="fecharDetalhesLocal()" style="position: absolute; right: 16px; top: 16px; z-index: 10; background: var(--input-bg); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">&times;</span>
+            
             <div id="detLocalBadge"></div>
-            <h2 id="detLocalNome" style="font-size:22px;margin-bottom:4px;">Nome</h2>
-            <p id="detLocalCategoria" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Categoria</p>
-            <p id="detLocalLocal" style="color:var(--gray);font-size:13px;margin-bottom:15px;">Local</p>
-          
-          <p id="detLocalCategoria" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Categoria</p>
-            <p id="detLocalLocal" style="color:var(--gray);font-size:13px;margin-bottom:4px;">Local</p>
-            <p id="detLocalEnderecoCompleto" style="color:var(--gray);font-size:13px;margin-bottom:4px;display:none;"><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> <span></span></p>
-            <p id="detLocalHorario" style="color:var(--gray);font-size:13px;margin-bottom:15px;display:none;"><i class="fas fa-clock" style="color:var(--primary);"></i> <span></span></p>
+            <!-- Padding-right no H2 evita que textos longos fiquem por baixo do X -->
+            <h2 id="detLocalNome" style="font-size:22px; margin-bottom:12px; padding-right: 30px; line-height: 1.25; color: var(--dark);">Nome</h2>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                <span class="status-badge" style="background: var(--purple); color: white;"><i class="fas fa-tag"></i> <span id="detLocalCategoria">Categoria</span></span>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+                <div id="detLocalLocal" style="color:var(--gray);font-size:14px; display:flex; align-items:center; gap:8px;"><i class="fas fa-location-dot" style="color:var(--primary); width:16px; text-align:center;"></i> <span></span></div>
+                <div id="detLocalEnderecoCompleto" style="color:var(--gray);font-size:14px; display:none; align-items:flex-start; gap:8px;"><i class="fas fa-map-marker-alt" style="color:var(--primary); width:16px; text-align:center; margin-top:3px;"></i> <span style="flex:1; line-height:1.4;"></span></div>
+                <div id="detLocalHorario" style="color:var(--gray);font-size:14px; display:none; align-items:center; gap:8px;"><i class="fas fa-clock" style="color:var(--primary); width:16px; text-align:center;"></i> <span></span></div>
+            </div>
             
             <div id="detLocalDadosLegais" class="business-legal-details" hidden></div>
-            <p id="detLocalDescricao" class="card-description detail-description" style="font-size:14px;"></p>
-            <div id="detLocalKeywords" class="card-keywords"></div>
+            <p id="detLocalDescricao" class="card-description detail-description" style="font-size:14px; color: var(--dark); line-height: 1.6; margin-bottom: 20px;"></p>
+            <div id="detLocalKeywords" class="card-keywords" style="display:none;"></div>
             
-            <div style="display:flex;gap:8px;margin-top:15px;flex-wrap:wrap;">
-                <button class="btn-card btn-wpp" id="btnDetLocalWpp" style="flex:1;min-width:120px;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button class="btn-card" id="btnDetLocalTel" style="flex:1;min-width:120px;background:var(--input-bg);color:var(--dark);border:1px solid var(--border);display:none;"><i class="fas fa-phone"></i> Ligar</button>
-                <button class="btn-card" id="btnDetLocalInsta" style="flex:1;min-width:120px;background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);color:white;display:none;border:none;"><i class="fab fa-instagram"></i> Instagram</button>
-                <button class="btn-card" id="btnDetLocalMapa" style="width:100%;background:#4285F4;color:white;display:none;border:none;margin-top:4px;"><i class="fas fa-map-location-dot"></i> Como chegar</button>
-            </div>
-           
-            <div style="display:flex;gap:8px;margin-top:15px;">
-                <button class="btn-card btn-wpp" id="btnDetLocalWpp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button class="btn-card btn-outline" type="button" onclick="abrirDestaqueLocalAtual()"><i class="fas fa-star"></i> Quero destaque</button>
+            <!-- Grelha de botões organizada (1 ou 2 colunas dependendo do tamanho) -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <button class="btn-card btn-wpp" id="btnDetLocalWpp" style="width:100%; border:none; display:none; justify-content:center; border-radius:12px; font-weight:700;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-card" id="btnDetLocalTel" style="width:100%; background:var(--input-bg); color:var(--dark); border:1px solid var(--border); display:none; justify-content:center; border-radius:12px; font-weight:700;"><i class="fas fa-phone"></i> Ligar</button>
+                <button class="btn-card" id="btnDetLocalInsta" style="width:100%; background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:white; border:none; display:none; justify-content:center; border-radius:12px; font-weight:700;"><i class="fab fa-instagram"></i> Instagram</button>
+                <button class="btn-card" id="btnDetLocalMapa" style="width:100%; background:#4285F4; color:white; border:none; display:none; justify-content:center; border-radius:12px; font-weight:700;"><i class="fas fa-map-location-dot"></i> Como chegar</button>
             </div>
         </div>
     </div>
