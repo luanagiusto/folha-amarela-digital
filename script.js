@@ -185,8 +185,8 @@
         }
         
    
-       async function renderizarLocais(){
-            const a=filtrarLocaisCache(),c=document.getElementById('listaLocais');
+async function renderizarLocais(){
+            const a = filtrarLocaisCache(), c = document.getElementById('listaLocais');
             const q = document.getElementById('inputBusca').value.trim();
             let secaoWeb = document.getElementById('secaoResultadosWeb');
             c.replaceChildren();
@@ -202,14 +202,6 @@
                 }
                 return;
             }
-
-                if(l.whatsapp||l.telefone) {
-                    const nomeLoc = nomeExibicaoLocal(l);
-                    const bairroLoc = l.bairro || 'Centro';
-                    const cidadeLoc = l.cidade || cidadeAtual;
-                    const msgWpp = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
-            acts.appendChild(botaoWpp(l.whatsapp||l.telefone, 'WhatsApp', msgWpp));
-                }
                
             if(secaoWeb) secaoWeb.style.display = 'none';      
 
@@ -217,32 +209,46 @@
             const fim = inicio + ITENS_POR_PAGINA;
             const itensPagina = a.slice(inicio, fim);
             
-            itensPagina.forEach(l=>{
-                const card=criarEl('article','card-local');
-                if(registroDestaque(l))card.classList.add('is-featured');
-                const body=criarEl('div','card-body');
-                if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
+            itensPagina.forEach(l => {
+                const card = criarEl('article', 'card-local');
+                if(registroDestaque(l)) card.classList.add('is-featured');
+                const body = criarEl('div', 'card-body');
+                if(registroDestaque(l)){const sponsored = criarEl('div', 'featured-badge', '★ Patrocinado'); body.appendChild(sponsored);}
                 
-                // RESTAURADO: Adiciona o título limpo no topo do cartão
                 const top = criarEl('div', 'card-topline');
                 const title = criarEl('div', 'card-title', nomeExibicaoLocal(l));
                 top.appendChild(title);
                 body.appendChild(top);
                 
-                const meta=criarEl('div','card-subtitle'),catMeta=criarEl('span'),bairroMeta=criarEl('span');
-                catMeta.append(icone('fas fa-tag'),document.createTextNode(' '+(l.categoria||'Serviço')));
-                bairroMeta.append(icone('fas fa-location-dot'),document.createTextNode(' '+(l.bairro||'Centro')));
-                meta.append(catMeta,bairroMeta);body.appendChild(meta);
+                const meta = criarEl('div', 'card-subtitle'), catMeta = criarEl('span'), bairroMeta = criarEl('span');
+                catMeta.append(icone('fas fa-tag'), document.createTextNode(' ' + (l.categoria || 'Serviço')));
+                bairroMeta.append(icone('fas fa-location-dot'), document.createTextNode(' ' + (l.bairro || 'Centro')));
+                meta.append(catMeta, bairroMeta); body.appendChild(meta);
                 
-                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',descricaoCurtaLocal(l)));
-                if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
+                if(l.descricao || l.servicos) body.appendChild(criarEl('p', 'card-description', descricaoCurtaLocal(l)));
+                if(l.keywords || l.palavrasChave) body.appendChild(criarEl('div', 'card-keywords', `Encontre por: ${l.keywords || l.palavrasChave}`));
                 
-                const acts=criarEl('div','card-actions');
-                if(l.whatsapp||l.telefone) acts.appendChild(botaoWpp(l.whatsapp||l.telefone,'WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
-                const detail=criarEl('button','btn-card btn-outline','Detalhes');
-                detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
-                acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
+                const acts = criarEl('div', 'card-actions');
+                
+                // Botão de WhatsApp posicionado corretamente dentro do loop
+                if(l.whatsapp || l.telefone) {
+                    const nomeLoc = nomeExibicaoLocal(l);
+                    const bairroLoc = l.bairro || 'Centro';
+                    const cidadeLoc = l.cidade || cidadeAtual;
+                    const msgWpp = `Olá! Vi *${nomeLoc}* na Folha Amarela Digital (📍 ${bairroLoc}, ${cidadeLoc}) e gostaria de mais informações.\n\nPerfil: ${window.location.origin}${window.location.pathname}#perfil=${l.idDoc}`;
+                    acts.appendChild(botaoWpp(l.whatsapp || l.telefone, 'WhatsApp', msgWpp));
+                }
+
+                const detail = criarEl('button', 'card-btn btn-outline', 'Detalhes');
+                detail.type = 'button'; 
+                detail.onclick = () => abrirDetalhesLocal(l.idDoc);
+                acts.appendChild(detail);
+                
+                body.appendChild(acts);
+                card.appendChild(body);
+                c.appendChild(card);
             });
+            
             atualizarMetaBusca(a.length);
             renderizarPaginacao(a.length);
         }
