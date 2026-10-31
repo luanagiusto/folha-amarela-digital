@@ -700,33 +700,45 @@
             }catch(e){console.error(e);alert('Erro ao enviar.');}
         }
 
-      async function mascaraCepEBuscar(input, prefixo) {
-            // 1. Aplica a máscara 00000-000 automaticamente
+    async function mascaraCepEBuscar(input, prefixo) {
+            // 1. Aplica a máscara 00000-000
             let valor = input.value.replace(/\D/g, '');
             if (valor.length > 5) {
                 valor = valor.slice(0, 5) + '-' + valor.slice(5, 8);
             }
             input.value = valor;
 
-            // 2. Faz a busca automática assim que atingir 8 números
+            // 2. Faz a busca automática
             const cepLimpo = valor.replace(/\D/g, '');
             if (cepLimpo.length === 8) {
+                const endInput = document.getElementById(`${prefixo}Endereco`);
+                const bairroInput = document.getElementById(`${prefixo}Bairro`);
+                const cidadeInput = document.getElementById(`${prefixo}Cidade`);
+                
+                // Feedback visual de carregamento
+                const placeholderAntigo = endInput.placeholder;
+                endInput.value = "A procurar endereço...";
+                
                 try {
-                    const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-                    const data = await res.json();
+                    // Consulta à BrasilAPI
+                    const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${cepLimpo}`);
                     
-                    if (!data.erro) {
-                        document.getElementById(`${prefixo}Endereco`).value = data.logradouro ? data.logradouro + ', ' : '';
-                        document.getElementById(`${prefixo}Bairro`).value = data.bairro || '';
-                        document.getElementById(`${prefixo}Cidade`).value = data.localidade || '';
+                    if (res.ok) {
+                        const data = await res.json();
+                        endInput.value = data.street ? data.street + ', ' : '';
+                        bairroInput.value = data.neighborhood || '';
+                        cidadeInput.value = data.city || '';
                         
-                        // Direciona o foco para o endereço para a pessoa digitar o número
-                        document.getElementById(`${prefixo}Endereco`).focus();
+                        // Foca no campo de endereço para introduzir o número
+                        if (data.street) endInput.focus();
                     } else {
-                        alert('CEP não encontrado.');
+                        endInput.value = '';
+                        alert('Não foi possível encontrar a rua para este CEP. Pode preencher os dados manualmente.');
                     }
                 } catch (e) {
-                    console.error("Erro ao buscar CEP:", e);
+                    console.error("Erro na busca de CEP:", e);
+                    endInput.value = '';
+                    endInput.placeholder = placeholderAntigo;
                 }
             }
         }
