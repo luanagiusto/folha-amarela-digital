@@ -121,7 +121,7 @@
               
      
         function abrirModalEscolhaAnuncio(){document.getElementById('modalEscolhaAnuncio').style.display='block';}
-        function abrirModalCadastroServico(fecharEscolha=true){if(fecharEscolha)document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('cadCidade').value=cidadeAtual;document.getElementById('cadSouResponsavel').checked=!!usuarioLogado;document.getElementById('modalCadastro').style.display='block';}
+        function abrirModalCadastroServico(fecharEscolha=true){if(fecharEscolha)document.getElementById('modalEscolhaAnuncio').style.display='none';                                                                document.getElementById('cadCidade').value=cidadeAtual; document.getElementById('modalCadastro').style.display='block';}
         
       
         function fecharModalCadastro(){document.getElementById('modalCadastro').style.display='none';}
