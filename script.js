@@ -315,36 +315,62 @@
             abrirModalCadastroServico();
         }
 
-        function abrirDetalhesLocal(id){
+       function abrirDetalhesLocal(id){
             const l=listaLocaisCache.find(x=>x.idDoc===id);
-            if(!l)return;localAtualDetalhes=l;
+            if(!l)return;
+            
             const badge=document.getElementById('detLocalBadge');badge.replaceChildren();
             if(registroDestaque(l))badge.appendChild(criarEl('div','featured-badge','★ Em destaque'));
             
             document.getElementById('detLocalNome').textContent=nomeExibicaoLocal(l);
             document.getElementById('detLocalCategoria').textContent=l.categoria||'Serviço';
-            document.getElementById('detLocalLocal').textContent=`📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
-            document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';
-            const dadosLegais=document.getElementById('detLocalDadosLegais');
-            if(dadosLegais){
-                dadosLegais.replaceChildren();
-                const cnpj=cnpjFormatado(l.cnpj||l.CNPJ||l.documentoCnpj||l.documento_cnpj);
-                const razao=String(l.razaoSocial||l.razao_social||l.nomeEmpresarial||'').trim();
-                if(cnpj||razao){
-                    if(razao) dadosLegais.appendChild(criarEl('div','legal-detail-row',`Razão social: ${razao}`));
-                    if(cnpj) dadosLegais.appendChild(criarEl('div','legal-detail-row',`CNPJ: ${cnpj}`));
-                    dadosLegais.hidden=false;
-                } else { dadosLegais.hidden=true; }
+            
+            // Se tiver endereço completo, esconde o bairro simples e mostra a rua
+            const elBairro = document.getElementById('detLocalLocal');
+            const elEnd = document.getElementById('detLocalEnderecoCompleto');
+            if (l.endereco) {
+                elBairro.style.display = 'none';
+                elEnd.style.display = 'block';
+                elEnd.querySelector('span').textContent = `${l.endereco} - ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
+            } else {
+                elEnd.style.display = 'none';
+                elBairro.style.display = 'block';
+                elBairro.textContent = `📍 ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
             }
+
+            const elHorario = document.getElementById('detLocalHorario');
+            if (l.horario) { elHorario.style.display = 'block'; elHorario.querySelector('span').textContent = l.horario; } 
+            else { elHorario.style.display = 'none'; }
+
+            document.getElementById('detLocalDescricao').textContent=l.descricao||l.servicos||'Este perfil ainda não possui uma descrição detalhada.';
             document.getElementById('detLocalKeywords').textContent=(l.keywords||l.palavrasChave)?`Encontre por: ${l.keywords||l.palavrasChave}`:'';
-            document.getElementById('destaqueNomeLocal').textContent=nomeExibicaoLocal(l);
             
-            const claimBox=document.querySelector('#modalDetalhesLocal .claim-box');
-            if(claimBox) claimBox.style.display=(isOwner(l)||isAdminLogado)?'none':'block';
+            // Botões de Ação
+            const btnWpp = document.getElementById('btnDetLocalWpp');
+            btnWpp.style.display=(l.whatsapp||l.telefone)?'inline-flex':'none';
+            btnWpp.onclick=()=>abrirWhatsApp(l.whatsapp||l.telefone,`Olá, encontrei ${nomeExibicaoLocal(l)} na Folha Amarela Digital.`);
             
-            const b=document.getElementById('btnDetLocalWpp');
-            b.style.display=(l.whatsapp||l.telefone)?'inline-flex':'none';
-            b.onclick=()=>abrirWhatsApp(l.whatsapp||l.telefone,`Olá, encontrei ${nomeExibicaoLocal(l)} na Folha Amarela Digital.`);
+            const btnTel = document.getElementById('btnDetLocalTel');
+            if (l.telefoneExtra) {
+                btnTel.style.display='inline-flex';
+                btnTel.onclick=()=>window.open(`tel:${l.telefoneExtra}`, '_self');
+            } else { btnTel.style.display='none'; }
+            
+            const btnInsta = document.getElementById('btnDetLocalInsta');
+            if (l.instagram) {
+                btnInsta.style.display='inline-flex';
+                const userInsta = l.instagram.replace('@', '').trim();
+                btnInsta.onclick=()=>window.open(`https://instagram.com/${userInsta}`, '_blank');
+            } else { btnInsta.style.display='none'; }
+
+            const btnMapa = document.getElementById('btnDetLocalMapa');
+            // Só mostra o mapa se tivermos rua ou pelo menos o bairro
+            if (l.endereco || l.bairro) {
+                btnMapa.style.display='inline-flex';
+                const queryMapa = l.endereco ? `${l.endereco}, ${l.cidade||cidadeAtual}` : `${nomeExibicaoLocal(l)}, ${l.bairro||'Centro'}, ${l.cidade||cidadeAtual}`;
+                btnMapa.onclick=()=>window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryMapa)}`, '_blank');
+            } else { btnMapa.style.display='none'; }
+
             document.getElementById('modalDetalhesLocal').style.display='block';
         }
         function fecharDetalhesLocal(){document.getElementById('modalDetalhesLocal').style.display='none';localAtualDetalhes=null;}
@@ -457,18 +483,28 @@
         function fecharDetalhes(){document.getElementById('modalDetalhes').style.display='none';}
 
       
-        async function salvarLocalLojista(){
+       async function salvarLocalLojista(){
             const nome=document.getElementById('cadNome').value.trim(),categoria=document.getElementById('cadCategoria').value,descricao=document.getElementById('cadDescricao').value.trim(),keywords=document.getElementById('cadKeywords').value.trim(),cidade=document.getElementById('cadCidade').value.trim()||cidadeAtual,bairro=document.getElementById('cadBairro').value.trim()||'Centro',whatsapp=limparWhatsApp(document.getElementById('cadWpp').value);
+            
+            // Novos campos
+            const endereco=document.getElementById('cadEndereco').value.trim();
+            const horario=document.getElementById('cadHorario').value.trim();
+            const telefoneExtra=limparWhatsApp(document.getElementById('cadTelefone').value);
+            const instagram=document.getElementById('cadInstagram').value.trim();
+
             if(!nome||!descricao)return alert('Informe o nome e o que o negócio faz.');
             if(whatsapp&&(whatsapp.length<10||whatsapp.length>13))return alert('Confira o número de WhatsApp.');
             try{
-                await db.collection('locais').add({nome,categoria,descricao,keywords,cidade,bairro,whatsapp,userId:usuarioLogado?usuarioLogado.uid:'',status:'pendente',destaque:false,plano:'gratuito',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+                await db.collection('locais').add({
+                    nome, categoria, descricao, keywords, cidade, bairro, whatsapp, 
+                    endereco, horario, telefoneExtra, instagram, // Incluído aqui
+                    userId:usuarioLogado?usuarioLogado.uid:'', status:'pendente', destaque:false, plano:'gratuito', criadoEm:firebase.firestore.FieldValue.serverTimestamp()
+                });
                 fecharModalCadastro();
                 alert('Cadastro enviado. Obrigado por ajudar a cidade!');
-                ['cadNome','cadDescricao','cadKeywords','cadWpp'].forEach(id=>document.getElementById(id).value='');
+                ['cadNome','cadDescricao','cadKeywords','cadWpp','cadEndereco','cadHorario','cadTelefone','cadInstagram'].forEach(id=>document.getElementById(id).value='');
             }catch(e){console.error(e);alert('Não foi possível enviar o cadastro. Verifique a conexão e o Firebase.');}
         }
-        
       
         function isOwner(l){return !!usuarioLogado && (l.proprietarioUid===usuarioLogado.uid || l.userId===usuarioLogado.uid);}
         function fecharPainel(){document.getElementById('modalPainel').style.display='none';unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];}
@@ -597,6 +633,10 @@
             document.getElementById('editBairro').value=l.bairro||'Centro';
             document.getElementById('editWpp').value=l.whatsapp||'';
             document.getElementById('editMensagem').textContent='';
+            document.getElementById('editEndereco').value=l.endereco||'';
+            document.getElementById('editHorario').value=l.horario||'';
+            document.getElementById('editTelefone').value=l.telefoneExtra||'';
+            document.getElementById('editInstagram').value=l.instagram||'';
             document.getElementById('modalEditarPerfil').style.display='block';
         }
         function fecharEditarPerfil(){document.getElementById('modalEditarPerfil').style.display='none';}
@@ -606,7 +646,20 @@
             if(w&&(w.length<10||w.length>13)){msg.textContent='Confira o WhatsApp.';return;}
             msg.textContent='Salvando...';
             try{
-                await db.collection('locais').doc(id).update({nome:document.getElementById('editNome').value.trim(),categoria:document.getElementById('editCategoria').value,descricao:document.getElementById('editDescricao').value.trim(),keywords:document.getElementById('editKeywords').value.trim(),cidade:document.getElementById('editCidade').value.trim(),bairro:document.getElementById('editBairro').value.trim()||'Centro',whatsapp:w,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+               await db.collection('locais').doc(id).update({
+                    nome:document.getElementById('editNome').value.trim(),
+                    categoria:document.getElementById('editCategoria').value,
+                    descricao:document.getElementById('editDescricao').value.trim(),
+                    keywords:document.getElementById('editKeywords').value.trim(),
+                    cidade:document.getElementById('editCidade').value.trim(),
+                    bairro:document.getElementById('editBairro').value.trim()||'Centro',
+                    whatsapp:w,
+                    endereco:document.getElementById('editEndereco').value.trim(),
+                    horario:document.getElementById('editHorario').value.trim(),
+                    telefoneExtra:limparWhatsApp(document.getElementById('editTelefone').value),
+                    instagram:document.getElementById('editInstagram').value.trim(),
+                    atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()
+                });
                 msg.textContent='Perfil atualizado.';setTimeout(fecharEditarPerfil,500);
             }catch(e){console.error(e);msg.textContent='Erro ao salvar.';}
         }
