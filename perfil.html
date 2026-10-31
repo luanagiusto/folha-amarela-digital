@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Perfil do estabelecimento na Folha Amarela Digital.">
+    <title>Perfil - Folha Amarela Digital</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo-wrap">
+                <img id="logoImg" src="header_light.png" alt="Folha Amarela Digital" onerror="mostrarLogoFallback()">
+                <span id="logoFallback" class="logo-fallback">
+                    <span class="logo-fallback-mark"><i class="fas fa-book-open"></i></span>
+                    <span class="logo-fallback-text">Folha Amarela<small>Digital</small></span>
+                </span>
+            </a>
+            
+            <div class="header-actions">
+                <a href="index.html" class="btn-lojista-nav" style="text-decoration: none;"><i class="fas fa-arrow-left"></i> Voltar ao início</a>
+                <button class="btn-theme-toggle" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 40px; padding-bottom: 60px; max-width: 800px;">
+        <div id="perfilCarregando" style="text-align:center; padding: 60px; color: var(--gray);">
+            <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--primary); margin-bottom: 12px;"></i>
+            <p>A carregar informações do negócio...</p>
+        </div>
+
+        <div id="perfilConteudo" style="display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 36px; box-shadow: var(--shadow);">
+            <div id="perfilBadge" style="margin-bottom: 12px;"></div>
+            
+            <h1 id="perfilNome" style="font-size: clamp(24px, 4vw, 32px); font-weight: 850; color: var(--dark); margin-bottom: 12px; line-height: 1.2;"></h1>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                <span class="status-badge" style="background: var(--purple); color: white;"><i class="fas fa-tag"></i> <span id="perfilCategoria"></span></span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; background: var(--input-bg); padding: 18px; border-radius: 16px; border: 1px solid var(--border);">
+                <div id="perfilLocalRow" style="display: flex; align-items: center; gap: 10px; color: var(--gray); font-size: 15px;">
+                    <i class="fas fa-location-dot" style="color: var(--primary); width: 20px; text-align: center;"></i>
+                    <span id="perfilLocalText"></span>
+                </div>
+                <div id="perfilHorarioRow" style="display: flex; align-items: center; gap: 10px; color: var(--gray); font-size: 15px; display: none;">
+                    <i class="fas fa-clock" style="color: var(--primary); width: 20px; text-align: center;"></i>
+                    <span id="perfilHorarioText"></span>
+                </div>
+            </div>
+
+            <h3 style="font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 8px;"><i class="fas fa-circle-info" style="color: var(--primary);"></i> Sobre o negócio</h3>
+            <p id="perfilDescricao" style="font-size: 15px; color: var(--dark); line-height: 1.7; opacity: 0.95; margin-bottom: 24px;"></p>
+
+            <div id="perfilKeywords" class="card-keywords" style="margin-bottom: 28px; display: none;"></div>
+
+            <!-- Grelha de Ações / Contactos -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; border-top: 1px solid var(--border); padding-top: 28px;">
+                <button class="btn-card btn-wpp" id="btnPerfilWpp" style="width:100%; border:none; display:none; justify-content:center; border-radius:14px; font-weight:700; padding: 12px;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn-card" id="btnPerfilTel" style="width:100%; background:var(--input-bg); color:var(--dark); border:1px solid var(--border); display:none; justify-content:center; border-radius:14px; font-weight:700; padding: 12px;"><i class="fas fa-phone"></i> Ligar</button>
+                <button class="btn-card" id="btnPerfilInsta" style="width:100%; background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:white; border:none; display:none; justify-content:center; border-radius:14px; font-weight:700; padding: 12px;"><i class="fab fa-instagram"></i> Instagram</button>
+                <button class="btn-card" id="btnPerfilMapa" style="width:100%; background:#4285F4; color:white; border:none; display:none; justify-content:center; border-radius:14px; font-weight:700; padding: 12px;"><i class="fas fa-map-location-dot"></i> Como chegar</button>
+            </div>
+
+            <!-- Secção Futura / Exemplo de Oportunidade (Agendamento) -->
+            <div style="margin-top: 36px; background: rgba(139, 92, 246, 0.08); border: 1px dashed var(--purple); border-radius: 16px; padding: 20px; text-align: center;">
+                <i class="fas fa-calendar-check" style="font-size: 24px; color: var(--purple); margin-bottom: 8px;"></i>
+                <h4 style="font-size: 15px; font-weight: 800; color: var(--dark); margin-bottom: 4px;">Precisa de agendar um atendimento?</h4>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 12px;">Em breve poderá solicitar agendamentos de horários diretamente por aqui.</p>
+            </div>
+        </div>
+
+        <div id="perfilErro" style="display: none; text-align:center; padding: 60px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px;">
+            <i class="fas fa-store-slash fa-3x" style="color: var(--danger); margin-bottom: 14px;"></i>
+            <h2 style="font-size: 20px; color: var(--dark); margin-bottom: 8px;">Estabelecimento não encontrado</h2>
+            <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">O perfil que procura pode ter sido removido ou o link está incorreto.</p>
+            <a href="index.html" class="btn-submit" style="display: inline-block; text-decoration: none; max-width: 200px;">Voltar ao início</a>
+        </div>
+    </main>
+
+    <footer>
+        <strong>Folha Amarela Digital</strong><br>Encontre quem faz. Conecte sua cidade.<br>
+        <span style="display:inline-block;margin-top:6px;">v5.3 • Página dedicada do estabelecimento</span>
+    </footer>
+
+    <script>
+        // Configuração do Firebase e Funções de Apoio para a página de perfil
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxv7AWrRep8yRJyEK90nXgpEmO1zOfd8o",
+            authDomain: "folha-amarela-digital.firebaseapp.com",
+            projectId: "folha-amarela-digital",
+            storageBucket: "folha-amarela-digital.firebasestorage.app",
+            messagingSenderId: "377984429498",
+            appId: "1:377984429498:web:0ec71abadab20a93420183"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function normalizarTexto(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
+        function limparWhatsApp(v){return String(v??'').replace(/\D/g,'');}
+        function abrirWhatsApp(numero,mensagem=''){let n=limparWhatsApp(numero);if(!n)return;if(n.startsWith('55')&&(n.length===12||n.length===13))n=n.slice(2);if(n.length<10||n.length>11){alert('Número de WhatsApp inválido.');return;}window.open(`https://wa.me/55${n}${mensagem?'?text='+encodeURIComponent(mensagem):''}`,'_blank','noopener,noreferrer');}
+        
+        function formatarNomeExibicao(texto) {
+            if (!texto) return 'Prestador local';
+            let nomeLimpo = texto.replace(/^[\d.\-\s]+/, '').trim();
+            if (!nomeLimpo) return 'Prestador local';
+            const excecoes = ['da', 'de', 'do', 'das', 'dos', 'e', 'em', 'na', 'no'];
+            return nomeLimpo.toLowerCase().split(/\s+/).map((palavra, index) => {
+                if (excecoes.includes(palavra) && index !== 0) return palavra;
+                return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+            }).join(' ');
+        }
+        function nomeExibicaoLocal(l) {
+            return formatarNomeExibicao(String(l.nomeFantasia || l.nome_fantasia || l.fantasia || l.nomeComercial || l.nome || 'Prestador local').trim());
+        }
+        function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
+
+        function carregarTemaSalvo(){
+            if(localStorage.getItem('folha_theme')==='dark'){
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').className='fas fa-sun';
+            }
+        }
+        function toggleTheme(){
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('folha_theme', document.body.classList.contains('dark-mode')?'dark':'light');
+            document.getElementById('themeIcon').className = document.body.classList.contains('dark-mode')?'fas fa-sun':'fas fa-moon';
+        }
+        carregarTemaSalvo();
+
+        // Leitura do ID pela URL (ex: perfil.html?id=XYZ)
+        async function carregarPerfil() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                document.getElementById('perfilCarregando').style.display = 'none';
+                document.getElementById('perfilErro').style.display = 'block';
+                return;
+            }
+
+            try {
+                const doc = await db.collection('locais').doc(id).get();
+                if (!doc.exists) {
+                    document.getElementById('perfilCarregando').style.display = 'none';
+                    document.getElementById('perfilErro').style.display = 'block';
+                    return;
+                }
+
+                const l = doc.data();
+                document.getElementById('perfilCarregando').style.display = 'none';
+                document.getElementById('perfilConteudo').style.display = 'block';
+
+                // Preenchimento dos dados
+                const nomeNegocio = nomeExibicaoLocal(l);
+                document.title = `${nomeNegocio} - Folha Amarela Digital`;
+                document.getElementById('perfilNome').textContent = nomeNegocio;
+                document.getElementById('perfilCategoria').textContent = l.categoria || 'Serviço';
+
+                if(registroDestaque(l)) {
+                    const badge = document.getElementById('perfilBadge');
+                    const b = document.createElement('div');
+                    b.className = 'featured-badge';
+                    b.innerHTML = '★ Em destaque';
+                    badge.appendChild(b);
+                }
+
+                // Morada
+                const textoLocal = l.endereco ? `${l.endereco} - ${l.bairro||'Centro'}, ${l.cidade||'Paraisópolis'}` : `${l.bairro||'Centro'}, ${l.cidade||'Paraisópolis'}`;
+                document.getElementById('perfilLocalText').textContent = textoLocal;
+
+                // Horário
+                if (l.horario) {
+                    document.getElementById('perfilHorarioRow').style.display = 'flex';
+                    document.getElementById('perfilHorarioText').textContent = l.horario;
+                }
+
+                document.getElementById('perfilDescricao').textContent = l.descricao || l.servicos || 'Este perfil ainda não possui uma descrição detalhada.';
+
+                if (l.keywords || l.palavrasChave) {
+                    const kw = document.getElementById('perfilKeywords');
+                    kw.style.display = 'block';
+                    kw.textContent = `Encontre por: ${l.keywords || l.palavrasChave}`;
+                }
+
+                // Botões de Ação
+                const btnWpp = document.getElementById('btnPerfilWpp');
+                if (l.whatsapp || l.telefone) {
+                    btnWpp.style.display = 'flex';
+                    const msgWpp = `Olá! Vi *${nomeNegocio}* na Folha Amarela Digital e gostaria de mais informações.`;
+                    btnWpp.onclick = () => abrirWhatsApp(l.whatsapp || l.telefone, msgWpp);
+                }
+
+                const btnTel = document.getElementById('btnPerfilTel');
+                if (l.telefoneExtra) {
+                    btnTel.style.display = 'flex';
+                    btnTel.onclick = () => window.open(`tel:${l.telefoneExtra}`, '_self');
+                }
+
+                const btnInsta = document.getElementById('btnPerfilInsta');
+                if (l.instagram) {
+                    btnInsta.style.display = 'flex';
+                    const userInsta = l.instagram.replace('@', '').trim();
+                    btnInsta.onclick = () => window.open(`https://instagram.com/${userInsta}`, '_blank');
+                }
+
+                const btnMapa = document.getElementById('btnPerfilMapa');
+                if (l.endereco || l.bairro) {
+                    btnMapa.style.display = 'flex';
+                    const queryMapa = l.endereco ? `${l.endereco}, ${l.cidade||'Paraisópolis'}` : `${nomeNegocio}, ${l.bairro||'Centro'}, ${l.cidade||'Paraisópolis'}`;
+                    btnMapa.onclick = () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryMapa)}`, '_blank');
+                }
+
+            } catch (e) {
+                console.error("Erro ao carregar perfil:", e);
+                document.getElementById('perfilCarregando').style.display = 'none';
+                document.getElementById('perfilErro').style.display = 'block';
+            }
+        }
+
+        carregarPerfil();
+    </script>
+</body>
+</html>
