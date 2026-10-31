@@ -239,7 +239,8 @@ async function renderizarLocais(){
                     acts.appendChild(botaoWpp(l.whatsapp || l.telefone, 'WhatsApp', msgWpp));
                 }
 
-                const detail = criarEl('button', 'card-btn btn-outline', 'Detalhes');
+                // CORRIJA ESTA LINHA EM renderizarLocais():
+                const detail = criarEl('button', 'btn-card btn-outline', 'Detalhes');
                 detail.type = 'button'; 
                 detail.onclick = () => abrirDetalhesLocal(l.idDoc);
                 acts.appendChild(detail);
