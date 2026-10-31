@@ -385,7 +385,15 @@ btnWpp.onclick = () => abrirWhatsApp(l.whatsapp||l.telefone, msgWppModal);
                 btnTel.style.display='flex';
                 btnTel.onclick=()=>window.open(`tel:${l.telefoneExtra}`, '_self');
             } else { btnTel.style.display='none'; }
-            
+
+        const btnCompleto = document.getElementById('btnDetPerfilCompleto');
+        if(btnCompleto) {
+            btnCompleto.style.display = 'flex';
+            btnCompleto.onclick = () => {
+                window.location.href = `perfil.html?id=${l.idDoc}`;
+            };
+        }
+        
             const btnInsta = document.getElementById('btnDetLocalInsta');
             if (l.instagram) {
                 btnInsta.style.display='flex';
