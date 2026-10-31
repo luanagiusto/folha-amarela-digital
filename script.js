@@ -14,12 +14,13 @@
         const db = firebase.firestore();
 
         let cidadeAtual = 'Paraisópolis', categoriaAtual = '', bairroAtual = '';
-        let tabAtual = 'servicos', transacaoImovelAtual = '';
-        let listaLocaisCache = [], listaImoveisCache = [];
+        let listaLocaisCache = [], 
         let usuarioLogado = null, modoCadastroAcesso = false, localAtualDetalhes = null;
-        let meusLocaisCache = [], reivindicacoesCache = [], interessesCache = [], painelAba = 'meus';
+        let meusLocaisCache = [],, interessesCache = [], painelAba = 'meus';
         let unsubPainel = [];
         let isAdminLogado = false;
+        let paginaAtual = 1;
+        const ITENS_POR_PAGINA = 20;
 
         const RELATED_TERMS = {
             eletricista:['eletrica','instalacao eletrica','tomada','chuveiro','fiacao','energia'],
@@ -114,6 +115,8 @@
             const t=document.querySelector('#secaoTabServicos .cat-item:last-child');
             if(t)t.classList.add('active');
             mudarTabPrincipal('servicos');
+            paginaAtual = 1;
+            renderizarLocais();
             window.scrollTo({top:0,behavior:'smooth'});
         }
         
@@ -129,21 +132,11 @@
 
         function abrirModalEscolhaAnuncio(){document.getElementById('modalEscolhaAnuncio').style.display='block';}
         function abrirModalCadastroServico(fecharEscolha=true){if(fecharEscolha)document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('cadCidade').value=cidadeAtual;document.getElementById('cadSouResponsavel').checked=!!usuarioLogado;document.getElementById('modalCadastro').style.display='block';}
-        function abrirFluxoReivindicacaoSemLocal(){document.getElementById('modalEscolhaAnuncio').style.display='none';alert('Para reivindicar um perfil, primeiro pesquise o nome do negócio na Folha. Abra o perfil encontrado e toque em “Reivindicar este perfil”.');document.getElementById('inputBusca').focus();}
-        function abrirModalCadastroImovel(){document.getElementById('modalEscolhaAnuncio').style.display='none';document.getElementById('imovCidade').value=cidadeAtual;document.getElementById('imovGaragem').checked=false;document.getElementById('imovDesc').value='';document.getElementById('modalCadastroImovel').style.display='block';}
+        
+      
         function fecharModalCadastro(){document.getElementById('modalCadastro').style.display='none';}
         
-        function gerarDescricaoImovelIA(){
-            const t=document.getElementById('imovTitulo').value.trim()||'Ótimo imóvel',
-                  tr=document.getElementById('imovTransacao').value,
-                  ty=document.getElementById('imovTipo').value,
-                  q=document.getElementById('imovQuartos').value,
-                  g=document.getElementById('imovGaragem').checked,
-                  c=document.getElementById('imovCidade').value.trim()||cidadeAtual,
-                  b=document.getElementById('imovBairro').value.trim()||'Centro';
-            document.getElementById('imovDesc').value=`🌟 ${t}! Excelente opção de ${ty.toLowerCase()} para ${tr.toLowerCase()} em ${b}, ${c}. O imóvel possui ${q} quarto(s) e conta ${g?'com vaga de garagem':'sem garagem'}. Negociação direta com o proprietário. Entre em contato pelo WhatsApp para mais informações e agende uma visita!`;
-        }
-
+     
         function registroAprovado(x){return x.status==='aprovado'||x.status==='ativo';}
         function registroDestaque(x){return x.destaque===true||x.plano==='destaque'||x.plano==='premium';}
         function ordenarLocais(a){return [...a].sort((x,y)=>Number(registroDestaque(y))-Number(registroDestaque(x)));}
@@ -181,23 +174,7 @@
             if(m)m.textContent=q?`${n} ${tabAtual==='servicos'?'resultado(s)':'imóvel(is)'} encontrado(s).`:'';
         }
         
-        function criarVazio(imovel){
-            const box=criarEl('div','empty-state');
-            box.appendChild(icone(imovel?'fas fa-house-circle-xmark':'fas fa-magnifying-glass'));
-            const q=document.getElementById('inputBusca').value.trim();
-            box.appendChild(criarEl('strong','',q?`Não encontramos "${q}"`:imovel?'Nenhum imóvel encontrado':'Nenhum serviço encontrado'));
-            box.appendChild(criarEl('p','',q?'Pode ser que quem faz isso ainda não esteja aqui. Que tal indicar?':'Tente outra categoria ou termo de pesquisa.'));
-            const acts=criarEl('div','empty-actions');
-            if(q){
-                const b=criarEl('button','btn-card','Indicar alguém');
-                b.type='button';b.style.background='var(--primary)';b.style.color='#1E293B';
-                b.onclick=()=>abrirModalIndicacao(q);acts.appendChild(b);
-            }
-            const c=criarEl('button','btn-card btn-secondary',imovel?'Anunciar imóvel':'Cadastrar serviço');
-            c.type='button';c.onclick=imovel?abrirModalCadastroImovel:abrirModalCadastroServico;
-            acts.appendChild(c);box.appendChild(acts);return box;
-        }
-
+   
         async function renderizarLocais(){
             const a=filtrarLocaisCache(),c=document.getElementById('listaLocais');
             const q = document.getElementById('inputBusca').value.trim();
@@ -215,7 +192,37 @@
                 return;
             }
             
-            if(secaoWeb) secaoWeb.style.display = 'none';
+            if(secaoWeb) secaoWeb.style.display = 'none';      
+
+                const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+                const fim = inicio + ITENS_POR_PAGINA;
+                const itensPagina = a.slice(inicio, fim);
+            
+            itensPagina.forEach(l=>{
+                const card=criarEl('article','card-local');
+                if(registroDestaque(l))card.classList.add('is-featured');
+                const body=criarEl('div','card-body');
+                if(registroDestaque(l)){const sponsored=criarEl('div','featured-badge','★ Patrocinado');body.appendChild(sponsored);}
+                
+                const top=criarEl('div','card-topline'),title=criarEl('div','card-title',nomeExibicaoLocal(l));
+                top.appendChild(title);
+                const profile=criarEl('button','profile-link','Ver detalhes');
+                profile.type='button';profile.onclick=()=>abrirDetalhesLocal(l.idDoc);
+                top.appendChild(profile);body.appendChild(top);
+                
+                const meta=criarEl('div','card-subtitle'),catMeta=criarEl('span'),bairroMeta=criarEl('span');
+                catMeta.append(icone('fas fa-tag'),document.createTextNode(' '+(l.categoria||'Serviço')));
+                bairroMeta.append(icone('fas fa-location-dot'),document.createTextNode(' '+(l.bairro||'Centro')));
+                meta.append(catMeta,bairroMeta);body.appendChild(meta);
+                
+                if(l.descricao||l.servicos)body.appendChild(criarEl('p','card-description',descricaoCurtaLocal(l)));
+                if(l.keywords||l.palavrasChave)body.appendChild(criarEl('div','card-keywords',`Encontre por: ${l.keywords||l.palavrasChave}`));
+                
+                const acts=criarEl('div','card-actions');
+                if(l.whatsapp||l.telefone) acts.appendChild(botaoWpp(l.whatsapp||l.telefone,'WhatsApp','Olá, encontrei seu contato na Folha Amarela Digital.'));
+                const detail=criarEl('button','btn-card btn-outline','Detalhes');
+                detail.type='button';detail.onclick=()=>abrirDetalhesLocal(l.idDoc);
+                acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
             
             a.forEach(l=>{
                 const card=criarEl('article','card-local');
@@ -244,7 +251,29 @@
                 acts.appendChild(detail);body.appendChild(acts);card.appendChild(body);c.appendChild(card);
             });
             atualizarMetaBusca(a.length);
+            renderizarPaginacao(a.length); // Chama a renderização dos botões
         }
+
+         // NOVA FUNÇÃO
+        function renderizarPaginacao(totalItens) {
+            const container = document.getElementById('paginacaoLocais');
+            if(!container) return;
+            container.replaceChildren();
+
+            const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
+            if(totalPaginas <= 1) return; // Não exibe se houver apenas 1 página
+
+            for(let i = 1; i <= totalPaginas; i++) {
+                const btn = criarEl('button', 'btn-page', String(i));
+                if(i === paginaAtual) btn.classList.add('active');
+                btn.onclick = () => {
+                    paginaAtual = i;
+                    renderizarLocais();
+                    document.getElementById('secaoTabServicos').scrollIntoView({behavior: 'smooth', block: 'start'});
+                };
+                container.appendChild(btn);
+            }
+        }                       
 
         async function buscarComGemini(termo) {
             let secaoWeb = document.getElementById('secaoResultadosWeb');
@@ -335,21 +364,7 @@
         }
         function fecharDetalhesLocal(){document.getElementById('modalDetalhesLocal').style.display='none';localAtualDetalhes=null;}
         
-        function reivindicarLocalAtual(){
-            if(!localAtualDetalhes)return;
-            if(isAdminLogado){alert('Como administradora, você não precisa reivindicar estabelecimentos.');return;}
-            if(localAtualDetalhes.proprietarioUid===usuarioLogado?.uid){alert('Este perfil já está vinculado à sua conta.');return;}
-            if(!usuarioLogado){
-                fecharDetalhesLocal();modoCadastroAcesso=false;atualizarModalAcesso();
-                document.getElementById('acessoMensagem').textContent='Entre ou crie uma conta para solicitar a gestão deste perfil.';
-                document.getElementById('modalAreaAcesso').style.display='block';return;
-            }
-            const l=localAtualDetalhes;
-            db.collection('reivindicacoes').where('localId','==',l.idDoc).where('userId','==',usuarioLogado.uid).where('status','==','pendente').limit(1).get().then(snap=>{
-                if(!snap.empty){alert('Você já enviou uma solicitação para este perfil.');return;}
-                return db.collection('reivindicacoes').add({localId:l.idDoc,nomeLocal:l.nome||'',userId:usuarioLogado.uid,email:usuarioLogado.email||'',status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
-            }).then(v=>{if(v)alert('Solicitação enviada. A gestão do perfil será analisada.');}).catch(e=>{console.error(e);alert('Não foi possível enviar a solicitação.');});
-        }
+      
         
         function abrirDestaqueLocalAtual(){
             if(!localAtualDetalhes)return;
@@ -373,35 +388,15 @@
             }catch(e){console.error(e);msg.textContent='Erro ao enviar. Verifique o Firestore.';}
         }
 
-        function renderizarImoveis(){
-            const a=filtrarImoveisCache(),c=document.getElementById('listaImoveis');
-            c.replaceChildren();
-            if(!a.length){c.appendChild(criarVazio(true));atualizarMetaBusca(0);return;}
-            a.forEach(i=>{
-                const card=criarEl('div','card-local'),body=criarEl('div','card-body'),badges=criarEl('div','badges-container-inline');
-                badges.append(criarEl('span','status-badge badge-imovel-tipo',`${i.transacao||'Imóvel'} • ${i.tipo||'Propriedade'}`),criarEl('span','status-badge badge-imovel-preco',Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})));
-                if(i.garagem){const g=criarEl('span','status-badge badge-garagem');g.append(icone('fas fa-car'),document.createTextNode(' Com Garagem'));badges.appendChild(g);}
-                body.appendChild(badges);
-                body.appendChild(criarEl('div','card-title',i.titulo||'Imóvel'));
-                const sub=criarEl('div','card-subtitle');
-                sub.append(icone('fas fa-bed'),document.createTextNode(` ${i.quartos||'N/A'} Quartos • `),icone('fas fa-map-marker-alt'),document.createTextNode(` ${i.bairro||'Centro'}`));
-                body.appendChild(sub);
-                body.appendChild(criarEl('p','card-description',i.descricao||'Negociação direta com o proprietário.'));
-                const acts=criarEl('div','card-actions'),d=criarEl('button','btn-card btn-outline','Detalhes');
-                d.type='button';d.onclick=()=>abrirDetalhesImovel(i.idDoc);
-                acts.append(d,botaoWpp(i.whatsapp,'Falar com Dono',`Olá, vi seu imóvel "${i.titulo||'anúncio'}" na Folha Amarela Digital.`));
-                body.appendChild(acts);card.appendChild(body);c.appendChild(card);
-            });
-            atualizarMetaBusca(a.length);
-        }
+     
 
-        function filtrarCategoria(cat,el){document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');categoriaAtual=cat;renderizarLocais();}
+        function filtrarCategoria(cat,el){document.querySelectorAll('#secaoTabServicos .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');categoriaAtual=cat; paginaAtual = 1; renderizarLocais();}
         function filtrarTransacaoImovel(t,el){document.querySelectorAll('#secaoTabImoveis .cat-item').forEach(e=>e.classList.remove('active'));el.classList.add('active');transacaoImovelAtual=t;renderizarImoveis();}
-        function filtrarBusca(){renderizarAtual();}
+        function filtrarBusca(){paginaAtual = 1; renderizarAtual();}
         
         function abrirModalCidade(){document.getElementById('modalCidade').style.display='block';}
         function fecharModalCidade(){document.getElementById('modalCidade').style.display='none';}
-        function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros();renderizarAtual();}
+        function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros(); paginaAtual = 1; renderizarAtual();}
         
         function atualizarSeletorCidades(){
             const cidades=[...new Set([...listaLocaisCache.map(x=>(x.cidade||'Paraisópolis').trim()),...listaImoveisCache.map(x=>(x.cidade||'Paraisópolis').trim())].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
@@ -418,7 +413,7 @@
             bs.forEach(b=>s.appendChild(new Option(b,b)));
             if(bs.includes(v)){s.value=v;bairroAtual=v;}else{s.value='';bairroAtual='';}
         }
-        function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;renderizarAtual();}
+        function filtrarBairro(){bairroAtual=document.getElementById('filtroBairro').value;paginaAtual = 1; renderizarAtual();}
         
         function usarGPSLocalizacao(){
             if(!navigator.geolocation) return alert('Seu navegador não disponibiliza localização.');
@@ -427,43 +422,20 @@
         
         function fecharDetalhes(){document.getElementById('modalDetalhes').style.display='none';}
 
-        function abrirDetalhesImovel(id){
-            const i=listaImoveisCache.find(x=>x.idDoc===id);if(!i)return;
-            document.getElementById('detDetalhesNome').textContent=i.titulo||'Imóvel';
-            document.getElementById('detDetalhesCategoria').textContent=`${i.transacao||'Imóvel'} - ${i.tipo||'Propriedade'}`;
-            document.getElementById('detDetalhesLocal').textContent=`${i.bairro||'Centro'}, ${i.cidade||cidadeAtual}`;
-            const e=document.getElementById('detDetalhesConteudoExtra');e.replaceChildren();
-            const p1=criarEl('p');p1.append(criarEl('b','', 'Preço: '),document.createTextNode(Number(i.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})));
-            const p2=criarEl('p');p2.append(criarEl('b','', 'Quartos: '),document.createTextNode(`${i.quartos||'N/A'} • `),criarEl('b','', 'Garagem: '),document.createTextNode(i.garagem?'Sim':'Não'));
-            const p3=criarEl('p');p3.style.marginTop='10px';p3.textContent=i.descricao||'Negociação direta com o proprietário.';
-            e.append(p1,p2,p3);
-            document.getElementById('btnDetWpp').onclick=()=>abrirWhatsApp(i.whatsapp,`Olá, vi seu imóvel "${i.titulo||'anúncio'}" na Folha Amarela Digital.`);
-            document.getElementById('modalDetalhes').style.display='block';
-        }
-
+      
         async function salvarLocalLojista(){
-            const nome=document.getElementById('cadNome').value.trim(),categoria=document.getElementById('cadCategoria').value,descricao=document.getElementById('cadDescricao').value.trim(),keywords=document.getElementById('cadKeywords').value.trim(),cidade=document.getElementById('cadCidade').value.trim()||cidadeAtual,bairro=document.getElementById('cadBairro').value.trim()||'Centro',whatsapp=limparWhatsApp(document.getElementById('cadWpp').value),souResponsavel=document.getElementById('cadSouResponsavel').checked;
+            const nome=document.getElementById('cadNome').value.trim(),categoria=document.getElementById('cadCategoria').value,descricao=document.getElementById('cadDescricao').value.trim(),keywords=document.getElementById('cadKeywords').value.trim(),cidade=document.getElementById('cadCidade').value.trim()||cidadeAtual,bairro=document.getElementById('cadBairro').value.trim()||'Centro',whatsapp=limparWhatsApp(document.getElementById('cadWpp').value);
             if(!nome||!descricao)return alert('Informe o nome e o que o negócio faz.');
             if(whatsapp&&(whatsapp.length<10||whatsapp.length>13))return alert('Confira o número de WhatsApp.');
             try{
-                await db.collection('locais').add({nome,categoria,descricao,keywords,cidade,bairro,whatsapp,userId:usuarioLogado?usuarioLogado.uid:'',proprietarioDeclarado:souResponsavel&&!!usuarioLogado,proprietarioUid:souResponsavel&&usuarioLogado?usuarioLogado.uid:'',status:'pendente',destaque:false,plano:'gratuito',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+                await db.collection('locais').add({nome,categoria,descricao,keywords,cidade,bairro,whatsapp,userId:usuarioLogado?usuarioLogado.uid:'',status:'pendente',destaque:false,plano:'gratuito',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
                 fecharModalCadastro();
-                alert(souResponsavel?'Cadastro enviado. Depois da aprovação ficará vinculado à sua conta.':'Cadastro enviado. Obrigado por ajudar a cidade!');
-                ['cadNome','cadDescricao','cadKeywords','cadWpp'].forEach(id=>document.getElementById(id).value='');document.getElementById('cadSouResponsavel').checked=false;
+                alert('Cadastro enviado. Obrigado por ajudar a cidade!');
+                ['cadNome','cadDescricao','cadKeywords','cadWpp'].forEach(id=>document.getElementById(id).value='');
             }catch(e){console.error(e);alert('Não foi possível enviar o cadastro. Verifique a conexão e o Firebase.');}
         }
         
-        async function salvarImovel(){
-            const titulo=document.getElementById('imovTitulo').value.trim(),preco=document.getElementById('imovPreco').value,wpp=limparWhatsApp(document.getElementById('imovWpp').value);
-            if(!titulo||!preco||!wpp)return alert('Preencha o título, o preço e o WhatsApp!');
-            if(wpp.length<10||wpp.length>13)return alert('Confira o número de WhatsApp.');
-            try{
-                await db.collection('imoveis').add({titulo,transacao:document.getElementById('imovTransacao').value,tipo:document.getElementById('imovTipo').value,preco:Number(preco),quartos:document.getElementById('imovQuartos').value,garagem:document.getElementById('imovGaragem').checked,cidade:document.getElementById('imovCidade').value.trim()||cidadeAtual,bairro:document.getElementById('imovBairro').value.trim()||'Centro',whatsapp:wpp,descricao:document.getElementById('imovDesc').value.trim(),userId:usuarioLogado?usuarioLogado.uid:'',status:'pendente',criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
-                document.getElementById('modalCadastroImovel').style.display='none';
-                alert('Imóvel enviado para revisão!');
-            }catch(e){console.error(e);alert('Não foi possível enviar o imóvel.');}
-        }
-
+      
         function isOwner(l){return !!usuarioLogado && (l.proprietarioUid===usuarioLogado.uid || l.userId===usuarioLogado.uid);}
         function fecharPainel(){document.getElementById('modalPainel').style.display='none';unsubPainel.forEach(fn=>{try{fn()}catch(e){}});unsubPainel=[];}
         
