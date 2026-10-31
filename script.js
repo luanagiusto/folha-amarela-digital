@@ -700,28 +700,36 @@
             }catch(e){console.error(e);alert('Erro ao enviar.');}
         }
 
-        async function buscarCep(cep, prefixo) {
-                    const cepLimpo = cep.replace(/\D/g, '');
-                    if (cepLimpo.length !== 8) return;
+      async function mascaraCepEBuscar(input, prefixo) {
+            // 1. Aplica a máscara 00000-000 automaticamente
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 5) {
+                valor = valor.slice(0, 5) + '-' + valor.slice(5, 8);
+            }
+            input.value = valor;
+
+            // 2. Faz a busca automática assim que atingir 8 números
+            const cepLimpo = valor.replace(/\D/g, '');
+            if (cepLimpo.length === 8) {
+                try {
+                    const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                    const data = await res.json();
                     
-                    try {
-                        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-                        const data = await res.json();
+                    if (!data.erro) {
+                        document.getElementById(`${prefixo}Endereco`).value = data.logradouro ? data.logradouro + ', ' : '';
+                        document.getElementById(`${prefixo}Bairro`).value = data.bairro || '';
+                        document.getElementById(`${prefixo}Cidade`).value = data.localidade || '';
                         
-                        if (!data.erro) {
-                            document.getElementById(`${prefixo}Endereco`).value = data.logradouro ? data.logradouro + ', ' : '';
-                            document.getElementById(`${prefixo}Bairro`).value = data.bairro || '';
-                            document.getElementById(`${prefixo}Cidade`).value = data.localidade || '';
-                            
-                            // Coloca o foco no campo de endereço para a pessoa apenas adicionar o número
-                            document.getElementById(`${prefixo}Endereco`).focus();
-                        } else {
-                            alert('CEP não encontrado.');
-                        }
-                    } catch (e) {
-                        console.error("Erro ao buscar CEP:", e);
+                        // Direciona o foco para o endereço para a pessoa digitar o número
+                        document.getElementById(`${prefixo}Endereco`).focus();
+                    } else {
+                        alert('CEP não encontrado.');
                     }
+                } catch (e) {
+                    console.error("Erro ao buscar CEP:", e);
                 }
+            }
+        }
 
         function abrirChatIA(){document.getElementById('modalChatIA').style.display='block';const c=document.getElementById('chatMensagens');if(c&&!c.dataset.intro){adicionarMensagemChat('Descreva o que procura. Posso buscar nos anúncios ou na web.','bot');c.dataset.intro='true';}document.getElementById('inputChatUser').focus();}
         function adicionarMensagemChat(texto,tipo='bot',link=null){
