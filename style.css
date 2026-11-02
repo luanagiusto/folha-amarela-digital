@@ -303,8 +303,19 @@
             .modal-content { width: 95%; padding: 20px 16px; margin: 20px auto; border-radius: 16px; }
             .hero-actions { display: flex; flex-direction: column; gap: 10px; }
             .hero-secondary-action { height: 44px; width: 100%; justify-content: center; display: flex; align-items: center;}
-            .home-categorias { gap: 8px; }
-            .home-categorias .cat-item { padding: 12px 8px; }
+            .home-categorias { 
+                    display: flex; /* Força linha única em vez de grid */
+                    flex-wrap: nowrap; 
+                    overflow-x: auto; /* Permite deslizar para o lado */
+                    gap: 12px;
+                    padding-bottom: 10px;
+                    scroll-snap-type: x mandatory; 
+                }
+            .home-categorias .cat-item { 
+                    min-width: 90px; /* Garante que não ficam esmagados */
+                    flex: 0 0 auto; 
+                    scroll-snap-align: start;
+                }
             .property-intro { flex-direction: column; text-align: center; align-items: center; }
             .property-intro .property-icon { margin-bottom: 8px; }
             .site-header { padding: 10px 14px; }
