@@ -3,52 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planos - Folha Amarela Digital</title>
+    <title>Seja Verificado - Folha Amarela Digital</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Chama o seu ficheiro CSS global -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="pricing-header">
-        <h1>Escolha como o seu negócio será visto</h1>
-        <p>Aumente a sua visibilidade na cidade e conecte-se diretamente com os seus clientes sem intermediários.</p>
+    <!-- CABEÇALHO -->
+    <header class="site-header">
+        <div class="header-inner">
+            <button class="btn-menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+            <a href="index.html" class="logo-wrap">
+                <img src="header_light.png" id="logoImg" alt="Folha Amarela Digital" onerror="mostrarLogoFallback()">
+                <div id="logoFallback" class="logo-fallback" style="display:none;">
+                    <div class="logo-fallback-mark"><i class="fas fa-map-location-dot"></i></div>
+                    <div class="logo-fallback-text">Folha Amarela<br><small>DIGITAL</small></div>
+                </div>
+            </a>
+            <div class="header-actions">
+                <button class="btn-theme-toggle" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-moon"></i></button>
+                <a href="index.html" class="btn-lojista-nav" style="text-decoration:none;"><i class="fas fa-user"></i> <span>Área de acesso</span></a>
+                <a href="index.html" class="btn-anunciar" style="text-decoration:none;"><i class="fas fa-plus"></i> <span>Adicionar negócio</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MENU LATERAL (DRAWER) -->
+    <div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>
+    <div id="navDrawer" class="nav-drawer">
+        <div class="nav-header">
+            <img src="header_light.png" id="logoImgMenu" alt="Folha Amarela Digital">
+            <button class="btn-close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="planos.html"><i class="fas fa-certificate"></i> Seja Verificado <span class="badge-nav-novo">NOVO</span></a></li>
+            <li><a href="index.html" class="link-style" style="text-decoration:none;"><i class="fas fa-store"></i> Adicionar Negócio</a></li>
+            <li><a href="index.html" class="link-style" style="text-decoration:none;"><i class="fas fa-user-circle"></i> Área de Lojistas</a></li>
+            <li><button class="link-style" onclick="toggleTheme()"><i id="themeIconMenu" class="fas fa-moon"></i> Alternar Tema</button></li>
+        </ul>
+        <div class="nav-footer">
+            © 2026 Folha Amarela Digital
+        </div>
     </div>
 
-    <div class="pricing-container">
-        
-        <!-- Plano Gratuito -->
-        <div class="pricing-card">
-            <h3 class="plan-name">Gratuito</h3>
-            <div class="plan-price">R$ 0<span>/mês</span></div>
-            <p class="plan-desc">Presença básica no diretório da cidade.</p>
-            <ul class="plan-features">
-                <li><i class="fas fa-check"></i> Cadastro no diretório</li>
-                <li><i class="fas fa-check"></i> Nome, Categoria e Bairro</li>
-                <li><i class="fas fa-check"></i> Botão direto de WhatsApp</li>
-            </ul>
-            <button class="btn-assinar btn-outline">Começar Grátis</button>
+    <!-- CONTEÚDO DOS PLANOS -->
+    <main class="container" style="padding-top: 40px; min-height: calc(100vh - 120px);">
+        <div class="pricing-header">
+            <h1>Escolha como o seu negócio será visto</h1>
+            <p>Aumente a sua visibilidade na cidade e conecte-se diretamente com os seus clientes sem intermediários.</p>
         </div>
 
-        <!-- Selo Verificado -->
-        <div class="pricing-card destaque">
-            <div class="badge-recomendado">Selo Exclusivo</div>
-            <h3 class="plan-name">Verificado</h3>
-            <div class="plan-price">R$ 19,90<span>/mês</span></div>
-            <p class="plan-desc">Destaque máximo e credibilidade para fechar mais negócios.</p>
-            <ul class="plan-features">
-                <li><i class="fas fa-check"></i> <strong>Tudo do plano Grátis</strong></li>
-                <li><i class="fas fa-check"></i> Prioridade no topo das buscas</li>
-                <li><i class="fas fa-check"></i> Selo de Autenticidade (Perfil Verificado)</li>
-                <li><i class="fas fa-check"></i> Botão para Pedidos de Orçamento</li>
-                <li><i class="fas fa-check"></i> Vitrine Digital (Galeria de fotos)</li>
-            </ul>
-            <button class="btn-assinar btn-primary">Quero Ser Verificado</button>
+        <div class="pricing-container">
+            <!-- Plano Gratuito -->
+            <div class="pricing-card">
+                <h3 class="plan-name">Gratuito</h3>
+                <div class="plan-price">R$ 0<span>/mês</span></div>
+                <p class="plan-desc">Presença básica no diretório da cidade.</p>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> Cadastro no diretório</li>
+                    <li><i class="fas fa-check"></i> Nome, Categoria e Bairro</li>
+                    <li><i class="fas fa-check"></i> Botão direto de WhatsApp</li>
+                </ul>
+                <a href="index.html" style="text-decoration:none;"><button class="btn-assinar btn-outline">Começar Grátis</button></a>
+            </div>
+
+            <!-- Selo Verificado -->
+            <div class="pricing-card destaque">
+                <div class="badge-recomendado">Selo Exclusivo</div>
+                <h3 class="plan-name">Verificado</h3>
+                <div class="plan-price">R$ 19,90<span>/mês</span></div>
+                <p class="plan-desc">Destaque máximo e credibilidade para fechar mais negócios.</p>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> <strong>Tudo do plano Grátis</strong></li>
+                    <li><i class="fas fa-check"></i> Prioridade no topo das buscas</li>
+                    <li><i class="fas fa-check"></i> Selo de Autenticidade (Perfil Verificado)</li>
+                    <li><i class="fas fa-check"></i> Botão para Pedidos de Orçamento</li>
+                    <li><i class="fas fa-check"></i> Vitrine Digital (Galeria de fotos)</li>
+                </ul>
+                <button class="btn-assinar btn-primary">Quero Ser Verificado</button>
+            </div>
         </div>
+    </main>
 
-    </div>
+    <!-- SCRIPT LOCAL PARA TEMA E MENU (Não exige Firebase) -->
+    <script>
+        // Restaura o tema salvo
+        if (localStorage.getItem('folha_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').className = 'fas fa-sun';
+            document.getElementById('themeIconMenu').className = 'fas fa-sun';
+            document.getElementById('logoImg').src = 'header_dark.png';
+            document.getElementById('logoImgMenu').src = 'header_dark.png';
+        }
 
-    <!-- Chama o seu script global para gerir o tema e navegação -->
-    <script src="script.js"></script>
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('folha_theme', isDark ? 'dark' : 'light');
+            
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            document.getElementById('themeIconMenu').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            
+            const logo = document.getElementById('logoImg');
+            if(logo && logo.dataset.broken !== 'true') logo.src = isDark ? 'header_dark.png' : 'header_light.png';
+            
+            const logoMenu = document.getElementById('logoImgMenu');
+            if(logoMenu) logoMenu.src = isDark ? 'header_dark.png' : 'header_light.png';
+        }
+
+        function toggleMenu() {
+            document.getElementById('navDrawer').classList.toggle('open');
+            document.getElementById('navOverlay').classList.toggle('open');
+        }
+
+        function mostrarLogoFallback() {
+            const i = document.getElementById('logoImg');
+            const f = document.getElementById('logoFallback');
+            if(i) { i.dataset.broken = 'true'; i.style.display = 'none'; }
+            if(f) f.style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
