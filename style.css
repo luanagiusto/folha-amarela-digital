@@ -304,18 +304,26 @@
             .hero-actions { display: flex; flex-direction: column; gap: 10px; }
             .hero-secondary-action { height: 44px; width: 100%; justify-content: center; display: flex; align-items: center;}
             .home-categorias { 
-                    display: flex; /* Força linha única em vez de grid */
-                    flex-wrap: nowrap; 
-                    overflow-x: auto; /* Permite deslizar para o lado */
-                    gap: 12px;
-                    padding-bottom: 10px;
-                    scroll-snap-type: x mandatory; 
-                }
-            .home-categorias .cat-item { 
-                    min-width: 90px; /* Garante que não ficam esmagados */
-                    flex: 0 0 auto; 
-                    scroll-snap-align: start;
-                }
+        display: flex !important; 
+        flex-wrap: nowrap !important; 
+        overflow-x: auto !important; 
+        gap: 12px;
+        padding-bottom: 15px;
+        scroll-snap-type: x mandatory; 
+        -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    }
+    
+    /* Oculta a barra de rolagem para ficar mais limpo */
+    .home-categorias::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .home-categorias .cat-item { 
+        flex: 0 0 auto !important;
+        width: 95px; /* Tamanho fixo para não amassar os botões */
+        min-width: 95px;
+        scroll-snap-align: start;
+    }
             .property-intro { flex-direction: column; text-align: center; align-items: center; }
             .property-intro .property-icon { margin-bottom: 8px; }
             .site-header { padding: 10px 14px; }
