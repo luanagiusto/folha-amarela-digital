@@ -446,13 +446,32 @@ btnWpp.onclick = () => abrirWhatsApp(l.whatsapp||l.telefone, msgWppModal);
         function fecharModalCidade(){document.getElementById('modalCidade').style.display='none';}
     function mudarCidade(c){cidadeAtual=c;document.getElementById('cidadeAtivaHeader').textContent=c;fecharModalCidade();bairroAtual='';atualizarListaBairros(); paginaAtual = 1; renderizarLocais();}
         
-        function atualizarSeletorCidades(){
-            const cidades=[...new Set([...listaLocaisCache.map(x=>(x.cidade||'Paraisópolis').trim())].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-            const box=document.getElementById('listaCidadesDinamica');box.replaceChildren();
-            (cidades.length?cidades:['Paraisópolis']).forEach(c=>{
-                const b=criarEl('button','btn-submit',`${c}, MG`);b.type='button';b.style.margin='0';b.onclick=()=>mudarCidade(c);box.appendChild(b);
-            });
-        }
+       function atualizarSeletorCidades() {
+    const cidades = [...new Set([...listaLocaisCache.map(x => (x.cidade || 'Paraisópolis').trim())].filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    
+    const datalist = document.getElementById('listaCidadesDatalist');
+    if (datalist) {
+        datalist.replaceChildren();
+        cidades.forEach(c => {
+            const option = document.createElement('option');
+            option.value = c; // Mostra a sugestão à medida que o utilizador digita
+            datalist.appendChild(option);
+        });
+    }
+}
+
+// Dispara a busca quando o utilizador clica em Confirmar ou prime Enter
+function confirmarCidadeInput() {
+    const input = document.getElementById('inputBuscaCidade');
+    const cidade = input.value.trim();
+    if (cidade) {
+        mudarCidade(cidade);
+        input.value = ''; // Limpa o campo para a próxima utilização
+    } else {
+        alert('Por favor, digite o nome da cidade.');
+        input.focus();
+    }
+}
         
        function atualizarListaBairros(){
             const s=document.getElementById('filtroBairro');
