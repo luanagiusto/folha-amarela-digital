@@ -180,7 +180,38 @@
 
 
     <!-- Modal Cidade -->
-    <div id="modalCidade" class="modal"><div class="modal-content" style="text-align:center;max-width:380px;"><span class="close" onclick="fecharModalCidade()">&times;</span><h2>Onde está?</h2><div id="listaCidadesDinamica" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div><button class="btn-outline btn-card" style="width:100%;padding:12px;border-radius:12px;font-weight:700;" onclick="usarGPSLocalizacao()"><i class="fas fa-location-arrow"></i> Usar GPS</button></div></div>
+<div id="modalCidade" class="modal">
+    <div class="modal-content" style="max-width: 420px; text-align: center; padding: 32px 24px;">
+        <span class="close" onclick="fecharModalCidade()"><i class="fas fa-times"></i></span>
+        
+        <div style="margin-bottom: 24px;">
+            <div style="width: 56px; height: 56px; background: rgba(245,158,11,0.15); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px;">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h2 style="font-size: 22px; font-weight: 800; color: var(--dark);">Onde você está?</h2>
+            <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Digite a cidade ou use a sua localização atual para ver os comércios próximos.</p>
+        </div>
+        
+        <div class="form-group" style="text-align: left; position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 16px; top: 16px; color: var(--gray);"></i>
+            <!-- Usando Itajubá como placeholder de exemplo -->
+            <input type="text" id="inputBuscaCidade" class="form-control" placeholder="Ex: Itajubá, MG" style="padding-left: 44px; height: 48px; margin-bottom: 12px;" list="listaCidadesDatalist" onkeypress="if(event.key === 'Enter') confirmarCidadeInput()">
+            <datalist id="listaCidadesDatalist"></datalist>
+            
+            <button class="btn-submit" onclick="confirmarCidadeInput()" style="height: 48px;">Confirmar Cidade</button>
+        </div>
+
+        <div style="display: flex; align-items: center; margin: 24px 0; color: var(--gray); font-size: 12px; font-weight: 700;">
+            <hr style="flex: 1; border: none; border-top: 1px solid var(--border);">
+            <span style="padding: 0 12px; text-transform: uppercase; letter-spacing: 1px;">ou</span>
+            <hr style="flex: 1; border: none; border-top: 1px solid var(--border);">
+        </div>
+
+        <button class="btn-card btn-outline" style="width: 100%; height: 48px; border-radius: 12px; font-weight: 700; color: var(--dark); display: flex; justify-content: center; align-items: center;" onclick="usarGPSLocalizacao()">
+            <i class="fas fa-location-arrow" style="margin-right: 8px; color: var(--primary);"></i> Usar minha localização (GPS)
+        </button>
+    </div>
+</div>
 
     <!-- Modal Painel -->
     <div id="modalPainel" class="modal">
