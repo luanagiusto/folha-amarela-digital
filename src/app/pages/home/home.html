@@ -1,0 +1,108 @@
+<button class="chat-float-btn" (click)="ui.abrir('chat')" title="Busca conversacional da Folha Amarela">
+  <i class="fas fa-wand-magic-sparkles"></i>
+</button>
+
+<main class="home-main">
+  <section class="home-hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><i class="fas fa-location-dot"></i> Sua cidade, seus serviços, tudo em um só lugar</div>
+      <h1>Encontre <span>quem faz</span><br>o que você precisa.</h1>
+      <p class="hero-copy">Comércios, profissionais e serviços da sua cidade, em um só lugar.</p>
+
+      <div class="hero-search-card">
+        <div class="hero-location-row">
+          <button class="hero-location" type="button" (click)="ui.abrir('cidade')">
+            <i class="fas fa-location-dot"></i>
+            <span><small>Você está em</small><strong>{{ dir.cidade() }}</strong></span>
+            <i class="fas fa-chevron-down hero-chevron"></i>
+          </button>
+          <div class="hero-bairro">
+            <i class="fas fa-map-signs"></i>
+            <select [ngModel]="dir.bairro()" (ngModelChange)="dir.setBairro($event)">
+              <option value="">Todos os Bairros</option>
+              @for (b of dir.bairros(); track b) { <option [value]="b">{{ b }}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="hero-search-row">
+          <i class="fas fa-search search-icon"></i>
+          <input type="search" class="search-bar" name="busca-diretorio" autocomplete="off" autocapitalize="off"
+                 spellcheck="false" placeholder="Ex.: eletricista, padaria, aluguel..."
+                 [ngModel]="dir.busca()" (ngModelChange)="dir.setBusca($event)">
+        </div>
+        <div class="hero-hint"><i class="fas fa-lightbulb"></i> Busque por nome, serviço, categoria ou bairro.</div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="hero-secondary-action" (click)="ui.abrirCadastro()">
+          <i class="fas fa-plus"></i> Adicionar gratuitamente
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-explore container">
+    <div class="home-section-heading">
+      <div><span class="section-kicker">EXPLORE</span><h2>O que você procura hoje?</h2></div>
+      <div class="search-meta">
+        @if (dir.busca().trim()) { {{ dir.filtrados().length }} resultado(s) encontrado(s). }
+      </div>
+    </div>
+
+    <div #secaoServicos>
+      <div class="categorias home-categorias">
+        @for (c of categorias; track c.nome) {
+          <div class="cat-item" [class.active]="dir.categoria() === c.valor" (click)="dir.setCategoria(c.valor)">
+            <div class="cat-icon"><i class="fas" [class]="c.icone"></i></div>
+            <div class="cat-name">{{ c.nome }}</div>
+            <small>{{ c.sub }}</small>
+          </div>
+        }
+      </div>
+
+      <div class="community-banner">
+        <div class="community-copy">
+          <strong><i class="fas fa-city"></i> Ajude a construir a Folha da sua cidade</strong>
+          <p>Conhece uma padaria, salão, oficina ou profissional que ainda não está aqui? Adicione gratuitamente.</p>
+        </div>
+        <div class="community-actions">
+          <button class="btn-community primary" type="button" (click)="ui.abrirCadastro()">
+            <i class="fas fa-plus"></i> Adicionar gratuitamente
+          </button>
+          <button class="btn-community secondary" type="button" (click)="ui.abrirIndicacao()">
+            <i class="fas fa-user-plus"></i> Indicar alguém
+          </button>
+        </div>
+      </div>
+
+      <h3 class="secao-header"><i class="fas fa-store-alt"></i> Estabelecimentos &amp; Prestadores</h3>
+
+      <div class="lista-locais">
+        @if (locais.carregando()) {
+          <p style="text-align:center;color:var(--gray);padding:30px;">A carregar locais...</p>
+        } @else {
+          @for (l of dir.paginados(); track l.idDoc) {
+            <app-local-card [local]="l" />
+          } @empty {
+            <div class="empty-state">
+              <i class="fas fa-magnifying-glass"></i>
+              <strong>Nada encontrado em {{ dir.cidade() }}.</strong>
+              <p>Conhece quem faz isso? Indique ou adicione gratuitamente para ajudar a cidade.</p>
+              <button class="btn-community primary" style="margin-top:14px;" (click)="ui.abrirIndicacao(dir.busca())">
+                <i class="fas fa-user-plus"></i> Indicar alguém
+              </button>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="pagination-container">
+        @if (paginas().length > 1) {
+          @for (p of paginas(); track p) {
+            <button class="btn-page" [class.active]="p === dir.pagina()" (click)="irParaPagina(p)">{{ p }}</button>
+          }
+        }
+      </div>
+    </div>
+  </section>
+</main>
