@@ -11,8 +11,8 @@ import { UiService } from '../core/services/ui.service';
     <div class="nav-overlay" [class.open]="ui.menuAberto()" (click)="ui.fecharMenu()"></div>
     <nav class="nav-drawer" [class.open]="ui.menuAberto()">
       <div class="nav-header">
-        <img [src]="theme.escuro() ? 'header_dark.png' : 'header_light.png'"
-             alt="Folha Amarela Digital" (error)="$any($event.target).style.display = 'none'">
+        <img [src]="theme.escuro() ? '/assets/header_dark.png' : '/assets/header_light.png'"
+     alt="Folha Amarela Digital" (error)="$any($event.target).style.display = 'none'">
         <button class="btn-close-menu" (click)="ui.fecharMenu()"><i class="fas fa-times"></i></button>
       </div>
 

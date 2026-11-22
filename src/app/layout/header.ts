@@ -17,7 +17,7 @@ import { UiService } from '../core/services/ui.service';
 
         <a routerLink="/" class="logo-wrap" (click)="aoClicarLogo()">
           @if (!logoQuebrada) {
-            <img [src]="theme.escuro() ? 'header_dark.png' : 'header_light.png'"
+            <img [src]="theme.escuro() ? '/assets/header_dark.png' : '/assets/header_light.png'"
                  alt="Folha Amarela Digital" (error)="logoQuebrada = true">
           } @else {
             <span class="logo-fallback" style="display:flex">
