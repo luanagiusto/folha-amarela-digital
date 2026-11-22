@@ -1,0 +1,92 @@
+<main class="container" style="padding-top: 40px; padding-bottom: 60px; max-width: 800px;">
+  <div style="margin-bottom:16px;">
+    <a routerLink="/" class="btn-lojista-nav" style="text-decoration:none;display:inline-flex;">
+      <i class="fas fa-arrow-left"></i> Voltar ao início
+    </a>
+  </div>
+
+  @switch (estado()) {
+    @case ('carregando') {
+      <div style="text-align:center;padding:60px;color:var(--gray);">
+        <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);margin-bottom:12px;"></i>
+        <p>A carregar informações do negócio...</p>
+      </div>
+    }
+
+    @case ('erro') {
+      <div style="text-align:center;padding:60px;background:var(--surface);border:1px solid var(--border);border-radius:20px;">
+        <i class="fas fa-store-slash fa-3x" style="color:var(--danger);margin-bottom:14px;"></i>
+        <h2 style="font-size:20px;color:var(--dark);margin-bottom:8px;">Estabelecimento não encontrado</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:20px;">O perfil que procura pode ter sido removido ou o link está incorreto.</p>
+        <a routerLink="/" class="btn-submit" style="display:inline-block;text-decoration:none;max-width:200px;">Voltar ao início</a>
+      </div>
+    }
+
+    @case ('ok') {
+      @let l = local()!;
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px;box-shadow:var(--shadow);">
+        @if (destaque()) { <div class="featured-badge" style="margin-bottom:12px;">★ Em destaque</div> }
+
+        <h1 style="font-size:clamp(24px,4vw,32px);font-weight:850;color:var(--dark);margin-bottom:12px;line-height:1.2;">{{ nome() }}</h1>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+          <span class="status-badge" style="background:var(--purple);color:white;">
+            <i class="fas fa-tag"></i> {{ l.categoria || 'Serviço' }}
+          </span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;background:var(--input-bg);padding:18px;border-radius:16px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;color:var(--gray);font-size:15px;">
+            <i class="fas fa-location-dot" style="color:var(--primary);width:20px;text-align:center;"></i>
+            <span>{{ enderecoTexto() }}</span>
+          </div>
+          @if (l.horario) {
+            <div style="display:flex;align-items:center;gap:10px;color:var(--gray);font-size:15px;">
+              <i class="fas fa-clock" style="color:var(--primary);width:20px;text-align:center;"></i>
+              <span>{{ l.horario }}</span>
+            </div>
+          }
+        </div>
+
+        <h3 style="font-size:16px;font-weight:800;color:var(--dark);margin-bottom:8px;">
+          <i class="fas fa-circle-info" style="color:var(--primary);"></i> Sobre o negócio
+        </h3>
+        <p style="font-size:15px;color:var(--dark);line-height:1.7;opacity:.95;margin-bottom:24px;">
+          {{ l.descricao || l.servicos || 'Este perfil ainda não possui uma descrição detalhada.' }}
+        </p>
+
+        @if (l.keywords || l.palavrasChave) {
+          <div class="card-keywords" style="margin-bottom:28px;">Encontre por: {{ l.keywords || l.palavrasChave }}</div>
+        }
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;border-top:1px solid var(--border);padding-top:28px;">
+          @if (l.whatsapp || l.telefone) {
+            <button class="btn-card btn-wpp" style="width:100%;border:none;display:flex;justify-content:center;border-radius:14px;font-weight:700;padding:12px;"
+                    (click)="whatsapp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+          }
+          @if (l.telefoneExtra) {
+            <a class="btn-card" [href]="'tel:' + l.telefoneExtra"
+               style="text-decoration:none;width:100%;background:var(--input-bg);color:var(--dark);border:1px solid var(--border);display:flex;justify-content:center;border-radius:14px;font-weight:700;padding:12px;">
+              <i class="fas fa-phone"></i> Ligar</a>
+          }
+          @if (l.instagram) {
+            <a class="btn-card" [href]="instagram()" target="_blank" rel="noopener noreferrer"
+               style="text-decoration:none;width:100%;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);color:white;border:none;display:flex;justify-content:center;border-radius:14px;font-weight:700;padding:12px;">
+              <i class="fab fa-instagram"></i> Instagram</a>
+          }
+          @if (l.endereco || l.bairro) {
+            <a class="btn-card" [href]="mapa()" target="_blank" rel="noopener noreferrer"
+               style="text-decoration:none;width:100%;background:#4285F4;color:white;border:none;display:flex;justify-content:center;border-radius:14px;font-weight:700;padding:12px;">
+              <i class="fas fa-map-location-dot"></i> Como chegar</a>
+          }
+        </div>
+
+        <div style="margin-top:36px;background:rgba(139,92,246,.08);border:1px dashed var(--purple);border-radius:16px;padding:20px;text-align:center;">
+          <i class="fas fa-calendar-check" style="font-size:24px;color:var(--purple);margin-bottom:8px;"></i>
+          <h4 style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:4px;">Precisa de agendar um atendimento?</h4>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:12px;">Em breve poderá solicitar agendamentos de horários diretamente por aqui.</p>
+        </div>
+      </div>
+    }
+  }
+</main>
