@@ -1,37 +1,102 @@
-<main class="container" style="padding-top: 40px; min-height: calc(100vh - 120px);">
-        <div class="pricing-header">
-            <h1>Escolha como o seu negócio será visto</h1>
-            <p>Aumente a sua visibilidade na cidade e conecte-se diretamente com os seus clientes sem intermediários.</p>
-        </div>
+<main class="container planos-main">
+  <div class="pricing-header">
+    <h1>Escolha como o seu negócio será visto</h1>
+    <p>Buscar e entrar em contato é sempre grátis para quem procura. Quem oferece o serviço escolhe o quanto quer aparecer.</p>
+  </div>
 
-        <div class="pricing-container">
-            <!-- Plano Gratuito -->
-            <div class="pricing-card">
-                <h3 class="plan-name">Gratuito</h3>
-                <div class="plan-price">R$ 0<span>/mês</span></div>
-                <p class="plan-desc">Presença básica no diretório da cidade.</p>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> Cadastro no diretório</li>
-                    <li><i class="fas fa-check"></i> Nome, Categoria e Bairro</li>
-                    <li><i class="fas fa-check"></i> Botão direto de WhatsApp</li>
-                </ul>
-                <a routerLink="/" style="text-decoration:none;"><button class="btn-assinar btn-outline">Começar Grátis</button></a>
-            </div>
+  <div class="pricing-container">
+    <!-- GRÁTIS -->
+    <div class="pricing-card">
+      <h3 class="plan-name">Grátis</h3>
+      <div class="plan-price">R$ 0<span>/mês</span></div>
+      <p class="plan-desc">Presença no diretório da cidade, sem custo.</p>
+      <ul class="plan-features">
+        <li><i class="fas fa-check"></i> Perfil completo: nome, categoria, bairro, descrição, horário e Instagram</li>
+        <li><i class="fas fa-check"></i> Aparece nas buscas</li>
+        <li><i class="fas fa-check"></i> Botão direto de WhatsApp</li>
+        <li><i class="fas fa-check"></i> Link próprio do perfil para compartilhar</li>
+        <li><i class="fas fa-check"></i> Assistente de IA para montar o perfil <span class="tag-breve">em breve</span></li>
+      </ul>
+      <button class="btn-assinar btn-outline" type="button" (click)="comecarGratis()">Começar grátis</button>
+    </div>
 
-            <!-- Selo Verificado -->
-            <div class="pricing-card destaque">
-                <div class="badge-recomendado">Selo Exclusivo</div>
-                <h3 class="plan-name">Verificado</h3>
-                <div class="plan-price">R$ 19,90<span>/mês</span></div>
-                <p class="plan-desc">Destaque máximo e credibilidade para fechar mais negócios.</p>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> <strong>Tudo do plano Grátis</strong></li>
-                    <li><i class="fas fa-check"></i> Prioridade no topo das buscas</li>
-                    <li><i class="fas fa-check"></i> Selo de Autenticidade (Perfil Verificado)</li>
-                    <li><i class="fas fa-check"></i> Botão para Pedidos de Orçamento</li>
-                    <li><i class="fas fa-check"></i> Vitrine Digital (Galeria de fotos)</li>
-                </ul>
-                <button class="btn-assinar btn-primary">Quero Ser Verificado</button>
-            </div>
-        </div>
+    <!-- PRO -->
+    <div class="pricing-card destaque">
+      <div class="badge-recomendado">Mais escolhido</div>
+      <h3 class="plan-name">Plano Pro</h3>
+      <div class="plan-price">{{ brl(config.pro.mensal) }}<span>/mês</span></div>
+      <p class="plan-extra">
+        ou <strong>{{ brl(config.pro.anual) }}/ano</strong> (2 meses grátis).<br>
+        <strong>Preço de fundador: {{ brl(config.pro.fundador) }}/mês</strong> para os primeiros {{ config.pro.vagasFundador }} assinantes.
+      </p>
+      <p class="plan-desc">Mais visibilidade e ferramentas para conseguir clientes.</p>
+      <ul class="plan-features">
+        <li><i class="fas fa-check"></i> <strong>Tudo do plano Grátis</strong></li>
+        <li><i class="fas fa-check"></i> Destaque no topo da categoria e da cidade, identificado como "Patrocinado"</li>
+        <li><i class="fas fa-check"></i> Galeria de fotos dos seus trabalhos <span class="tag-breve">em breve</span></li>
+        <li><i class="fas fa-check"></i> Botão "Pedir orçamento" <span class="tag-breve">em breve</span></li>
+        <li><i class="fas fa-check"></i> Estatísticas de visitas e cliques no WhatsApp <span class="tag-breve">em breve</span></li>
+        <li><i class="fas fa-check"></i> Ferramentas de IA para orçamentos, respostas e divulgação <span class="tag-breve">em breve</span></li>
+      </ul>
+      @if (config.pro.disponivel) {
+        <button class="btn-assinar btn-primary" type="button" (click)="irParaPainel()">Quero o Plano Pro</button>
+        <p class="plan-note">Entre no seu painel, escolha o perfil e solicite o destaque.</p>
+      } @else {
+        <button class="btn-assinar btn-primary" type="button" disabled>Em implantação</button>
+      }
+    </div>
+
+    <!-- SELO VERIFICADO -->
+    <div class="pricing-card">
+      <div class="badge-recomendado badge-selo">Confiança</div>
+      <h3 class="plan-name">Selo Verificado</h3>
+      <div class="plan-price">{{ brl(config.selo.anual) }}<span>/ano</span></div>
+      <p class="plan-desc">Mostre ao cliente que a sua identidade foi conferida.</p>
+      <ul class="plan-features">
+        <li><i class="fas fa-check"></i> Selo no card e no perfil, com a data e o que foi conferido</li>
+        <li><i class="fas fa-check"></i> "Empresa verificada" (com CNPJ) ou "Profissional verificado" (sem CNPJ)</li>
+        <li><i class="fas fa-check"></i> Página de conferência aberta por QR code</li>
+        <li><i class="fas fa-check"></i> Aparece no filtro "Só verificados"</li>
+        <li><i class="fas fa-check"></i> Revisão anual</li>
+        <li><i class="fas fa-check"></i> Devolução do valor se a análise não for aprovada</li>
+      </ul>
+      @if (config.selo.disponivel) {
+        <button class="btn-assinar btn-outline" type="button" (click)="irParaPainel()">Quero ser verificado</button>
+      } @else {
+        <button class="btn-assinar btn-outline" type="button" disabled>Em implantação</button>
+        <p class="plan-note">Estamos preparando a análise de perfis. Em breve você poderá pedir o selo por aqui.</p>
+      }
+      <p class="plan-note">O selo não compra posição nas buscas: ele indica que conferimos.</p>
+    </div>
+  </div>
+
+  <section class="verify-section">
+    <h2>O que significa ser verificado?</h2>
+    <div class="verify-grid">
+      <div class="verify-card">
+        <h3><i class="fas fa-building-circle-check"></i> Empresa verificada</h3>
+        <p>Conferimos que o CNPJ está ativo na cidade, que o titular é a pessoa que pediu o selo e que o telefone do perfil é dela.</p>
+      </div>
+      <div class="verify-card">
+        <h3><i class="fas fa-user-check"></i> Profissional verificado</h3>
+        <p>Para quem trabalha por conta própria e não tem CNPJ: conferimos a identidade, o telefone e a confirmação de clientes reais.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <h2>Perguntas frequentes</h2>
+    <details>
+      <summary>Preciso pagar para procurar um profissional?</summary>
+      <p>Não. Buscar e entrar em contato é sempre grátis.</p>
+    </details>
+    <details>
+      <summary>Preciso ter CNPJ para ter o selo?</summary>
+      <p>Não. Quem não tem CNPJ pode ser verificado como Profissional, pela identidade.</p>
+    </details>
+    <details>
+      <summary>O destaque é propaganda?</summary>
+      <p>Sim, por isso ele aparece identificado como "Patrocinado". O selo é diferente: ele só indica que conferimos os dados.</p>
+    </details>
+  </section>
 </main>
