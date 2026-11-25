@@ -10,7 +10,8 @@ export const ITENS_POR_PAGINA = 20;
 export class DiretorioService {
   private readonly locaisSvc = inject(LocaisService);
 
-  readonly cidade = signal(CIDADE_PADRAO);
+  /** Lembra a última cidade escolhida neste aparelho. */
+  readonly cidade = signal(this.cidadeSalva());
   readonly categoria = signal('');
   readonly bairro = signal('');
   readonly busca = signal('');
@@ -58,8 +59,21 @@ export class DiretorioService {
     return this.filtrados().slice(ini, ini + ITENS_POR_PAGINA);
   });
 
+  private cidadeSalva(): string {
+    try {
+      return localStorage.getItem('folha_cidade') || CIDADE_PADRAO;
+    } catch {
+      return CIDADE_PADRAO;
+    }
+  }
+
   mudarCidade(c: string) {
     this.cidade.set(c);
+    try {
+      localStorage.setItem('folha_cidade', c);
+    } catch {
+      /* sem armazenamento disponível: a escolha vale só nesta visita */
+    }
     this.bairro.set('');
     this.pagina.set(1);
   }

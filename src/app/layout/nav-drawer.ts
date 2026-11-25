@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, effect, inject, viewChild } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { DiretorioService } from '../core/services/diretorio.service';
 import { ThemeService } from '../core/services/theme.service';
@@ -51,19 +51,10 @@ import { UiService } from '../core/services/ui.service';
           </a>
         </li>
         <li>
-          <button class="link-style cidade-row" type="button" (click)="trocarCidade()">
-            <i class="fas fa-location-dot"></i>
-            <span class="cidade-txt"><small>Você está em</small><strong>{{ dir.cidade() }}</strong></span>
+          <button class="link-style" type="button" (click)="trocarCidade()">
+            <i class="fas fa-location-dot"></i> {{ dir.cidade() }}
             <span class="trocar">trocar</span>
           </button>
-        </li>
-        <li class="cat-grid" role="group" aria-label="Categorias">
-          @for (c of categorias; track c.nome) {
-            <button type="button" class="cat-chip" [class.ativo]="dir.categoria() === c.valor"
-                    [attr.aria-pressed]="dir.categoria() === c.valor" (click)="escolherCategoria(c.valor)">
-              <i class="fas" [class]="c.icone"></i> {{ c.nome }}
-            </button>
-          }
         </li>
         <li>
           <button class="link-style" type="button" (click)="acao(() => ui.abrir('chat'))">
@@ -133,21 +124,7 @@ import { UiService } from '../core/services/ui.service';
 
     .nav-links a, .nav-links button.link-style { padding-top: 11px; padding-bottom: 11px; }
 
-    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 20px 8px; }
-    .cat-chip {
-      display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px;
-      border: 1px solid var(--border); background: var(--input-bg); color: var(--dark);
-      font-weight: 600; font-size: 14px; cursor: pointer;
-    }
-    .cat-chip i { color: var(--gray); width: 16px; text-align: center; }
-    .cat-chip.ativo { background: rgba(245, 158, 11, 0.12); border-color: var(--primary); color: var(--primary-hover); }
-    .cat-chip.ativo i { color: var(--primary); }
-
-    .cidade-row { align-items: center; }
-    .cidade-txt { display: flex; flex-direction: column; flex: 1; text-align: left; line-height: 1.25; }
-    .cidade-txt small { font-size: 11px; font-weight: 600; color: var(--gray); }
-    .cidade-txt strong { font-size: 15px; }
-    .trocar { font-size: 12px; font-weight: 700; color: var(--primary-hover); }
+    .trocar { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--primary-hover); }
 
     .nav-rodape { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
     .tema-seg { display: flex; background: var(--input-bg); border-radius: 12px; padding: 3px; }
@@ -168,18 +145,10 @@ export class NavDrawer {
   protected readonly theme = inject(ThemeService);
   protected readonly auth = inject(AuthService);
   protected readonly dir = inject(DiretorioService);
-  private readonly router = inject(Router);
 
   private readonly nav = viewChild<ElementRef<HTMLElement>>('nav');
   private readonly botaoFechar = viewChild<ElementRef<HTMLElement>>('fechar');
   private jaAbriu = false;
-
-  protected readonly categorias = [
-    { valor: 'Alimentação', nome: 'Alimentação', icone: 'fa-hamburger' },
-    { valor: 'Serviços', nome: 'Serviços', icone: 'fa-tools' },
-    { valor: 'Pet Shop', nome: 'Pets', icone: 'fa-paw' },
-    { valor: 'Saúde', nome: 'Saúde', icone: 'fa-pills' },
-  ];
 
   constructor() {
     // Trava a rolagem da página e cuida do foco enquanto o menu está aberto
@@ -236,16 +205,6 @@ export class NavDrawer {
 
   protected trocarCidade() {
     this.acao(() => this.ui.abrir('cidade'));
-  }
-
-  /** Toque na categoria aplica o filtro; tocar de novo na ativa volta para todas. */
-  protected escolherCategoria(valor: string) {
-    this.dir.setCategoria(this.dir.categoria() === valor ? '' : valor);
-    this.ui.fecharMenu();
-    const rolar = () =>
-      setTimeout(() => document.querySelector('.categorias')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
-    if (this.router.url.split('?')[0] !== '/') this.router.navigateByUrl('/').then(rolar);
-    else rolar();
   }
 
   protected entrar() {
